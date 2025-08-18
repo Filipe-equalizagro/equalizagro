@@ -44,7 +44,12 @@ export default function Footer() {
                 <a href="#" className="footer__social-link">
                   <Facebook size={20} />
                 </a>
-                <a href="#" className="footer__social-link">
+                <a 
+                  href="https://www.instagram.com/equalizagro?igsh=aDNqdHRsZnQ4MWNm" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="footer__social-link"
+                >
                   <Instagram size={20} />
                 </a>
                 <a href="#" className="footer__social-link">
@@ -109,12 +114,6 @@ export default function Footer() {
                     Contato
                   </a>
                 </li>
-                <li>
-                  <a href="#" className="footer__section-link">
-                    <ArrowRight className="footer__section-link-icon" size={16} />
-                    Blog
-                  </a>
-                </li>
               </ul>
             </div>
 
@@ -153,7 +152,7 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="footer__bottom">
           <div className="footer__copyright">
-            © 2024 Equalizagro. Todos os direitos reservados.
+            © 2025 Equalizagro. Todos os direitos reservados.
           </div>
           <div className="footer__bottom-links">
             <a href="#" className="footer__bottom-link">Política de Privacidade</a>
