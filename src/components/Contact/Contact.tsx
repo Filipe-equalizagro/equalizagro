@@ -26,7 +26,7 @@ export default function Contact() {
             <span>Entre em Contato</span>
           </div>
           <h2 className="contact__title">
-            Vamos <span className="hero__title-highlight">Conversar</span> sobre seu Projeto
+            Vamos <span className="hero__title-highlight">conversar</span> sobre seu <span className="hero__title-highlight"> projeto</span>
           </h2>
           <p className="contact__subtitle">
             Estamos prontos para ajudar você a otimizar suas aplicações agrícolas. 
