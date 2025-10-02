@@ -23,7 +23,7 @@ export default function Hero() {
           {/* Coluna da Esquerda - Texto */}
           <div className="hero__text">
             <div className="hero__badge">
-              <span>Consultoria Agrícola de Excelência</span>
+              <span>Tecnologia de Aplicação e Manejo de Plantas Daninhas</span>
             </div>
 
             <h1 className="hero__title">
@@ -32,7 +32,7 @@ export default function Hero() {
             </h1>
 
             <p className="hero__description">
-              Convertemos pulverizações em aplicações através de Pesquisas, Consultoria e Treinamentos.
+              Convertemos pulverizações em aplicações através de Pesquisa, Consultoria e Treinamentos.
             </p>
 
             <div className="hero__cta-group">
@@ -50,7 +50,7 @@ export default function Hero() {
           {/* Coluna da Direita - Imagem */}
           <div className="hero__image-container">
             <img 
-              src="/images/hero-background.jpeg" 
+              src="/images/hero-background.png" 
               alt="Trator pulverizador trabalhando em uma lavoura verde" 
               className="hero__image" 
             />

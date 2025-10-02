@@ -52,13 +52,13 @@ export default function Header() {
             </div>
           </div>
           <div className="header__social-links">
-            <a href="#" className="header__social-link">
+            <a href="https://www.facebook.com/share/1C5Nu4yTc6/" className="header__social-link">
               <Facebook size={16} />
             </a>
-            <a href="#" className="header__social-link">
+            <a href="https://www.instagram.com/equalizagro/?igsh=aDNqdHRsZnQ4MWNm#" className="header__social-link">
               <Instagram size={16} />
             </a>
-            <a href="#" className="header__social-link">
+            <a href="https://www.linkedin.com/company/equalizagro/" className="header__social-link">
               <Linkedin size={16} />
             </a>
           </div>

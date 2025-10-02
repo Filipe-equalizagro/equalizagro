@@ -10,7 +10,8 @@ import {
   Heart,
   Zap,
   Shield,
-  TrendingUp
+  TrendingUp,
+  LibraryBig,
 } from 'lucide-react';
 import './About.css';
 
@@ -41,27 +42,27 @@ export default function About() {
   const achievements = [
     {
       icon: Award,
-      number: '8+',
+      number: '10+',
       label: 'Anos de Experiência',
       description: 'Tempo dedicado ao setor agrícola'
     },
     {
       icon: Users,
-      number: '500+',
-      label: 'Fazendas Atendidas',
-      description: 'Clientes satisfeitos em todo Brasil'
+      number: '1 Milhão+',
+      label: 'Hectares atendidos',
+      description: 'De forma direta'
     },
     {
       icon: TrendingUp,
       number: '95%',
       label: 'Taxa de Sucesso',
-      description: 'Resultados comprovados'
+      description: 'Churn abaixo de 5%'
     },
     {
-      icon: Star,
-      number: '100%',
-      label: 'Satisfação Cliente',
-      description: 'Compromisso com a excelência'
+      icon: LibraryBig,
+      number: '500%',
+      label: 'Treinamentos anuais',
+      description: 'Com alto índice de retorno'
     }
   ];
 
@@ -93,14 +94,13 @@ export default function About() {
                 Nossa História
               </h3>
               <p className="about__story-description">
-                Fundada com a missão de revolucionar o setor agrícola brasileiro, 
-                a Equalizagro nasceu da paixão pelo campo e da necessidade de 
-                otimizar processos de aplicação. Nossa equipe de especialistas 
-                trabalha diretamente no campo, analisando cada detalhe para 
-                otimizar suas aplicações e maximizar seus resultados.
+                Fundada com a missão de revolucionar a forma como a tecnologia de 
+                aplicação é vista e tratada no Brasil, 
+                a Equalizagro nasceu da paixão pelo campo e da necessidade crescente de otimização e 
+                processos, o que demanda informação de qualidade e prontamente aplicável.
               </p>
               <p className="about__story-description">
-                Ao longo de mais de 8 anos, desenvolvemos metodologias únicas 
+                Desde 2016 desenvolvemos metodologias únicas 
                 e tecnologias inovadoras que já beneficiaram centenas de 
                 fazendas em todo o Brasil, estabelecendo novos padrões de 
                 eficiência e produtividade no setor.
@@ -116,36 +116,15 @@ export default function About() {
                   <Eye size={48} />
                 </div>
                 <h3 className="about__visual-title">
-                  Nossa Visão para o Futuro
+                  Pautados pela ética e compromisso com o produto rural, pretendemos seguir sendo
                 </h3>
                 <p className="about__visual-description">
-                  Queremos ser a principal referência em consultoria agrícola no Brasil, 
-                  contribuindo para o desenvolvimento sustentável do agronegócio através 
+                  Contribuindo para o desenvolvimento sustentável do agronegócio através 
                   de tecnologia, inovação e conhecimento aplicado. Nosso compromisso é 
                   continuar transformando o campo brasileiro, uma aplicação de cada vez.
                 </p>
               </div>
             </div>
-          </div>
-        </div>
-
-        {/* Values Section - Positioned before achievements */}
-        <div className="about__values-section">
-          <div className="about__values-header">
-            <h3 className="about__values-title">
-              Nossos Valores
-            </h3>
-          </div>
-          <div className="about__values-grid">
-            {values.map((value, index) => (
-              <div key={index} className="about__value">
-                <div className="about__value-icon">
-                  <value.icon size={24} />
-                </div>
-                <h4 className="about__value-title">{value.title}</h4>
-                <p className="about__value-description">{value.description}</p>
-              </div>
-            ))}
           </div>
         </div>
 

@@ -36,12 +36,11 @@ export default function Footer() {
                 />
               </a>
               <p className="footer__description">
-                Especialistas em consultoria agrícola desde 2015, transformando 
-                pulverizações em aplicações de sucesso através de tecnologia 
-                avançada e metodologias comprovadas.
+                Convertendo pulverizações em aplicações desde 2016,
+                através da transformação de dados em posicionamentos.
               </p>
               <div className="footer__social">
-                <a href="#" className="footer__social-link">
+                <a href="https://www.facebook.com/share/1C5Nu4yTc6/" className="footer__social-link">
                   <Facebook size={20} />
                 </a>
                 <a 
@@ -51,8 +50,8 @@ export default function Footer() {
                   className="footer__social-link"
                 >
                   <Instagram size={20} />
-                </a>
-                <a href="#" className="footer__social-link">
+                  </a>
+                <a href="https://www.linkedin.com/company/equalizagro/" className="footer__social-link">
                   <Linkedin size={20} />
                 </a>
                 <a href="#" className="footer__social-link">
@@ -74,19 +73,19 @@ export default function Footer() {
                 <li>
                   <a href="#services" className="footer__section-link">
                     <ArrowRight className="footer__section-link-icon" size={16} />
-                    Treinamentos Práticos
+                    Monitoramento de resultados
                   </a>
                 </li>
                 <li>
                   <a href="#services" className="footer__section-link">
                     <ArrowRight className="footer__section-link-icon" size={16} />
-                    Pesquisa e Desenvolvimento
+                    Pesquisa
                   </a>
                 </li>
                 <li>
                   <a href="#services" className="footer__section-link">
                     <ArrowRight className="footer__section-link-icon" size={16} />
-                    Monitoramento de Resultados
+                    Treinamentos práticos
                   </a>
                 </li>
               </ul>
@@ -160,7 +159,7 @@ export default function Footer() {
             <a href="#" className="footer__bottom-link">Cookies</a>
           </div>
           <div className="footer__development">
-            Desenvolvido com <Heart size={12} /> por{' '}
+            Desenvolvido com por{' '}
             <a href="#" className="footer__development-link">
               Equalizagro
             </a>

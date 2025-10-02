@@ -6,14 +6,13 @@ import {
   Shield, 
   Users, 
   Award, 
+  Droplet,
   CheckCircle, 
   ArrowRight,
   BarChart3,
   Clock,
   TrendingUp,
-  Wrench,
-  Zap,
-  GraduationCap
+  Info
 } from 'lucide-react';
 import './Services.css';
 
@@ -22,48 +21,53 @@ export default function Services() {
     {
       icon: Sprout,
       iconClass: 'services__item-icon--green',
-      title: 'Consultoria Especializada',
-      description: 'Análise completa da sua operação agrícola com recomendações personalizadas para otimização de aplicações.',
+      title: 'Consultoria em Tecnologia de Aplicação',
+      description: 'Suporte técnico para todas as aplicações, buscando a máxima perfomance de todos os insumos pulverizados',
       features: [
-        { text: 'Análise de Solo', icon: CheckCircle },
-        { text: 'Mapeamento de Áreas', icon: CheckCircle },
-        { text: 'Planejamento Estratégico', icon: CheckCircle }
+        { text: 'Suporte em tempo integral', icon: CheckCircle },
+        { text: 'Calibração e configuração periódica dos equipamentos', icon: CheckCircle },
+        { text: 'Treinamento da equipe', icon: CheckCircle },
+        { text: 'Aferição da qualidade das aplicações', icon: CheckCircle }
       ],
       backgroundImage: 'services__item-bg--consultoria'
     },
     {
-      icon: GraduationCap,
+      icon: Droplet,
       iconClass: 'services__item-icon--gold',
-      title: 'Treinamentos Práticos',
-      description: 'Capacitação da sua equipe com técnicas avançadas de aplicação e manejo de equipamentos.',
+      title: 'Herbologia Aplicada',
+      description: 'Consultoria focada no manejo de plantas daninhas, com definição de herbicidas, doses e estratégias de manejo',
       features: [
-        { text: 'Técnicas de Aplicação', icon: Zap },
-        { text: 'Manutenção de Equipamentos', icon: Wrench },
-        { text: 'Segurança no Campo', icon: Shield }
+        { text: 'Suporte em tempo integral', icon: CheckCircle },
+        { text: 'Treinamento da equipe', icon: CheckCircle },
+        { text: 'Posicionamento baseado na pesquisa', icon: CheckCircle },
+        { text: 'Foco na rentabilidade', icon: CheckCircle },
       ],
       backgroundImage: 'services__item-bg--treinamento'
     },
     {
       icon: BarChart3,
       iconClass: 'services__item-icon--blue',
-      title: 'Pesquisa e Desenvolvimento',
-      description: 'Desenvolvimento de novas tecnologias e metodologias para maximizar a eficiência agrícola.',
+      title: 'Pesquisa Agrícola',
+      description: 'Além de ser nosso pilar de sustentação, a pesquisa também é uma forma de serviço, atendendo quem deseja avaliar performance de produtos e manejos',
       features: [
-        { text: 'Novas Tecnologias', icon: CheckCircle },
-        { text: 'Testes de Campo', icon: CheckCircle },
-        { text: 'Inovação Agrícola', icon: CheckCircle }
+        { text: 'Adjuvantes', icon: CheckCircle },
+        { text: 'Herbicidas', icon: CheckCircle },
+        { text: 'Compatibilidade na eficácia', icon: CheckCircle },
+        { text: 'Compatibilidade em bancada', icon: CheckCircle },
+        { text: 'Ajustes de posicionamento', icon: CheckCircle }
       ],
       backgroundImage: 'services__item-bg--pesquisa'
     },
     {
       icon: TrendingUp,
       iconClass: 'services__item-icon--purple',
-      title: 'Monitoramento de Resultados',
-      description: 'Acompanhamento contínuo dos resultados com relatórios detalhados e ajustes em tempo real.',
+      title: 'Treinamentos',
+      description: 'Palestras e treinamentos pautados em resultados e muita prática',
       features: [
-        { text: 'Relatórios Detalhados', icon: CheckCircle },
-        { text: 'Monitoramento 24/7', icon: CheckCircle },
-        { text: 'Ajustes Automáticos', icon: CheckCircle }
+        { text: 'Manejo de Plantas Daninhas', icon: CheckCircle },
+        { text: 'Tecnologia de Aplicação', icon: CheckCircle },
+        { text: 'Formulações e adjuvantes', icon: CheckCircle },
+        { text: 'E muito mais!', icon: CheckCircle },
       ],
       backgroundImage: 'services__item-bg--monitoramento'
     }
@@ -81,14 +85,14 @@ export default function Services() {
       description: 'Assistência técnica disponível a qualquer momento para sua operação.'
     },
     {
-      icon: Award,
-      title: 'Certificação ISO',
-      description: 'Processos certificados e metodologias reconhecidas internacionalmente.'
+      icon: Info,
+      title: 'Saiba Primeiro',
+      description: 'Pioreirismo em diversos manejos que hoje já são usuais no agro brasileiro.'
     },
     {
       icon: Users,
       title: 'Equipe Especializada',
-      description: 'Profissionais com vasta experiência no setor agrícola brasileiro.'
+      description: 'Profissionais com vasta experiência, treinados a ponto de entregar treinamentos.'
     }
   ];
 
@@ -105,7 +109,7 @@ export default function Services() {
           </h2>
           <p className="services__subtitle">
             Oferecemos uma gama completa de serviços especializados para otimizar 
-            suas operações agrícolas e maximizar a produtividade do seu negócio.
+            suas operações agrícolas e maximizar a rentabilidade do seu negócio, através da informação.
           </p>
         </div>
 
@@ -158,7 +162,7 @@ export default function Services() {
         <div className="services__cta">
           <div className="services__cta-content">
             <h3 className="services__cta-title">
-              Pronto para transformar sua operação agrícola?
+              Pronto para transformar seus manejos?
             </h3>
             <p className="services__cta-description">
               Entre em contato conosco e descubra como podemos ajudar você a 
