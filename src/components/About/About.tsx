@@ -114,14 +114,11 @@ export default function About() {
                 <div className="about__visual-icon">
                   <Eye size={48} />
                 </div>
-                <h3 className="about__visual-title">
-                  Pautados pela ética e compromisso com o produto rural,
-                </h3>
-                <p className="about__visual-description">
-                  Pretendemos seguir contribuindo para o desenvolvimento sustentável do agronegócio através 
+                <h3 className="about__visual-description">
+                  Pautados pela ética e compromisso com o produto rural, Pretendemos seguir contribuindo para o desenvolvimento sustentável do agronegócio através 
                   de tecnologia, inovação e conhecimento aplicado. Nosso compromisso é 
                   continuar transformando o campo brasileiro, uma aplicação de cada vez.
-                </p>
+                </h3>
               </div>
             </div>
           </div>
