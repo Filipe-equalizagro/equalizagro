@@ -19,9 +19,9 @@ export const metadata: Metadata = {
   keywords: "consultoria agrícola, pulverização, aplicação, treinamento agrícola, pesquisa agrícola",
   authors: [{ name: "Equalizagro" }],
   icons: {
-    icon: '/EQUALIZAGRO logo.png',
-    shortcut: '/EQUALIZAGRO logo.png',
-    apple: '/EQUALIZAGRO logo.png',
+    icon: '/images/EQUALIZAGRO logo.png',
+    shortcut: '/images/EQUALIZAGRO logo.png',
+    apple: '/images/EQUALIZAGRO logo.png',
   },
   openGraph: {
     title: "Equalizagro - Consultoria Agrícola Especializada",
