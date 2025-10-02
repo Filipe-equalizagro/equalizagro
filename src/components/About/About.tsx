@@ -60,7 +60,7 @@ export default function About() {
     },
     {
       icon: LibraryBig,
-      number: '500%',
+      number: '500+',
       label: 'Treinamentos anuais',
       description: 'Com alto índice de retorno'
     }
@@ -96,8 +96,7 @@ export default function About() {
               <p className="about__story-description">
                 Fundada com a missão de revolucionar a forma como a tecnologia de 
                 aplicação é vista e tratada no Brasil, 
-                a Equalizagro nasceu da paixão pelo campo e da necessidade crescente de otimização e 
-                processos, o que demanda informação de qualidade e prontamente aplicável.
+                a Equalizagro nasceu da paixão pelo campo e da demanda crescente por otimização de processos na agriculta, o que demanda informação de qualidade e prontamente aplicável.
               </p>
               <p className="about__story-description">
                 Desde 2016 desenvolvemos metodologias únicas 
@@ -116,10 +115,10 @@ export default function About() {
                   <Eye size={48} />
                 </div>
                 <h3 className="about__visual-title">
-                  Pautados pela ética e compromisso com o produto rural, pretendemos seguir sendo
+                  Pautados pela ética e compromisso com o produto rural,
                 </h3>
                 <p className="about__visual-description">
-                  Contribuindo para o desenvolvimento sustentável do agronegócio através 
+                  Pretendemos seguir contribuindo para o desenvolvimento sustentável do agronegócio através 
                   de tecnologia, inovação e conhecimento aplicado. Nosso compromisso é 
                   continuar transformando o campo brasileiro, uma aplicação de cada vez.
                 </p>
@@ -132,7 +131,7 @@ export default function About() {
         <div className="about__achievements">
           <div className="about__achievements-header">
             <h3 className="about__achievements-title">
-              Números que <span className="hero__title-highlight">Falam por Si</span>
+              Números que <span className="hero__title-highlight">Falam por nós</span>
             </h3>
             <p className="about__achievements-subtitle">
               Resultados que demonstram nossa dedicação e expertise no setor agrícola.
