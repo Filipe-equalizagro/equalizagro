@@ -153,13 +153,9 @@ export default function Footer() {
           <div className="footer__copyright">
             © 2025 Equalizagro. Todos os direitos reservados.
           </div>
-          <div className="footer__bottom-links">
-            <a href="#" className="footer__bottom-link">Política de Privacidade</a>
-            <a href="#" className="footer__bottom-link">Termos de Uso</a>
-            <a href="#" className="footer__bottom-link">Cookies</a>
-          </div>
+          
           <div className="footer__development">
-            Desenvolvido com por{' '}
+            Desenvolvido por{' '}
             <a href="#" className="footer__development-link">
               Equalizagro
             </a>
