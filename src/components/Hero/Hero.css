@@ -128,7 +128,6 @@
   clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
 }
 
-/* Responsividade */
 @media (max-width: 1024px) {
   .hero__content {
     grid-template-columns: 1fr;

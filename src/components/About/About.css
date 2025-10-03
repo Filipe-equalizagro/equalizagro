@@ -119,7 +119,6 @@
   margin-bottom: 1.5rem;
 }
 
-/* Forçar grid 2x2 centralizado */
 .about .about__values-grid {
   display: grid !important;
   grid-template-columns: repeat(2, 1fr) !important;
@@ -320,7 +319,6 @@
   color: var(--neutral-600);
 }
 
-/* Responsive Design */
 @media (max-width: 1024px) {
   .about__content {
     grid-template-columns: 1fr;

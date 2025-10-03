@@ -19,7 +19,6 @@ export default function Contact() {
       <div className="contact__background"></div>
       
       <div className="contact__container">
-        {/* Header */}
         <div className="contact__header">
           <div className="contact__badge">
             <MessageSquare className="contact__badge-icon" />
@@ -34,9 +33,7 @@ export default function Contact() {
           </p>
         </div>
 
-        {/* Content */}
         <div className="contact__content">
-          {/* Contact Info */}
           <div className="contact__info">
             <div className="contact__info-card">
               <div className="contact__info-icon">
@@ -81,7 +78,6 @@ export default function Contact() {
           </div>
         </div>
 
-        {/* Location Section - Centered below contact info */}
         <div className="contact__location-section">
           <div className="contact__map">
             <div className="contact__map-icon">

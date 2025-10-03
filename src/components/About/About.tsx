@@ -71,7 +71,6 @@ export default function About() {
       <div className="about__background"></div>
       
       <div className="about__container">
-        {/* Header */}
         <div className="about__header">
           <div className="about__badge">
             <CheckCircle className="about__badge-icon" />
@@ -86,7 +85,6 @@ export default function About() {
           </p>
         </div>
 
-        {/* Main Content */}
         <div className="about__content">
           <div className="about__text">
             <div className="about__story">
@@ -124,7 +122,6 @@ export default function About() {
           </div>
         </div>
 
-        {/* Achievements */}
         <div className="about__achievements">
           <div className="about__achievements-header">
             <h3 className="about__achievements-title">

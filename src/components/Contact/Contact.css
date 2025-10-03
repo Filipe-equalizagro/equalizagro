@@ -305,7 +305,6 @@
   box-shadow: var(--shadow-xl);
 }
 
-/* Responsive Design */
 @media (max-width: 1024px) {
   .contact__info {
     max-width: 800px;

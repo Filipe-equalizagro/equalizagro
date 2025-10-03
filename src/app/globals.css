@@ -1,5 +1,3 @@
-/* Forçar atualização do cache - $(Get-Date) */
-/* Cache busting - $(Get-Date -Format "yyyy-MM-dd HH:mm:ss") */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
 

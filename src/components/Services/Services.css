@@ -350,12 +350,10 @@
   left: 0;
   right: 0;
   bottom: 0;
-  /* --- LINHAS ADICIONADAS --- */
   background-image: url('/images/hero-background.jpeg');
   background-size: cover;
   background-position: center;
-  /* --- FIM DAS LINHAS ADICIONADAS --- */
-  opacity: 0.1; /* A opacidade é mantida para o texto continuar legível */
+  opacity: 0.1;
   pointer-events: none;
 }
 
@@ -383,7 +381,7 @@
   font-size: clamp(1.75rem, 3vw, 2.5rem);
   font-weight: 700;
   margin-bottom: 1rem;
-  color: white; /* Garante que o texto seja branco */
+  color: white;
 }
 
 .services__cta-description {
@@ -393,7 +391,7 @@
   max-width: 600px;
   margin-left: auto;
   margin-right: auto;
-  color: white; /* Garante que o texto seja branco */
+  color: white;
 }
 
 .services__cta-buttons {

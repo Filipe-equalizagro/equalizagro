@@ -23,7 +23,6 @@ export default function Header() {
 
   return (
     <header className={`header ${isScrolled ? 'header--scrolled' : ''}`}>
-      {/* Top Bar */}
       <div className="header__top-bar">
         <div className="header__top-bar-content">
           <div className="header__contact-info">
@@ -65,10 +64,8 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Main Header */}
       <div className="header__main">
         <div className="header__container">
-          {/* Logo */}
           <a href="#" className="header__logo">
             <img 
               src="/images/EQUALIZAGRO ok.png" 
@@ -77,7 +74,6 @@ export default function Header() {
             />
           </a>
 
-          {/* Desktop Navigation */}
           <nav className="header__nav">
             <ul className="header__nav-list">
               <li className="header__nav-item">
@@ -98,14 +94,12 @@ export default function Header() {
             </ul>
           </nav>
 
-          {/* Desktop CTA */}
           <div className="header__cta">
             <a href="#contact" className="btn btn--primary header__cta-button">
               Solicitar Orçamento
             </a>
           </div>
 
-          {/* Mobile Toggle */}
           <button 
             className={`header__mobile-toggle ${isMobileMenuOpen ? 'header__mobile-toggle--active' : ''}`}
             onClick={toggleMobileMenu}
@@ -118,7 +112,6 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Mobile Menu */}
       <div className={`header__mobile-menu ${isMobileMenuOpen ? 'header__mobile-menu--active' : ''}`}>
         <div className="header__mobile-nav">
           <ul className="header__mobile-nav-list">

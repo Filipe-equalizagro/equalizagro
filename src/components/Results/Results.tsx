@@ -56,7 +56,6 @@ export default function Results() {
       </div>
       
       <div className="results__container">
-        {/* Header */}
         <div className="results__header">
           <div className="results__badge">
             <CheckCircle className="results__badge-icon" />
@@ -71,7 +70,6 @@ export default function Results() {
           </p>
         </div>
 
-        {/* Results Grid */}
         <div className="results__grid">
           {results.map((result, index) => (
             <div key={index} className={`results__item ${result.gradient}`}>

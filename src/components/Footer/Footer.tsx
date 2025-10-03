@@ -23,10 +23,8 @@ export default function Footer() {
       <div className="footer__background"></div>
       
       <div className="footer__container">
-        {/* Main Footer */}
         <div className="footer__main">
           <div className="footer__content">
-            {/* Company Info */}
             <div className="footer__company">
               <a href="#" className="footer__logo">
                 <img 
@@ -60,7 +58,6 @@ export default function Footer() {
               </div>
             </div>
 
-            {/* Services */}
             <div className="footer__section">
               <h4 className="footer__section-title">Serviços</h4>
               <ul className="footer__section-list">
@@ -91,7 +88,6 @@ export default function Footer() {
               </ul>
             </div>
 
-            {/* Company */}
             <div className="footer__section">
               <h4 className="footer__section-title">Empresa</h4>
               <ul className="footer__section-list">
@@ -116,7 +112,6 @@ export default function Footer() {
               </ul>
             </div>
 
-            {/* Contact Info */}
             <div className="footer__section">
               <h4 className="footer__section-title">Contato</h4>
               <div className="footer__contact-info">
@@ -148,7 +143,6 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Bottom Bar */}
         <div className="footer__bottom">
           <div className="footer__copyright">
             © 2025 Equalizagro. Todos os direitos reservados.

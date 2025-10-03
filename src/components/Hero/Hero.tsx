@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Link from 'next/link'; // Importando o Link do Next.js
+import Link from 'next/link';
 import { 
   ArrowRight, 
   Play
@@ -20,7 +20,6 @@ export default function Hero() {
       <div className="hero__background-overlay"></div>
       <div className="hero__container">
         <div className={`hero__content ${isVisible ? 'hero__content--visible' : ''}`}>
-          {/* Coluna da Esquerda - Texto */}
           <div className="hero__text">
             <div className="hero__badge">
               <span>Tecnologia de Aplicação e Manejo de Plantas Daninhas</span>
@@ -47,7 +46,6 @@ export default function Hero() {
             </div>
           </div>
 
-          {/* Coluna da Direita - Imagem */}
           <div className="hero__image-container">
             <img 
               src="/images/hero-background.png" 
