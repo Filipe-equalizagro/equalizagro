@@ -150,7 +150,7 @@ export default function Footer() {
           
           <div className="footer__development">
             Desenvolvido por{' '}
-            <a href="#" className="footer__development-link">
+            <a href="https://www.instagram.com/equalizagro?igsh=aDNqdHRsZnQ4MWNm" className="footer__development-link">
               Equalizagro
             </a>
           </div>
