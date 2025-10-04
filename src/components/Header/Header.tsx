@@ -95,7 +95,7 @@ export default function Header() {
           </nav>
 
           <div className="header__cta">
-            <a href="#contact" className="btn btn--primary header__cta-button">
+            <a href="https://api.whatsapp.com/send/?phone=555533432606&text=Ol%C3%A1!+Vim+atrav%C3%A9s+do+site+da+Equalizagro%2C+gostaria+de+mais+informa%C3%A7%C3%B5es+sobre+seus+servi%C3%A7os.&type=phone_number&app_absent=0" className="btn btn--primary header__cta-button">
               Solicitar Orçamento
             </a>
           </div>

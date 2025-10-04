@@ -94,7 +94,7 @@ export default function About() {
               <p className="about__story-description">
                 Fundada com a missão de revolucionar a forma como a tecnologia de 
                 aplicação é vista e tratada no Brasil, 
-                a Equalizagro nasceu da paixão pelo campo e da demanda crescente por otimização de processos na agriculta, o que demanda informação de qualidade e prontamente aplicável.
+                a Equalizagro nasceu da paixão pelo campo e da demanda crescente por otimização de processos na agricultura, o que demanda informação de qualidade e prontamente aplicável.
               </p>
               <p className="about__story-description">
                 Desde 2016 desenvolvemos metodologias únicas 
@@ -113,9 +113,9 @@ export default function About() {
                   <Eye size={48} />
                 </div>
                 <h3 className="about__visual-description">
-                  Pautados pela ética e compromisso com o produto rural, Pretendemos seguir contribuindo para o desenvolvimento sustentável do agronegócio através 
-                  de tecnologia, inovação e conhecimento aplicado. Nosso compromisso é 
-                  continuar transformando o campo brasileiro, uma aplicação de cada vez.
+                 Pautados pela ética e compromisso com o produtor rural, pretendemos seguir contribuindo para o desenvolvimento 
+                 sustentável do agronegócio através de tecnologia, inovação e conhecimento aplicado. 
+                 Nosso compromisso é continuar transformando o campo brasileiro, uma aplicação de cada vez.
                 </h3>
               </div>
             </div>

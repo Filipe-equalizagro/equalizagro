@@ -19,8 +19,8 @@ import './Services.css';
 export default function Services() {
   const services = [
     {
-      icon: Sprout,
-      iconClass: 'services__item-icon--green',
+      icon: Droplet,
+      iconClass: 'services__item-icon--gold',
       title: 'Consultoria em Tecnologia de Aplicação',
       description: 'Suporte técnico para todas as aplicações, buscando a máxima perfomance de todos os insumos pulverizados',
       features: [
@@ -32,8 +32,8 @@ export default function Services() {
       backgroundImage: 'services__item-bg--consultoria'
     },
     {
-      icon: Droplet,
-      iconClass: 'services__item-icon--gold',
+      icon: Sprout,
+      iconClass: 'services__item-icon--green',
       title: 'Herbologia Aplicada',
       description: 'Consultoria focada no manejo de plantas daninhas, com definição de herbicidas, doses e estratégias de manejo',
       features: [
@@ -87,7 +87,7 @@ export default function Services() {
     {
       icon: Info,
       title: 'Saiba Primeiro',
-      description: 'Pioreirismo em diversos manejos que hoje já são usuais no agro brasileiro.'
+      description: 'Pioneirismo em diversos manejos que hoje já são usuais no agro brasileiro.'
     },
     {
       icon: Users,
@@ -168,7 +168,7 @@ export default function Services() {
               Entre em contato conosco e descubra como podemos ajudar você a 
               alcançar resultados extraordinários no campo.
             </p>
-            <a href="#contact" className="btn btn--large services__cta-button">
+            <a href="https://api.whatsapp.com/send/?phone=555533432606&text=Ol%C3%A1!+Vim+atrav%C3%A9s+do+site+da+Equalizagro%2C+gostaria+de+mais+informa%C3%A7%C3%B5es+sobre+seus+servi%C3%A7os.&type=phone_number&app_absent=0" className="btn btn--large services__cta-button">
               Solicitar Consultoria
               <ArrowRight size={20} />
             </a>
