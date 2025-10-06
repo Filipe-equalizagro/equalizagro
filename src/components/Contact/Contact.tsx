@@ -41,7 +41,7 @@ export default function Contact() {
               </div>
               <h4 className="contact__info-title">Telefone</h4>
               <div className="contact__info-content">
-                <a href="tel:+55(55) 3343-2606" className="contact__info-link">
+                <a href="https://api.whatsapp.com/send/?phone=555533432606&text=Ol%C3%A1!+Vim+atrav%C3%A9s+do+site+da+Equalizagro%2C+gostaria+de+mais+informa%C3%A7%C3%B5es+sobre+seus+servi%C3%A7os.&type=phone_number&app_absent=0" className="contact__info-link">
                   (55) 3343-2606
                 </a>
                 <br />

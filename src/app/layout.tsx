@@ -14,7 +14,7 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "Equalizagro - Consultoria Agrícola Especializada",
+  title: "Equalizagro",
   description: "Desde 2015, convertemos pulverizações em aplicações. Consultoria especializada, pesquisa e treinamentos para maximizar a rentabilidade no campo.",
   keywords: "consultoria agrícola, pulverização, aplicação, treinamento agrícola, pesquisa agrícola",
   authors: [{ name: "Equalizagro" }],
