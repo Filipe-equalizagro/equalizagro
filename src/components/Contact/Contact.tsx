@@ -89,7 +89,7 @@ export default function Contact() {
             </p>
             <div className="contact__map-embed">
               <iframe
-                src="https://www.google.com/maps?q=Cart%C3%B3rio%20de%20Registro%20de%20Im%C3%B3veis%20de%20Cruz%20Alta%2C%20R.%20Volunt%C3%A1rios%20da%20P%C3%A1tria%2C%20192%20-%20Centro%2C%20Cruz%20Alta%20-%20RS%2C%2098005-104&hl=pt-BR&z=16&output=embed"
+                src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d4163.996758888566!2d-53.60279937639443!3d-28.64504509907205!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94fd97d637cf90dd%3A0xcd471181c8a6bd1e!2sEqualizagro%20Consultoria%20e%20Tecnologia%20Ltda!5e0!3m2!1spt-BR!2sus!4v1769628133354!5m2!1spt-BR!2sus"
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
                 allowFullScreen
