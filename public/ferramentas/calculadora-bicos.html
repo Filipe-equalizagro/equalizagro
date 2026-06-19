@@ -1,0 +1,3408 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#1a5f3a">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@0.441.0/dist/umd/lucide.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <meta name="description" content="Calculadora de Bicos Equalizagro - Pressão e Vazão">
+    <title>Bicos — Equalizagro</title>
+    <style>
+    /* ── Equalizagro Calculator — Paleta Oficial ─────────────────── */
+    :root {
+      --green: #1a5f3a;
+      --green-dark: #134a2e;
+      --green-light: #2d7a4f;
+      --green-pale: #eef6f1;
+      --gold: #d4af37;
+      --gold-light: rgba(212,175,55,0.10);
+      --white: #ffffff;
+      --bg: #f4f9f5;
+      --text: #1a2e1f;
+      --text-muted: #5a7a65;
+      --border: #cddbd4;
+      --shadow: 0 4px 20px rgba(26,95,58,0.10);
+      --radius: 12px;
+      --font: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+        font-family: var(--font);
+        background: var(--bg);
+        height: 100dvh;
+        height: 100vh;
+        overflow: hidden;
+        padding: 0;
+        color: var(--text);
+    }
+
+    .container {
+        max-width: 780px;
+        margin: 0 auto;
+        padding: 16px 16px 40px;
+    }
+
+    /* ── Header ── */
+    header {
+        text-align: center;
+        padding: 28px 20px 24px;
+        background: linear-gradient(135deg, #134a2e 0%, #1a5f3a 50%, #2d7a4f 100%);
+        margin-bottom: 0;
+    }
+    header img.logo,
+    header img {
+        max-height: 56px;
+        width: auto;
+        margin: 0 auto 12px;
+        display: block;
+        filter: brightness(0) invert(1);
+    }
+    header h1 {
+        font-size: 20px;
+        font-weight: 700;
+        color: #ffffff;
+        margin-bottom: 4px;
+        letter-spacing: -0.01em;
+    }
+    header p {
+        font-size: 12px;
+        color: rgba(255,255,255,0.72);
+        font-weight: 500;
+    }
+
+    /* ── Tabs ── */
+    .tabs {
+        display: flex;
+        gap: 4px;
+        margin-bottom: 20px;
+        background: #0b1e12;
+        padding: 12px 16px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+    .tabs::-webkit-scrollbar { display: none; }
+    .tab-btn {
+        flex-shrink: 0;
+        padding: 8px 14px;
+        border: none;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 12px;
+        font-family: var(--font);
+        cursor: pointer;
+        transition: all 0.2s;
+        background: transparent;
+        color: rgba(255,255,255,0.58);
+        white-space: nowrap;
+        -webkit-tap-highlight-color: transparent;
+    }
+    .tab-btn:hover {
+        color: rgba(255,255,255,0.88);
+        background: rgba(255,255,255,0.10);
+    }
+    .tab-btn.active {
+        background: var(--gold);
+        color: #134a2e;
+        box-shadow: 0 2px 10px rgba(212,175,55,0.38);
+        font-weight: 700;
+    }
+
+    .content { display: none; }
+    .content.active { display: block; animation: fadeIn 0.2s; }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(8px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Cards ── */
+    .card {
+        background: var(--white);
+        border-radius: var(--radius);
+        padding: 20px;
+        box-shadow: var(--shadow);
+        margin-bottom: 14px;
+        border: 1px solid rgba(26,95,58,0.08);
+    }
+    .card h2 {
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--green-dark);
+        margin-bottom: 16px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid var(--green-pale);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .card h2::before {
+        content: '';
+        width: 4px;
+        height: 18px;
+        background: var(--green);
+        border-radius: 2px;
+        display: block;
+        flex-shrink: 0;
+    }
+    .card p.hint { font-size: 12px; color: var(--text-muted); margin-bottom: 14px; line-height: 1.6; }
+
+    /* ── Fields ── */
+    .field-group { margin-bottom: 14px; }
+    label {
+        display: block;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text);
+        margin-bottom: 6px;
+        letter-spacing: 0.01em;
+    }
+    input[type="number"],
+    input[type="text"],
+    input[type="date"] {
+        width: 100%;
+        padding: 11px 14px;
+        border: 1.5px solid var(--border);
+        border-radius: 8px;
+        font-size: 14px;
+        font-family: var(--font);
+        transition: border-color 0.2s, box-shadow 0.2s;
+        background: var(--white);
+        color: var(--text);
+    }
+    input[type="number"]:focus,
+    input[type="text"]:focus,
+    input[type="date"]:focus {
+        outline: none;
+        border-color: var(--green);
+        box-shadow: 0 0 0 3px rgba(26,95,58,0.12);
+    }
+    .input-row { display: flex; gap: 8px; align-items: center; }
+    .input-row input { flex: 1; }
+    select {
+        padding: 11px 10px;
+        border: 1.5px solid var(--border);
+        border-radius: 8px;
+        font-size: 13px;
+        font-family: var(--font);
+        background: var(--white);
+        color: var(--text);
+        cursor: pointer;
+    }
+    select:focus {
+        outline: none;
+        border-color: var(--green);
+        box-shadow: 0 0 0 3px rgba(26,95,58,0.12);
+    }
+
+    /* ── Result boxes ── */
+    .result-box {
+        padding: 16px;
+        border-radius: 10px;
+        border: 2px solid var(--green);
+        background: var(--green-pale);
+        margin-bottom: 10px;
+    }
+    .result-box.blue {
+        border-color: var(--gold);
+        background: var(--gold-light);
+    }
+    .result-box.purple {
+        border-color: var(--green-light);
+        background: rgba(45,122,79,0.08);
+    }
+    .result-label {
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--text-muted);
+        margin-bottom: 4px;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+    }
+    .result-value {
+        font-size: 26px;
+        font-weight: 700;
+        color: var(--green);
+    }
+    .result-box.blue .result-value  { color: #8a6e1a; }
+    .result-box.purple .result-value { color: var(--green-light); }
+
+    /* Pressão multi-unidade */
+    .pressao-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 6px;
+    }
+    .pressao-grid > div { min-width: 72px; }
+    .pressao-grid .pu-label {
+        font-size: 10px;
+        color: var(--text-muted);
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        margin-bottom: 3px;
+    }
+    .pressao-grid .pu-val {
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--green);
+    }
+
+    /* Info box (código ISO) */
+    .info-box {
+        background: var(--green-pale);
+        border: 2px solid var(--green);
+        border-radius: 10px;
+        padding: 16px;
+        text-align: center;
+        margin-top: 4px;
+    }
+    .info-box .ib-label { font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; }
+    .info-box .ib-value { font-size: 36px; font-weight: 700; color: var(--green); }
+
+    /* Empty state */
+    .empty-state {
+        text-align: center;
+        padding: 24px;
+        color: #9aafaa;
+        font-size: 13px;
+        font-style: italic;
+    }
+
+    .divider { height: 1px; background: var(--border); margin: 14px 0; }
+
+    footer {
+        text-align: center;
+        margin-top: 24px;
+        padding: 16px 0;
+        font-size: 11px;
+        color: var(--text-muted);
+        border-top: 1px solid var(--border);
+    }
+
+    /* ── Desgaste tabela ── */
+    .dg-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    .dg-table th {
+        background: var(--green-pale);
+        padding: 8px 10px;
+        text-align: center;
+        font-weight: 700;
+        color: var(--green-dark);
+        border: 1px solid var(--border);
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+    }
+    .dg-table td {
+        padding: 7px 10px;
+        border: 1px solid var(--border);
+        text-align: center;
+        color: var(--text);
+    }
+    .dg-table tr.ok td     { background: rgba(26,95,58,0.04); }
+    .dg-table tr.warn td   { background: #fefce8; }
+    .dg-table tr.danger td { background: #fef2f2; }
+    .dg-badge {
+        display: inline-block;
+        padding: 3px 8px;
+        border-radius: 12px;
+        font-size: 10px;
+        font-weight: 700;
+    }
+    .dg-badge.ok     { background: rgba(26,95,58,0.12); color: var(--green); }
+    .dg-badge.warn   { background: #fef9c3; color: #854d0e; }
+    .dg-badge.danger { background: #fee2e2; color: #991b1b; }
+    .dg-summary {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 10px;
+    }
+    .dg-stat {
+        flex: 1;
+        min-width: 80px;
+        padding: 12px;
+        border-radius: 10px;
+        border: 2px solid var(--border);
+        text-align: center;
+    }
+    .dg-stat-label { font-size: 10px; font-weight: 700; color: var(--text-muted); margin-bottom: 3px; text-transform: uppercase; }
+    .dg-stat-val   { font-size: 20px; font-weight: 700; color: var(--text); }
+    .dg-stat.ok    { border-color: var(--green); background: rgba(26,95,58,0.05); }
+    .dg-stat.ok .dg-stat-val { color: var(--green); }
+    .dg-stat.warn  { border-color: #f59e0b; background: #fefce8; }
+    .dg-stat.warn .dg-stat-val { color: #b45309; }
+    .dg-stat.danger{ border-color: #ef4444; background: #fef2f2; }
+    .dg-stat.danger .dg-stat-val { color: #991b1b; }
+
+    /* ── Botão relatório ── */
+    .relatorio-btn {
+        width: 100%;
+        padding: 16px;
+        background: linear-gradient(135deg, #134a2e 0%, #1a5f3a 60%, #2d7a4f 100%);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-size: 15px;
+        font-weight: 700;
+        font-family: var(--font);
+        cursor: pointer;
+        margin-bottom: 14px;
+        box-shadow: 0 4px 16px rgba(26,95,58,0.30);
+        transition: opacity 0.2s, transform 0.1s;
+        letter-spacing: 0.01em;
+        -webkit-tap-highlight-color: transparent;
+    }
+    .relatorio-btn:hover   { opacity: 0.92; }
+    .relatorio-btn:active  { opacity: 0.85; transform: scale(0.99); }
+    /* Lucide icon inside buttons */
+    .relatorio-btn svg {
+        width: 18px; height: 18px;
+        stroke: currentColor; stroke-width: 2;
+        vertical-align: -4px; margin-right: 7px;
+        flex-shrink: 0;
+    }
+
+    /* ── Impressão / PDF ── */
+    @media print {
+        * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        /* Oculta TUDO que for filho direto do body, exceto o relatório */
+        body > *:not(#relatorio-pdf) { display: none !important; }
+        /* Garante que o relatório apareça sem herdar overflow do layout */
+        #relatorio-pdf {
+            display: block !important;
+            position: static !important;
+            width: 100% !important;
+            height: auto !important;
+            overflow: visible !important;
+            background: white !important;
+        }
+        .pdf-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 10px;
+            color: #9ca3af;
+            padding: 8px;
+            border-top: 1px solid #e5e7eb;
+        }
+    }
+
+    /* ── Fluxômetro grid ── */
+    .text-input {
+        width: 100%;
+        padding: 11px 14px;
+        border: 1.5px solid var(--border);
+        border-radius: 8px;
+        font-size: 14px;
+        font-family: var(--font);
+        background: var(--white);
+        color: var(--text);
+        transition: border-color 0.2s;
+    }
+    .text-input:focus {
+        outline: none;
+        border-color: var(--green);
+        box-shadow: 0 0 0 3px rgba(26,95,58,0.12);
+    }
+    .bico-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+    }
+    .bico-item {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+    .bico-item label {
+        font-size: 10px;
+        font-weight: 700;
+        color: var(--text-muted);
+        margin: 0;
+        text-transform: uppercase;
+    }
+    .bico-item input {
+        padding: 9px 8px;
+        border: 1.5px solid var(--border);
+        border-radius: 6px;
+        font-size: 14px;
+        font-family: var(--font);
+        background: var(--white);
+        color: var(--text);
+        width: 100%;
+        text-align: center;
+        transition: border-color 0.2s;
+    }
+    .bico-item input:focus {
+        outline: none;
+        border-color: var(--green);
+        box-shadow: 0 0 0 2px rgba(26,95,58,0.12);
+    }
+    .bico-item input.filled {
+        border-color: var(--green);
+        background: rgba(26,95,58,0.05);
+    }
+    .result-box.orange {
+        border-color: var(--gold);
+        background: var(--gold-light);
+    }
+    .result-box.orange .result-value { color: #8a6e1a; }
+
+    /* ── Conv grid ── */
+    .conv-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+    .conv-cell {
+        min-width: 80px;
+        padding: 12px 14px;
+        border-radius: 8px;
+        border: 1.5px solid var(--border);
+        background: var(--white);
+    }
+    .conv-cell-active { background: rgba(26,95,58,0.05); border-color: var(--green); }
+    .conv-cell-label { font-size: 10px; font-weight: 700; color: var(--text-muted); margin-bottom: 3px; text-transform: uppercase; }
+    .conv-cell-val { font-size: 20px; font-weight: 700; color: var(--text); }
+    .conv-cell-active .conv-cell-val { color: var(--green); }
+
+    /* ── Aérea banner ── */
+    .aerea-banner {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        background: linear-gradient(135deg, #134a2e 0%, #1a5f3a 60%, #2d7a4f 100%);
+        border-radius: 12px;
+        padding: 18px;
+        margin-bottom: 14px;
+        box-shadow: 0 4px 16px rgba(26,95,58,0.28);
+    }
+    .aerea-banner-icon {
+        width: 52px;
+        height: 52px;
+        flex-shrink: 0;
+        background: rgba(255,255,255,0.15);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 6px;
+    }
+    .aerea-banner-icon svg { width: 100%; height: 100%; }
+    .aerea-banner-title {
+        font-size: 16px;
+        font-weight: 700;
+        color: #fff;
+        margin-bottom: 3px;
+    }
+    .aerea-banner-sub {
+        font-size: 11px;
+        color: rgba(255,255,255,0.72);
+        font-weight: 500;
+    }
+
+    /* ── Espectro / Delta T ── */
+    .radio-group { display: flex; flex-direction: column; gap: 8px; }
+    .radio-item {
+        display: flex; align-items: center; gap: 12px; padding: 12px 14px;
+        border: 1.5px solid var(--border); border-radius: 8px; cursor: pointer;
+        transition: all 0.2s; background: var(--white);
+    }
+    .radio-item:hover  { border-color: var(--green); background: rgba(26,95,58,0.03); }
+    .radio-item.active { border-color: var(--green); background: rgba(26,95,58,0.06); }
+    .radio-item input[type="radio"] { cursor: pointer; width: 16px; height: 16px; flex-shrink: 0; accent-color: var(--green); }
+    .radio-label .rl-strong { display: block; font-size: 13px; font-weight: 600; color: var(--text); }
+    .radio-label .rl-span   { display: block; font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+    .mode-buttons { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+    .mode-btn {
+        padding: 11px 8px; border: 1.5px solid var(--border); border-radius: 8px;
+        font-size: 12px; font-weight: 700; cursor: pointer; transition: all 0.2s;
+        background: var(--white); color: var(--text-muted); font-family: var(--font);
+        -webkit-tap-highlight-color: transparent;
+    }
+    .mode-btn:hover  { border-color: var(--green); color: var(--green); }
+    .mode-btn.active { background: var(--green); color: white; border-color: var(--green); }
+    input[type="range"] {
+        width: 100%; padding: 0; height: 6px; background: rgba(26,95,58,0.15);
+        border: none; cursor: pointer; -webkit-appearance: none; appearance: none;
+        border-radius: 3px;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none; appearance: none; width: 22px; height: 22px;
+        background: var(--green); cursor: pointer; border-radius: 50%;
+        border: 3px solid white; box-shadow: 0 2px 8px rgba(26,95,58,0.30);
+    }
+    input[type="range"]::-moz-range-thumb {
+        width: 22px; height: 22px; background: var(--green); cursor: pointer;
+        border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 8px rgba(26,95,58,0.30);
+    }
+    .slider-value { font-weight: 700; color: var(--green); font-size: 20px; }
+
+    /* ════════════════════════════════════════════════════════════
+       APP LAYOUT — Sidebar + Main
+    ════════════════════════════════════════════════════════════ */
+
+    /* Overlay (mobile sidebar backdrop) */
+    .app-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.52);
+        z-index: 150;
+    }
+    .app-overlay.visible { display: block; }
+
+    /* Wrapper: sidebar + main */
+    .app-wrapper {
+        display: flex;
+        height: 100dvh;
+        height: 100vh;
+        overflow: hidden;
+    }
+
+    /* ── Sidebar ── */
+    .app-sidebar {
+        width: 240px;
+        background: #0b1e12;
+        display: flex;
+        flex-direction: column;
+        flex-shrink: 0;
+        height: 100%;
+        overflow-y: auto;
+        overflow-x: hidden;
+        z-index: 100;
+        scrollbar-width: none;
+    }
+    .app-sidebar::-webkit-scrollbar { display: none; }
+
+    @media (max-width: 767px) {
+        .app-sidebar {
+            position: fixed;
+            left: 0; top: 0; bottom: 0;
+            width: 264px;
+            transform: translateX(-100%);
+            transition: transform 0.25s ease;
+            z-index: 200;
+        }
+        .app-sidebar.open { transform: translateX(0); }
+        .app-overlay { display: none; }
+        .app-overlay.visible { display: block; }
+    }
+
+    /* Sidebar header */
+    .sidebar-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 12px 6px;
+    }
+    .sidebar-logo-wrap img {
+        height: 34px;
+        width: auto;
+        filter: brightness(0) invert(1);
+        display: block;
+    }
+    .sidebar-close-btn {
+        background: none;
+        border: none;
+        color: rgba(255,255,255,0.55);
+        font-size: 18px;
+        cursor: pointer;
+        padding: 6px;
+        border-radius: 6px;
+        -webkit-tap-highlight-color: transparent;
+        line-height: 1;
+        display: none;
+    }
+    @media (max-width: 767px) {
+        .sidebar-close-btn { display: block; }
+    }
+
+    /* Sidebar back link */
+    .sidebar-back-wrap { padding: 2px 8px 10px; }
+    .sidebar-back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: rgba(255,255,255,0.5);
+        text-decoration: none;
+        font-size: 12px;
+        font-weight: 500;
+        font-family: var(--font);
+        padding: 6px 10px;
+        border-radius: 8px;
+        transition: all 0.15s;
+        -webkit-tap-highlight-color: transparent;
+    }
+    .sidebar-back-link:hover {
+        background: rgba(255,255,255,0.08);
+        color: rgba(255,255,255,0.85);
+    }
+
+    /* Sidebar nav */
+    .sidebar-nav { flex: 1; padding: 0 8px 4px; }
+    .sidebar-section-label {
+        display: block;
+        font-size: 10px;
+        font-weight: 700;
+        color: rgba(255,255,255,0.3);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        padding: 6px 10px 5px;
+    }
+
+    /* Sidebar items (buttons + links) */
+    .sidebar-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+        padding: 9px 10px;
+        border: none;
+        background: transparent;
+        color: rgba(255,255,255,0.60);
+        font-size: 13px;
+        font-weight: 500;
+        font-family: var(--font);
+        cursor: pointer;
+        border-radius: 8px;
+        text-align: left;
+        text-decoration: none;
+        transition: background 0.15s, color 0.15s;
+        -webkit-tap-highlight-color: transparent;
+        min-height: 40px;
+        box-sizing: border-box;
+    }
+    .sidebar-item:hover {
+        background: rgba(255,255,255,0.07);
+        color: rgba(255,255,255,0.88);
+    }
+    .sidebar-item.active {
+        background: rgba(212,175,55,0.14);
+        color: #d4af37;
+        font-weight: 600;
+    }
+    .sidebar-item-icon {
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .sidebar-item-icon svg { width: 15px; height: 15px; stroke: currentColor; }
+    .topbar-menu-btn svg,
+    .topbar-history-btn svg { width: 20px; height: 20px; stroke: currentColor; }
+    .sidebar-item-label { flex: 1; }
+    .sidebar-item-arrow {
+        font-size: 13px;
+        color: rgba(255,255,255,0.2);
+        flex-shrink: 0;
+    }
+    .sidebar-item.active .sidebar-item-arrow { color: rgba(212,175,55,0.45); }
+
+    /* Sidebar divider + footer */
+    .sidebar-divider {
+        height: 1px;
+        background: rgba(255,255,255,0.10);
+        margin: 6px 12px;
+    }
+    .sidebar-footer-nav { padding: 0 8px 14px; }
+    .sidebar-badge {
+        background: #d4af37;
+        color: #134a2e;
+        font-size: 10px;
+        font-weight: 700;
+        border-radius: 10px;
+        padding: 1px 6px;
+        min-width: 18px;
+        text-align: center;
+        display: none;
+    }
+
+    /* ── Main area ── */
+    .app-main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        min-width: 0;
+    }
+
+    /* Top bar (mobile only) */
+    .app-topbar {
+        display: none;
+        align-items: center;
+        justify-content: space-between;
+        background: linear-gradient(135deg, #134a2e 0%, #1a5f3a 50%, #2d7a4f 100%);
+        padding: 0 8px;
+        height: 52px;
+        flex-shrink: 0;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+    }
+    @media (max-width: 767px) { .app-topbar { display: flex; } }
+
+    .topbar-menu-btn, .topbar-history-btn {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 20px;
+        cursor: pointer;
+        padding: 8px;
+        border-radius: 8px;
+        min-width: 44px;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        -webkit-tap-highlight-color: transparent;
+    }
+    .topbar-title {
+        font-size: 14px;
+        font-weight: 700;
+        color: white;
+        letter-spacing: -0.01em;
+        flex: 1;
+        text-align: center;
+    }
+
+    /* ── Content area ── */
+    .app-content-area {
+        flex: 1;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+    }
+    .app-content-scroll {
+        flex: 1;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* ── History panel ── */
+    .history-panel {
+        position: absolute;
+        inset: 0;
+        background: var(--bg);
+        z-index: 10;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        padding: 20px 16px 40px;
+    }
+    .history-panel.hidden { display: none; }
+
+    .history-panel-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 16px;
+    }
+    .history-panel-title {
+        font-size: 17px;
+        font-weight: 700;
+        color: var(--green-dark);
+    }
+    .history-panel-actions {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+    }
+    .history-close-btn {
+        background: none;
+        border: none;
+        font-size: 20px;
+        color: var(--text-muted);
+        cursor: pointer;
+        padding: 6px;
+        border-radius: 8px;
+        -webkit-tap-highlight-color: transparent;
+        min-width: 36px;
+        min-height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .history-clear-btn {
+        background: none;
+        border: 1.5px solid var(--border);
+        color: var(--text-muted);
+        font-size: 12px;
+        font-weight: 600;
+        font-family: var(--font);
+        padding: 6px 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.15s;
+    }
+    .history-clear-btn:hover { border-color: #ef4444; color: #dc2626; }
+
+    .history-item {
+        background: white;
+        border: 1px solid rgba(26,95,58,0.10);
+        border-left: 4px solid var(--green);
+        border-radius: 10px;
+        padding: 12px 14px;
+        margin-bottom: 8px;
+        cursor: pointer;
+        transition: box-shadow 0.15s, border-left-color 0.15s;
+    }
+    .history-item:hover {
+        border-left-color: var(--gold);
+        box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+    }
+    .history-item-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 4px;
+        gap: 8px;
+    }
+    .history-item-tab {
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--green);
+        background: rgba(26,95,58,0.08);
+        padding: 2px 8px;
+        border-radius: 10px;
+        flex-shrink: 0;
+    }
+    .history-item-time { font-size: 11px; color: var(--text-muted); }
+    .history-item-summary { font-size: 13px; color: var(--text); font-weight: 500; }
+    .history-item-type {
+        font-size: 11px;
+        color: var(--text-muted);
+        margin-top: 3px;
+    }
+    .history-item-type.report { color: #8a6e1a; font-weight: 600; }
+
+    /* ── Autofill banner ── */
+    .autofill-banner {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 16px;
+        background: rgba(212,175,55,0.10);
+        border-bottom: 2px solid var(--gold);
+        font-size: 13px;
+        font-weight: 500;
+        color: #8a6e1a;
+        flex-shrink: 0;
+        flex-wrap: wrap;
+    }
+    .autofill-banner.hidden { display: none; }
+    .autofill-banner-text { flex: 1; min-width: 0; }
+    .autofill-btn {
+        background: var(--gold);
+        color: #134a2e;
+        border: none;
+        padding: 5px 14px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 700;
+        font-family: var(--font);
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+    }
+    .autofill-dismiss {
+        background: none;
+        border: none;
+        color: #8a6e1a;
+        font-size: 18px;
+        cursor: pointer;
+        padding: 2px 4px;
+        line-height: 1;
+    }
+    .result-box-spec {
+        padding: 16px; border-radius: 10px; border: 2px solid var(--green);
+        margin-bottom: 10px; background: var(--green-pale);
+    }
+    .result-box-spec.densidade {
+        background: var(--gold-light); border-color: var(--gold);
+    }
+    .result-box-spec.taxa {
+        background: rgba(45,122,79,0.08); border-color: var(--green-light);
+    }
+    .result-box-spec .result-value              { color: var(--green); font-size: 28px; font-weight: 700; }
+    .result-box-spec.densidade .result-value    { color: #8a6e1a; }
+    .result-box-spec.taxa .result-value         { color: var(--green-light); }
+    .delta-t-info {
+        background: var(--green-pale); border: 2px solid var(--green); border-radius: 10px;
+        padding: 16px; font-size: 16px; color: var(--green); margin-top: 14px;
+        font-weight: 600; text-align: center;
+    }
+    .delta-t-val { font-size: 34px; display: block; margin-top: 8px; font-weight: 700; }
+    .deltat-result {
+        padding: 24px; border-radius: 10px; border: 2px solid var(--border);
+        background: var(--green-pale); text-align: center; margin-top: 4px;
+        transition: background 0.3s, border-color 0.3s;
+    }
+    .deltat-emoji  { margin-bottom: 14px; display: flex; align-items: center; justify-content: center; }
+    .deltat-emoji svg { width: 48px; height: 48px; stroke: currentColor; stroke-width: 1.5; }
+    .deltat-value  { font-size: 48px; font-weight: 700; color: var(--green); margin-bottom: 8px; }
+    .deltat-status { font-size: 13px; font-weight: 600; color: var(--text-muted); }
+    .hidden { display: none; }
+
+    /* ── Responsive ── */
+    @media (min-width: 600px) {
+        .container { padding: 20px 24px 40px; }
+        .bico-grid { grid-template-columns: repeat(4, 1fr); }
+    }
+
+    @media (min-width: 960px) {
+        .container { padding: 24px 32px 48px; }
+        .card { padding: 24px 28px; }
+        .card h2 { font-size: 16px; }
+        .bico-grid { grid-template-columns: repeat(6, 1fr); }
+    }
+</style>
+</head>
+<body>
+
+<!-- Mobile overlay backdrop -->
+<div class="app-overlay" id="app-overlay" onclick="closeSidebar()"></div>
+
+<div class="app-wrapper">
+
+  <!-- ══ SIDEBAR ══════════════════════════════════════════════ -->
+  <aside class="app-sidebar" id="app-sidebar">
+
+    <div class="sidebar-header">
+      <div class="sidebar-logo-wrap">
+        <img src="/images/EQUALIZAGRO ok.png" alt="Equalizagro">
+      </div>
+      <button class="sidebar-close-btn" onclick="closeSidebar()" aria-label="Fechar menu">✕</button>
+    </div>
+
+    <div class="sidebar-back-wrap">
+      <a href="/dashboard" target="_top" class="sidebar-back-link">← Painel</a>
+    </div>
+
+    <nav class="sidebar-nav" aria-label="Calculadoras">
+      <span class="sidebar-section-label">Calculadoras</span>
+
+      <button class="sidebar-item active" data-tab="iso" onclick="switchTab('iso', this)">
+        <span class="sidebar-item-icon"><i data-lucide="droplets"></i></span>
+        <span class="sidebar-item-label">Bicos ISO</span>
+        <span class="sidebar-item-arrow">›</span>
+      </button>
+      <button class="sidebar-item" data-tab="sistema" onclick="switchTab('sistema', this)">
+        <span class="sidebar-item-icon"><i data-lucide="sliders-horizontal"></i></span>
+        <span class="sidebar-item-label">Sistema</span>
+        <span class="sidebar-item-arrow">›</span>
+      </button>
+      <button class="sidebar-item" data-tab="aerea" onclick="switchTab('aerea', this)">
+        <span class="sidebar-item-icon"><i data-lucide="plane"></i></span>
+        <span class="sidebar-item-label">Aérea</span>
+        <span class="sidebar-item-arrow">›</span>
+      </button>
+      <button class="sidebar-item" data-tab="conversao" onclick="switchTab('conversao', this)">
+        <span class="sidebar-item-icon"><i data-lucide="arrow-right-left"></i></span>
+        <span class="sidebar-item-label">Conversões</span>
+        <span class="sidebar-item-arrow">›</span>
+      </button>
+      <button class="sidebar-item" data-tab="fluxo" onclick="switchTab('fluxo', this)">
+        <span class="sidebar-item-icon"><i data-lucide="gauge"></i></span>
+        <span class="sidebar-item-label">Fluxômetro</span>
+        <span class="sidebar-item-arrow">›</span>
+      </button>
+      <button class="sidebar-item" data-tab="desgaste" onclick="switchTab('desgaste', this)">
+        <span class="sidebar-item-icon"><i data-lucide="scan-eye"></i></span>
+        <span class="sidebar-item-label">Desgaste</span>
+        <span class="sidebar-item-arrow">›</span>
+      </button>
+      <button class="sidebar-item" data-tab="espectro" onclick="switchTab('espectro', this)">
+        <span class="sidebar-item-icon"><i data-lucide="bar-chart-2"></i></span>
+        <span class="sidebar-item-label">Espectro</span>
+        <span class="sidebar-item-arrow">›</span>
+      </button>
+      <button class="sidebar-item" data-tab="deltat" onclick="switchTab('deltat', this)">
+        <span class="sidebar-item-icon"><i data-lucide="thermometer-sun"></i></span>
+        <span class="sidebar-item-label">Delta T</span>
+        <span class="sidebar-item-arrow">›</span>
+      </button>
+    </nav>
+
+    <div class="sidebar-divider"></div>
+
+    <div class="sidebar-footer-nav">
+      <button class="sidebar-item" onclick="showHistory()" aria-label="Histórico">
+        <span class="sidebar-item-icon"><i data-lucide="history"></i></span>
+        <span class="sidebar-item-label">Histórico</span>
+        <span class="sidebar-badge" id="sidebar-history-count"></span>
+      </button>
+    </div>
+
+  </aside>
+
+  <!-- ══ MAIN ════════════════════════════════════════════════ -->
+  <div class="app-main">
+
+    <!-- Top bar (mobile/tablet only) -->
+    <div class="app-topbar">
+      <button class="topbar-menu-btn" onclick="openSidebar()" aria-label="Abrir menu"><i data-lucide="menu"></i></button>
+      <span class="topbar-title" id="topbar-title"><i data-lucide="droplets" style="width:16px;height:16px;vertical-align:-3px;margin-right:5px;stroke:currentColor;"></i>Bicos ISO</span>
+      <button class="topbar-history-btn" onclick="showHistory()" aria-label="Histórico"><i data-lucide="history"></i></button>
+    </div>
+
+    <!-- Content area -->
+    <div class="app-content-area">
+
+      <!-- History panel (hidden by default) -->
+      <div id="history-panel" class="history-panel hidden">
+        <div class="history-panel-header">
+          <span class="history-panel-title" style="display:flex;align-items:center;gap:8px;"><i data-lucide="history" style="width:18px;height:18px;stroke:currentColor;flex-shrink:0;"></i> Histórico</span>
+          <div class="history-panel-actions">
+            <button class="history-clear-btn" onclick="clearHistory()">Apagar tudo</button>
+            <button class="history-close-btn" onclick="closeHistory()" aria-label="Fechar histórico">✕</button>
+          </div>
+        </div>
+        <div id="history-list"></div>
+      </div>
+
+      <!-- Autofill banner -->
+      <div id="autofill-banner" class="autofill-banner hidden">
+        <span class="autofill-banner-text" id="autofill-msg"></span>
+        <button class="autofill-btn" onclick="applyAutofill()">Aplicar dados</button>
+        <button class="autofill-dismiss" onclick="dismissAutofill()" aria-label="Fechar">✕</button>
+      </div>
+
+      <!-- Scrollable content -->
+      <div class="app-content-scroll">
+        <div class="container">
+
+    <!-- ══════════════════════════════════════
+         ABA 1 — BICOS ISO
+    ══════════════════════════════════════ -->
+    <div id="iso" class="content active">
+
+        <div class="card">
+            <h2>Ponta de Pulverização</h2>
+            <div class="field-group">
+                <label>Orifício ISO (GPM a 40 PSI)</label>
+                <input type="number" id="iso-gpm" placeholder="Ex: 0.2" step="0.01" oninput="calcISO()">
+                <small style="font-size:11px;color:#6b7280;margin-top:4px;display:block;">Código ISO da ponta — ponta 02 = 0.2 GPM</small>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Aplicação Alvo</h2>
+            <div class="field-group">
+                <label>Velocidade (km/h)</label>
+                <input type="number" id="iso-vel" placeholder="Ex: 15" oninput="calcISO()">
+            </div>
+            <div class="field-group">
+                <label>Espaçamento entre bicos (cm)</label>
+                <input type="number" id="iso-esp" placeholder="Ex: 50" oninput="calcISO()">
+            </div>
+            <div class="field-group">
+                <label>Volume de Calda (L/ha)</label>
+                <input type="number" id="iso-vol" placeholder="Ex: 60" oninput="calcISO()">
+            </div>
+            <div class="field-group">
+                <label>Capacidade do Tanque (L) <span style="font-weight:400;color:#9ca3af;">— opcional</span></label>
+                <input type="number" id="iso-tanque" placeholder="Ex: 3000" oninput="calcISO()">
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Resultado</h2>
+            <div id="iso-results">
+                <div class="empty-state">Preencha os campos acima para calcular</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Converter Ponta para ISO</h2>
+            <p class="hint">Informe a vazão e a pressão de qualquer ponta para obter seu código ISO (GPM a 40 PSI).</p>
+            <div class="field-group">
+                <label>Vazão medida (L/min)</label>
+                <input type="number" id="conv-vazao" placeholder="Ex: 0.76" step="0.001" oninput="calcConvISO()">
+            </div>
+            <div class="field-group">
+                <label>Pressão de referência (bar)</label>
+                <input type="number" id="conv-pressao" placeholder="Ex: 2.76" step="0.01" oninput="calcConvISO()">
+            </div>
+            <div id="conv-result">
+                <div class="empty-state">—</div>
+            </div>
+        </div>
+
+        <button class="relatorio-btn" onclick="emitirRelatorioISO()">
+            <i data-lucide="download"></i> Baixar Relatório PDF — Bicos ISO
+        </button>
+
+    </div>
+
+    <!-- ══════════════════════════════════════
+         ABA 2 — PRESSÃO E VAZÃO SISTEMA
+    ══════════════════════════════════════ -->
+    <div id="sistema" class="content">
+
+        <div class="card">
+            <h2>Composição da Vazão</h2>
+            <p class="hint">Calcule a vazão total multiplicando bicos pela vazão média.</p>
+            <div class="field-group">
+                <label>Número de bicos / saídas</label>
+                <input type="number" id="sis-nbicos" placeholder="Ex: 20" oninput="calcSistema()">
+            </div>
+            <div class="field-group">
+                <label>Vazão média por bico (L/min)</label>
+                <input type="number" id="sis-vmedia" placeholder="Ex: 0.76" step="0.001" oninput="calcSistema()">
+            </div>
+            <div id="sis-total-result">
+                <div class="empty-state">—</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Pressão × Vazão</h2>
+            <p class="hint">Útil para conferir fluxômetros e ajustar pressão sem troca de bicos.</p>
+            <div class="field-group">
+                <label>Vazão de referência (L/min)</label>
+                <input type="number" id="sis-vref" placeholder="Ex: 39.82" step="0.01" oninput="calcSistema()">
+            </div>
+            <div class="field-group">
+                <label>Pressão de referência</label>
+                <div class="input-row">
+                    <input type="number" id="sis-pref" placeholder="Ex: 3.2" step="0.01" oninput="calcSistema()">
+                    <select id="sis-pref-unit" onchange="calcSistema()">
+                        <option value="bar">bar</option>
+                        <option value="psi">PSI</option>
+                        <option value="kgf">kgf/cm²</option>
+                    </select>
+                </div>
+            </div>
+            <div class="field-group">
+                <label>Vazão lida / nova (L/min)</label>
+                <input type="number" id="sis-vlida" placeholder="Ex: 48" step="0.01" oninput="calcSistema()">
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Pressão Estimada</h2>
+            <div id="sis-pressao-result">
+                <div class="empty-state">Preencha os campos acima para calcular</div>
+            </div>
+        </div>
+
+        <button class="relatorio-btn" onclick="emitirRelatorioSistema()">
+            <i data-lucide="download"></i> Baixar Relatório PDF — Sistema
+        </button>
+
+    </div>
+
+    <!-- ══════════════════════════════════════
+         ABA 3 — CALIBRAÇÃO DE AERONAVES
+    ══════════════════════════════════════ -->
+    <div id="aerea" class="content">
+
+        <!-- Banner de identificação da aba -->
+        <div class="aerea-banner">
+            <div class="aerea-banner-text">
+                <div class="aerea-banner-title">Calibração de Aeronaves</div>
+                <div class="aerea-banner-sub">Pressão e vazão para aplicação aérea</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Referência do Bico</h2>
+            <div class="field-group">
+                <label>Pressão de referência (bar)</label>
+                <input type="number" id="aer-pref" placeholder="Ex: 2.758" step="0.001" oninput="calcAerea()">
+            </div>
+            <div class="field-group">
+                <label>Vazão de referência por bico (L/min)</label>
+                <input type="number" id="aer-vref" placeholder="Ex: 12.32" step="0.01" oninput="calcAerea()">
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Parâmetros da Aplicação</h2>
+            <div class="field-group">
+                <label>Velocidade (km/h)</label>
+                <input type="number" id="aer-vel" placeholder="Ex: 190" oninput="calcAerea()">
+            </div>
+            <div class="field-group">
+                <label>Faixa Efetiva (m)</label>
+                <input type="number" id="aer-faixa" placeholder="Ex: 18" step="0.1" oninput="calcAerea()">
+            </div>
+            <div class="field-group">
+                <label>Número de bicos</label>
+                <input type="number" id="aer-nbicos" placeholder="Ex: 6" oninput="calcAerea()">
+            </div>
+            <div class="field-group">
+                <label>Volume de Calda (L/ha)</label>
+                <input type="number" id="aer-vol" placeholder="Ex: 15" oninput="calcAerea()">
+            </div>
+            <div class="result-box" style="margin-top:4px;">
+                <div class="result-label">Espaçamento entre bicos (calculado)</div>
+                <div class="result-value" id="aer-esp-val">—</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Resultado</h2>
+            <div id="aer-result">
+                <div class="empty-state">Preencha os campos acima para calcular</div>
+            </div>
+        </div>
+
+        <button class="relatorio-btn" onclick="emitirRelatorioAerea()">
+            <i data-lucide="download"></i> Baixar Relatório PDF — Calibração Aérea
+        </button>
+
+    </div>
+
+    <!-- ══════════════════════════════════════
+         ABA 4 — CONVERSÕES
+    ══════════════════════════════════════ -->
+    <div id="conversao" class="content">
+
+        <!-- Pressão -->
+        <div class="card">
+            <h2>Pressão</h2>
+            <div class="field-group">
+                <div class="input-row">
+                    <input type="number" id="cv-p-val" placeholder="Ex: 3.2" step="0.01" oninput="calcConvPressao()">
+                    <select id="cv-p-unit" onchange="calcConvPressao()">
+                        <option value="bar">bar</option>
+                        <option value="psi">PSI</option>
+                        <option value="kgf">kgf/cm²</option>
+                        <option value="kpa">kPa</option>
+                    </select>
+                </div>
+            </div>
+            <div id="cv-p-result"><div class="empty-state">—</div></div>
+        </div>
+
+        <!-- Vazão -->
+        <div class="card">
+            <h2>Vazão</h2>
+            <div class="field-group">
+                <div class="input-row">
+                    <input type="number" id="cv-q-val" placeholder="Ex: 1.5" step="0.001" oninput="calcConvVazao()">
+                    <select id="cv-q-unit" onchange="calcConvVazao()">
+                        <option value="lmin">L/min</option>
+                        <option value="gpm">GPM</option>
+                    </select>
+                </div>
+            </div>
+            <div id="cv-q-result"><div class="empty-state">—</div></div>
+        </div>
+
+        <!-- Taxa de Aplicação -->
+        <div class="card">
+            <h2>Taxa de Aplicação</h2>
+            <div class="field-group">
+                <div class="input-row">
+                    <input type="number" id="cv-t-val" placeholder="Ex: 60" step="0.1" oninput="calcConvTaxa()">
+                    <select id="cv-t-unit" onchange="calcConvTaxa()">
+                        <option value="lha">L/ha</option>
+                        <option value="lalq">L/alq</option>
+                        <option value="galac">gal/acre</option>
+                    </select>
+                </div>
+            </div>
+            <div id="cv-t-result"><div class="empty-state">—</div></div>
+        </div>
+
+        <button class="relatorio-btn" onclick="emitirRelatorioConversoes()">
+            <i data-lucide="download"></i> Baixar Relatório PDF — Conversões
+        </button>
+
+    </div>
+
+    <!-- ══════════════════════════════════════
+         ABA 5 — CALIBRAÇÃO DE FLUXÔMETROS
+    ══════════════════════════════════════ -->
+    <div id="fluxo" class="content">
+
+        <!-- Identificação -->
+        <div class="card">
+            <h2>Identificação</h2>
+            <div class="field-group">
+                <label>Cliente</label>
+                <input type="text" id="fl-cliente" placeholder="Nome do cliente" class="text-input"
+                    list="client-suggestions" autocomplete="off"
+                    oninput="onClientInput(this,'fluxo')" onblur="addClient(this.value)">
+            </div>
+            <div class="field-group">
+                <label>Equipamento</label>
+                <input type="text" id="fl-equip" placeholder="Ex: Montana Parruda 3.000" class="text-input"
+                    list="equipment-suggestions" autocomplete="off" onblur="addEquipment(this.value)">
+            </div>
+            <div class="field-group">
+                <label>Responsável</label>
+                <input type="text" id="fl-resp" placeholder="Nome do responsável" class="text-input">
+            </div>
+            <div class="field-group">
+                <label>Empresa</label>
+                <input type="text" id="fl-empresa" placeholder="Nome da empresa" class="text-input">
+            </div>
+            <div class="field-group">
+                <label>Data</label>
+                <input type="date" id="fl-data" class="text-input">
+            </div>
+        </div>
+
+        <!-- Configuração do sistema -->
+        <div class="card">
+            <h2>Configuração do Sistema</h2>
+            <div class="field-group">
+                <label>Número total de pontas</label>
+                <input type="number" id="fl-total" placeholder="Ex: 62" min="1" max="120" oninput="gerarBicos()">
+            </div>
+            <div class="field-group">
+                <label>Número de pontas coletadas</label>
+                <input type="number" id="fl-coletadas" placeholder="Ex: 12" min="1" oninput="gerarBicos()">
+            </div>
+            <div class="field-group">
+                <label>Tempo de coleta (segundos)</label>
+                <input type="number" id="fl-tempo" placeholder="Ex: 60" value="60" oninput="calcFluxo()">
+            </div>
+        </div>
+
+        <!-- Fluxômetro -->
+        <div class="card">
+            <h2>Fluxômetro</h2>
+            <div class="field-group">
+                <label>Vazão informada pelo fluxômetro (L/min)</label>
+                <input type="number" id="fl-vazao-info" placeholder="Ex: 35.7" step="0.1" oninput="calcFluxo()">
+            </div>
+            <div class="field-group">
+                <label>Constante atual do fluxômetro</label>
+                <input type="number" id="fl-constante" placeholder="Ex: 700" oninput="calcFluxo()">
+            </div>
+            <div class="field-group">
+                <label>Forma de coleta</label>
+                <select id="fl-forma" style="width:100%;">
+                    <option value="Proveta">Proveta</option>
+                    <option value="Pesagem">Pesagem</option>
+                    <option value="Sensor digital">Sensor digital</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Grid de coleta por bico -->
+        <div class="card" id="fl-grid-card" style="display:none;">
+            <h2>Coleta por Ponta <span id="fl-grid-titulo" style="font-size:13px;font-weight:500;color:#6b7280;"></span></h2>
+            <p class="hint">Informe o volume coletado em cada ponta (mL).</p>
+            <div id="fl-grid" class="bico-grid"></div>
+        </div>
+
+        <!-- Resultado -->
+        <div class="card">
+            <h2>Resultado</h2>
+            <div id="fl-resultado">
+                <div class="empty-state">Preencha os campos acima para calcular</div>
+            </div>
+        </div>
+
+        <!-- Botão relatório -->
+        <button class="relatorio-btn" onclick="emitirRelatorio()">
+            <i data-lucide="download"></i> Baixar Relatório PDF
+        </button>
+
+    </div>
+
+    <!-- Div oculta — só aparece na impressão -->
+    <!-- ══════════════════════════════════════
+         ABA 6 — DESGASTE DE PONTAS
+    ══════════════════════════════════════ -->
+    <div id="desgaste" class="content">
+
+        <!-- Identificação -->
+        <div class="card">
+            <h2>Identificação</h2>
+            <div class="field-group">
+                <label>Cliente</label>
+                <input type="text" id="dg-cliente" placeholder="Nome do cliente" class="text-input"
+                    list="client-suggestions" autocomplete="off"
+                    oninput="onClientInput(this,'desgaste')" onblur="addClient(this.value)">
+            </div>
+            <div class="field-group">
+                <label>Equipamento</label>
+                <input type="text" id="dg-equip" placeholder="Ex: Montana Parruda 3.000" class="text-input"
+                    list="equipment-suggestions" autocomplete="off" onblur="addEquipment(this.value)">
+            </div>
+            <div class="field-group">
+                <label>Responsável</label>
+                <input type="text" id="dg-resp" placeholder="Nome do responsável" class="text-input">
+            </div>
+            <div class="field-group">
+                <label>Empresa</label>
+                <input type="text" id="dg-empresa" placeholder="Nome da empresa" class="text-input">
+            </div>
+            <div class="field-group">
+                <label>Data</label>
+                <input type="date" id="dg-data" class="text-input">
+            </div>
+        </div>
+
+        <!-- Referência da ponta -->
+        <div class="card">
+            <h2>Referência da Ponta</h2>
+            <p class="hint">Dados de catálogo ou referência do fabricante.</p>
+            <div class="field-group">
+                <label>Marca / Modelo da Ponta</label>
+                <input type="text" id="dg-modelo" placeholder="Ex: Jacto Magnojet AXI 110-02" class="text-input">
+            </div>
+            <div class="field-group">
+                <label>Pressão de referência</label>
+                <div class="input-row">
+                    <input type="number" id="dg-pref-val" placeholder="Ex: 2.76" step="0.01" oninput="calcDesgaste()">
+                    <select id="dg-pref-unit" onchange="calcDesgaste()">
+                        <option value="bar">bar</option>
+                        <option value="psi">PSI</option>
+                        <option value="kgf">kgf/cm²</option>
+                        <option value="kpa">kPa</option>
+                    </select>
+                </div>
+            </div>
+            <div class="field-group">
+                <label>Vazão nominal da ponta (L/min)</label>
+                <input type="number" id="dg-vnom" placeholder="Ex: 0.76" step="0.001" oninput="calcDesgaste()">
+            </div>
+        </div>
+
+        <!-- Configuração da coleta -->
+        <div class="card">
+            <h2>Configuração da Coleta</h2>
+            <div class="field-group">
+                <label>Número de pontas</label>
+                <input type="number" id="dg-total" placeholder="Ex: 24" min="1" max="120" oninput="gerarBicosDesgaste()">
+            </div>
+            <div class="field-group">
+                <label>Pressão de coleta</label>
+                <div class="input-row">
+                    <input type="number" id="dg-pcol-val" placeholder="Ex: 3.0" step="0.01" oninput="calcDesgaste()">
+                    <select id="dg-pcol-unit" onchange="calcDesgaste()">
+                        <option value="bar">bar</option>
+                        <option value="psi">PSI</option>
+                        <option value="kgf">kgf/cm²</option>
+                        <option value="kpa">kPa</option>
+                    </select>
+                </div>
+            </div>
+            <div class="field-group">
+                <label>Tempo de coleta (segundos)</label>
+                <input type="number" id="dg-tempo" placeholder="Ex: 60" value="60" oninput="calcDesgaste()">
+            </div>
+            <div class="field-group">
+                <label>Forma de coleta</label>
+                <select id="dg-forma" style="width:100%;">
+                    <option value="Proveta">Proveta</option>
+                    <option value="Pesagem">Pesagem</option>
+                    <option value="Sensor digital">Sensor digital</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Grid de coleta -->
+        <div class="card" id="dg-grid-card" style="display:none;">
+            <h2>Coleta por Ponta <span id="dg-grid-titulo" style="font-size:13px;font-weight:500;color:#6b7280;"></span></h2>
+            <p class="hint">Informe o volume coletado em cada ponta (mL).</p>
+            <div id="dg-grid" class="bico-grid"></div>
+        </div>
+
+        <!-- Resultado -->
+        <div class="card">
+            <h2>Resultado</h2>
+            <div id="dg-resultado">
+                <div class="empty-state">Preencha os campos e as pontas para calcular</div>
+            </div>
+        </div>
+
+        <!-- Tabela de pontas -->
+        <div class="card" id="dg-tabela-card" style="display:none;">
+            <h2>Situação por Ponta</h2>
+            <div id="dg-tabela"></div>
+        </div>
+
+        <!-- Botão relatório -->
+        <button class="relatorio-btn" onclick="emitirRelatorioDesgaste()">
+            <i data-lucide="download"></i> Baixar Relatório PDF
+        </button>
+
+    </div>
+
+    <!-- ══════════════════════════════════════
+         ABA 7 — ESPECTRO DE GOTAS
+    ══════════════════════════════════════ -->
+    <div id="espectro" class="content">
+
+        <div class="card">
+            <h2>Curva de Evaporação</h2>
+            <div class="radio-group">
+                <label class="radio-item active" id="radio-conv" onclick="selectCurva('1', this)">
+                    <input type="radio" name="curva" value="1" checked>
+                    <div class="radio-label">
+                        <span class="rl-strong">Convencional</span>
+                        <span class="rl-span">Terrestres em volume normal</span>
+                    </div>
+                </label>
+                <label class="radio-item" id="radio-oleo" onclick="selectCurva('2', this)">
+                    <input type="radio" name="curva" value="2">
+                    <div class="radio-label">
+                        <span class="rl-strong">Baixo Volume Oleoso</span>
+                        <span class="rl-span">Acima de 5% de óleo, normalmente aéreas</span>
+                    </div>
+                </label>
+                <label class="radio-item" id="radio-risco" onclick="selectCurva('3', this)">
+                    <input type="radio" name="curva" value="3">
+                    <div class="radio-label">
+                        <span class="rl-strong">Produtos de Alto Risco</span>
+                        <span class="rl-span">Produtos voláteis ou sensíveis à evaporação</span>
+                    </div>
+                </label>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Modo de Cálculo</h2>
+            <div class="mode-buttons">
+                <button class="mode-btn active" id="mode-dmv"      onclick="setModeEsp('dmv', this)">DMV</button>
+                <button class="mode-btn"         id="mode-dens"     onclick="setModeEsp('densidade', this)">Densidade</button>
+                <button class="mode-btn"         id="mode-taxa"     onclick="setModeEsp('taxa', this)">Taxa</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Parâmetros</h2>
+            <div id="esp-dmv-field"  class="field-group hidden">
+                <label>DMV (µm)</label>
+                <input type="number" id="esp-dmv" placeholder="Ex: 150" oninput="calcEspectro()">
+            </div>
+            <div id="esp-dens-field" class="field-group hidden">
+                <label>Densidade (gotas/cm²)</label>
+                <input type="number" id="esp-dens" placeholder="Ex: 200" oninput="calcEspectro()">
+            </div>
+            <div id="esp-taxa-field" class="field-group hidden">
+                <label>Taxa de Aplicação (L/ha)</label>
+                <input type="number" id="esp-taxa" placeholder="Ex: 100" oninput="calcEspectro()">
+            </div>
+            <div class="field-group">
+                <label>AR — Amplitude Relativa</label>
+                <input type="number" id="esp-ar" value="1.0" step="0.1" oninput="calcEspectro()">
+                <small style="font-size:11px;color:#6b7280;margin-top:4px;display:block;">Padrão: 1.0</small>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Resultado</h2>
+            <div id="esp-dmv-result"  class="result-box-spec hidden">
+                <div class="result-label">DMV (Calculado)</div>
+                <div class="result-value"><span id="esp-dmv-val">—</span> µm</div>
+            </div>
+            <div id="esp-dens-result" class="result-box-spec densidade hidden">
+                <div class="result-label">Densidade (Calculada)</div>
+                <div class="result-value"><span id="esp-dens-val">—</span></div>
+            </div>
+            <div id="esp-taxa-result" class="result-box-spec taxa hidden">
+                <div class="result-label">Taxa (Calculada)</div>
+                <div class="result-value"><span id="esp-taxa-val">—</span> L/ha</div>
+            </div>
+            <div class="delta-t-info">
+                <strong>Delta T Limite:</strong>
+                <div class="delta-t-val"><span id="esp-dt-limite">—</span>°C</div>
+            </div>
+        </div>
+
+        <button class="relatorio-btn" onclick="emitirRelatorioEspectro()">
+            <i data-lucide="download"></i> Baixar Relatório PDF — Espectro de Gotas
+        </button>
+
+    </div>
+
+    <!-- ══════════════════════════════════════
+         ABA 8 — DELTA T
+    ══════════════════════════════════════ -->
+    <div id="deltat" class="content">
+
+        <div class="card">
+            <h2>Umidade Relativa</h2>
+            <label style="margin-bottom:8px;">
+                <span class="slider-value"><span id="dt-umid-val">50</span>%</span>
+            </label>
+            <input type="range" id="dt-umidade" min="20" max="100" value="50"
+                oninput="syncDT('umid', this.value); calcDeltaT()">
+            <input type="number" id="dt-umidade-num" min="20" max="100" value="50"
+                style="margin-top:8px;" oninput="syncDT('umid', this.value); calcDeltaT()">
+        </div>
+
+        <div class="card">
+            <h2>Temperatura</h2>
+            <label style="margin-bottom:8px;">
+                <span class="slider-value"><span id="dt-temp-val">25</span>°C</span>
+            </label>
+            <input type="range" id="dt-temp" min="5" max="40" value="25"
+                oninput="syncDT('temp', this.value); calcDeltaT()">
+            <input type="number" id="dt-temp-num" min="5" max="40" value="25"
+                style="margin-top:8px;" oninput="syncDT('temp', this.value); calcDeltaT()">
+        </div>
+
+        <div class="card">
+            <h2>Delta T Obtido</h2>
+            <div id="dt-result" class="deltat-result">
+                <div class="deltat-emoji"><i data-lucide="thermometer-sun" style="width:48px;height:48px;stroke:currentColor;stroke-width:1.5;"></i></div>
+                <div class="deltat-value">—</div>
+                <div class="deltat-status">—</div>
+            </div>
+        </div>
+
+        <button class="relatorio-btn" onclick="emitirRelatorioDeltaT()">
+            <i data-lucide="download"></i> Baixar Relatório PDF — Delta T
+        </button>
+
+    </div>
+
+    <footer>
+        <p>Calculadora de Pressão e Vazão</p>
+        <p style="margin-top:4px;">Equalizagro • Consultoria e Tecnologia em Aplicação</p>
+    </footer>
+
+        </div><!-- /.container -->
+      </div><!-- /.app-content-scroll -->
+    </div><!-- /.app-content-area -->
+  </div><!-- /.app-main -->
+</div><!-- /.app-wrapper -->
+
+<!-- Relatório PDF — filho direto do body para evitar overflow:hidden dos wrappers -->
+<div id="relatorio-pdf" style="display:none;"></div>
+
+<datalist id="client-suggestions"></datalist>
+<datalist id="equipment-suggestions"></datalist>
+
+<script>
+    // ── Navegação ─────────────────────────────────────────────────
+    const TAB_LABELS = {
+        iso:      'Bicos ISO',
+        sistema:  'Sistema',
+        aerea:    'Aérea',
+        conversao:'Conversões',
+        fluxo:    'Fluxômetro',
+        desgaste: 'Desgaste',
+        espectro: 'Espectro',
+        deltat:   'Delta T',
+    };
+
+    const TAB_ICONS = {
+        iso:      'droplets',
+        sistema:  'sliders-horizontal',
+        aerea:    'plane',
+        conversao:'arrow-right-left',
+        fluxo:    'gauge',
+        desgaste: 'scan-eye',
+        espectro: 'bar-chart-2',
+        deltat:   'thermometer-sun',
+    };
+
+    function switchTab(id, clickedBtn) {
+        // Hide history panel
+        const hp = document.getElementById('history-panel');
+        if (hp) hp.classList.add('hidden');
+
+        // Switch content
+        document.querySelectorAll('.content').forEach(el => el.classList.remove('active'));
+        const content = document.getElementById(id);
+        if (content) content.classList.add('active');
+
+        // Update sidebar active state
+        document.querySelectorAll('.sidebar-item[data-tab]').forEach(el => el.classList.remove('active'));
+        const sidebarBtn = document.querySelector('.sidebar-item[data-tab="' + id + '"]');
+        if (sidebarBtn) sidebarBtn.classList.add('active');
+
+        // Update topbar title with Lucide icon
+        const titleEl = document.getElementById('topbar-title');
+        if (titleEl) {
+            var iconName = TAB_ICONS[id] || 'calculator';
+            titleEl.innerHTML = '<i data-lucide="' + iconName + '" style="width:16px;height:16px;vertical-align:-3px;margin-right:5px;stroke:currentColor;"></i>' + (TAB_LABELS[id] || id);
+            if (window.lucide) lucide.createIcons({ el: titleEl });
+        }
+
+        // Track current tab
+        currentTab = id;
+
+        // Close mobile sidebar
+        closeSidebar();
+
+        // Dismiss autofill banner when switching tabs
+        dismissAutofill();
+    }
+
+    // ── Pressão: conversões e renderização ────────────────────────
+    const P_ISO_BAR = 2.75862068965517; // 40 PSI
+
+    function toBar(v, unit) {
+        if (unit === 'psi') return v / 14.5038;
+        if (unit === 'kgf') return v / 1.019716;
+        if (unit === 'kpa') return v / 100;
+        return v;
+    }
+
+    function pressaoHTML(bar, boxClass, label) {
+        label = label || 'Pressão calculada';
+        return `
+        <div class="result-box ${boxClass}">
+            <div class="result-label">${label}</div>
+            <div class="pressao-grid">
+                <div><div class="pu-label">bar</div><div class="pu-val">${bar.toFixed(2)}</div></div>
+                <div><div class="pu-label">PSI</div><div class="pu-val">${(bar*14.5038).toFixed(1)}</div></div>
+                <div><div class="pu-label">kgf/cm²</div><div class="pu-val">${(bar*1.019716).toFixed(2)}</div></div>
+                <div><div class="pu-label">kPa</div><div class="pu-val">${Math.round(bar*100)}</div></div>
+            </div>
+        </div>`;
+    }
+
+    // ── ABA 1: Bicos ISO ──────────────────────────────────────────
+    function calcISO() {
+        const gpm   = parseFloat(document.getElementById('iso-gpm').value);
+        const vel   = parseFloat(document.getElementById('iso-vel').value);
+        const esp   = parseFloat(document.getElementById('iso-esp').value);
+        const vol   = parseFloat(document.getElementById('iso-vol').value);
+        const tank  = parseFloat(document.getElementById('iso-tanque').value);
+        const el    = document.getElementById('iso-results');
+
+        if (!(gpm > 0 && vel > 0 && esp > 0 && vol > 0)) {
+            el.innerHTML = '<div class="empty-state">Preencha os campos acima para calcular</div>';
+            return;
+        }
+
+        const q1   = gpm * 3.78541;
+        const qNec = (vol * esp * vel) / 60000;
+        const pBar = P_ISO_BAR * Math.pow(qNec / q1, 2);
+
+        let html = `
+        <div class="result-box">
+            <div class="result-label">Vazão necessária por bico</div>
+            <div class="result-value">${qNec.toFixed(3)} L/min</div>
+        </div>
+        ${pressaoHTML(pBar, 'blue')}`;
+
+        if (tank > 0) {
+            html += `
+            <div class="result-box purple">
+                <div class="result-label">Autonomia do tanque</div>
+                <div class="result-value">${(tank/vol).toFixed(1)} ha</div>
+            </div>`;
+        }
+
+        el.innerHTML = html;
+    }
+
+    // ── ABA 1: Converter para ISO ─────────────────────────────────
+    function calcConvISO() {
+        const qRef = parseFloat(document.getElementById('conv-vazao').value);
+        const pRef = parseFloat(document.getElementById('conv-pressao').value);
+        const el   = document.getElementById('conv-result');
+
+        if (!(qRef > 0 && pRef > 0)) {
+            el.innerHTML = '<div class="empty-state">—</div>';
+            return;
+        }
+
+        const gpm = (qRef * Math.sqrt(P_ISO_BAR / pRef)) / 3.78541;
+        el.innerHTML = `
+        <div class="info-box">
+            <div class="ib-label">Código ISO — GPM a 40 PSI</div>
+            <div class="ib-value">${gpm.toFixed(3)}</div>
+        </div>`;
+    }
+
+    // ── ABA 2: Sistema ────────────────────────────────────────────
+    function calcSistema() {
+        // Composição
+        const nb  = parseFloat(document.getElementById('sis-nbicos').value);
+        const vm  = parseFloat(document.getElementById('sis-vmedia').value);
+        const elT = document.getElementById('sis-total-result');
+        if (nb > 0 && vm > 0) {
+            elT.innerHTML = `
+            <div class="result-box">
+                <div class="result-label">Vazão total do sistema</div>
+                <div class="result-value">${(nb*vm).toFixed(2)} L/min</div>
+            </div>`;
+        } else {
+            elT.innerHTML = '<div class="empty-state">—</div>';
+        }
+
+        // Pressão estimada
+        const vref  = parseFloat(document.getElementById('sis-vref').value);
+        const prefV = parseFloat(document.getElementById('sis-pref').value);
+        const prefU = document.getElementById('sis-pref-unit').value;
+        const vlida = parseFloat(document.getElementById('sis-vlida').value);
+        const elP   = document.getElementById('sis-pressao-result');
+
+        if (vref > 0 && prefV > 0 && vlida > 0) {
+            const prefBar = toBar(prefV, prefU);
+            const pBar    = prefBar * Math.pow(vlida / vref, 2);
+            elP.innerHTML = pressaoHTML(pBar, 'blue');
+        } else {
+            elP.innerHTML = '<div class="empty-state">Preencha os campos acima para calcular</div>';
+        }
+    }
+
+    // ── ABA 3: Aérea ──────────────────────────────────────────────
+    function calcAerea() {
+        const pRef  = parseFloat(document.getElementById('aer-pref').value);
+        const vRef  = parseFloat(document.getElementById('aer-vref').value);
+        const vel   = parseFloat(document.getElementById('aer-vel').value);
+        const faixa = parseFloat(document.getElementById('aer-faixa').value);
+        const nb    = parseFloat(document.getElementById('aer-nbicos').value);
+        const vol   = parseFloat(document.getElementById('aer-vol').value);
+        const el    = document.getElementById('aer-result');
+        const espEl = document.getElementById('aer-esp-val');
+
+        espEl.textContent = (faixa > 0 && nb > 0) ? ((faixa/nb)*100).toFixed(1) + ' cm' : '—';
+
+        if (!(pRef > 0 && vRef > 0 && vel > 0 && faixa > 0 && nb > 0 && vol > 0)) {
+            el.innerHTML = '<div class="empty-state">Preencha os campos acima para calcular</div>';
+            return;
+        }
+
+        const esp   = (faixa / nb) * 100;
+        const vBico = (vol * esp * vel) / 60000;
+        const vSist = vBico * nb;
+        const pBar  = pRef * Math.pow(vBico / vRef, 2);
+
+        el.innerHTML = `
+        <div class="result-box purple" style="margin-bottom:8px;">
+            <div class="result-label">Vazão por bico</div>
+            <div class="result-value">${vBico.toFixed(3)} L/min</div>
+        </div>
+        <div class="result-box" style="margin-bottom:8px;">
+            <div class="result-label">Vazão total do sistema</div>
+            <div class="result-value">${vSist.toFixed(2)} L/min</div>
+        </div>
+        ${pressaoHTML(pBar, 'blue', 'Pressão Alvo')}`;
+    }
+
+    // ── ABA 4: Conversões ─────────────────────────────────────────
+
+    // — Pressão —
+    function calcConvPressao() {
+        const val  = parseFloat(document.getElementById('cv-p-val').value);
+        const unit = document.getElementById('cv-p-unit').value;
+        const el   = document.getElementById('cv-p-result');
+        if (!(val > 0)) { el.innerHTML = '<div class="empty-state">—</div>'; return; }
+        const bar = toBar(val, unit);
+        el.innerHTML = convGrid([
+            { label: 'bar',      val: bar.toFixed(2) },
+            { label: 'PSI',      val: (bar * 14.5038).toFixed(1) },
+            { label: 'kgf/cm²', val: (bar * 1.019716).toFixed(2) },
+            { label: 'kPa',      val: Math.round(bar * 100) }
+        ], unit === 'bar' ? 0 : unit === 'psi' ? 1 : unit === 'kgf' ? 2 : 3);
+    }
+
+    // — Vazão —
+    // 1 GPM = 3.785411784 L/min
+    const GPM_TO_LMIN = 3.785411784;
+    function calcConvVazao() {
+        const val  = parseFloat(document.getElementById('cv-q-val').value);
+        const unit = document.getElementById('cv-q-unit').value;
+        const el   = document.getElementById('cv-q-result');
+        if (!(val > 0)) { el.innerHTML = '<div class="empty-state">—</div>'; return; }
+        const lmin = unit === 'gpm' ? val * GPM_TO_LMIN : val;
+        el.innerHTML = convGrid([
+            { label: 'L/min', val: lmin.toFixed(3) },
+            { label: 'GPM',   val: (lmin / GPM_TO_LMIN).toFixed(4) }
+        ], unit === 'lmin' ? 0 : 1);
+    }
+
+    // — Taxa de aplicação —
+    // 1 alqueire paulista = 2.42 ha
+    // 1 acre = 0.404686 ha  →  1 gal/acre = 3.78541 L / 0.404686 ha = 9.3540 L/ha
+    const ALQ_HA   = 2.42;
+    const GAL_ACRE_TO_LHA = 3.785411784 / 0.404686;
+    function calcConvTaxa() {
+        const val  = parseFloat(document.getElementById('cv-t-val').value);
+        const unit = document.getElementById('cv-t-unit').value;
+        const el   = document.getElementById('cv-t-result');
+        if (!(val > 0)) { el.innerHTML = '<div class="empty-state">—</div>'; return; }
+        let lha;
+        if (unit === 'lalq')  lha = val / ALQ_HA;
+        else if (unit === 'galac') lha = val * GAL_ACRE_TO_LHA;
+        else lha = val;
+        el.innerHTML = convGrid([
+            { label: 'L/ha',     val: lha.toFixed(2) },
+            { label: 'L/alq',    val: (lha * ALQ_HA).toFixed(2) },
+            { label: 'gal/acre', val: (lha / GAL_ACRE_TO_LHA).toFixed(3) }
+        ], unit === 'lha' ? 0 : unit === 'lalq' ? 1 : 2);
+    }
+
+    // ══════════════════════════════════════════════════════════════
+    // PDF — HELPERS COMPARTILHADOS
+    // ══════════════════════════════════════════════════════════════
+
+    // Cache da logo em base64 (evita refetch a cada relatório)
+    var _logoCache = null;
+
+    function _fetchLogo() {
+        if (_logoCache) return Promise.resolve(_logoCache);
+        return fetch('/images/EQUALIZAGRO ok.png')
+            .then(function(r) { return r.blob(); })
+            .then(function(blob) {
+                return new Promise(function(resolve) {
+                    var reader = new FileReader();
+                    reader.onloadend = function() { _logoCache = reader.result; resolve(_logoCache); };
+                    reader.onerror   = function() { resolve(''); };
+                    reader.readAsDataURL(blob);
+                });
+            })
+            .catch(function() { return ''; });
+    }
+
+    // Abre o relatório em nova aba limpa e gera download direto do PDF via html2pdf
+    function _downloadPDF(htmlContent, filename) {
+        var title        = (filename || 'relatorio-equalizagro').replace(/\.pdf$/i, '');
+        var safeFilename = filename || 'relatorio-equalizagro.pdf';
+
+        var fullHTML = '<!DOCTYPE html>'
+            + '<html lang="pt-BR"><head><meta charset="UTF-8">'
+            + '<meta name="viewport" content="width=device-width,initial-scale=1">'
+            + '<title>' + title + '</title>'
+            + '<scr' + 'ipt src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"><' + '/script>'
+            + '<style>'
+            +   '* { -webkit-print-color-adjust:exact !important; print-color-adjust:exact !important; box-sizing:border-box; margin:0; padding:0; }'
+            +   'html,body { background:#fff; font-family:Arial,Helvetica,sans-serif; font-size:13px; color:#1f2937; }'
+            +   'table { border-collapse:collapse; }'
+            +   'body { padding-bottom:74px; }'
+            +   '@media print { .eq-bar { display:none !important; } }'
+            + '</style>'
+            + '</head><body>'
+            + '<div id="eq-content" style="max-width:800px;margin:0 auto;padding:16px 12px;">'
+            +   htmlContent
+            + '</div>'
+            + '<div class="eq-bar" style="position:fixed;bottom:0;left:0;right:0;background:#134a2e;padding:10px 16px;display:flex;align-items:center;justify-content:center;gap:16px;z-index:9999;box-shadow:0 -2px 10px rgba(0,0,0,.4);">'
+            +   '<button id="eq-btn" onclick="gerarPDF();" style="background:#d4af37;color:#134a2e;border:none;padding:10px 28px;font-size:14px;font-weight:700;border-radius:8px;cursor:pointer;font-family:Arial,sans-serif;white-space:nowrap;">&#8659;&nbsp;Baixar PDF</button>'
+            +   '<span id="eq-msg" style="color:rgba(255,255,255,.85);font-size:13px;"></span>'
+            + '</div>'
+            + '<' + 'script>'
+            + 'function gerarPDF(){'
+            +   'var btn=document.getElementById("eq-btn");'
+            +   'var msg=document.getElementById("eq-msg");'
+            +   'btn.disabled=true;'
+            +   'btn.style.opacity="0.6";'
+            +   'btn.textContent="Gerando…";'
+            +   'msg.textContent="Aguarde, isso leva alguns segundos…";'
+            +   'var el=document.getElementById("eq-content");'
+            +   'var opt={'
+            +     'margin:[8,10,12,10],'
+            +     'filename:"' + safeFilename + '",'
+            +     'image:{type:"jpeg",quality:0.98},'
+            +     'html2canvas:{scale:2,useCORS:true,allowTaint:true,backgroundColor:"#ffffff",logging:false},'
+            +     'jsPDF:{unit:"mm",format:"a4",orientation:"portrait"}'
+            +   '};'
+            +   'html2pdf().set(opt).from(el).save()'
+            +   '.then(function(){'
+            +     'btn.disabled=false;btn.style.opacity="1";'
+            +     'btn.innerHTML="&#8659;&nbsp;Baixar PDF";'
+            +     'msg.textContent="Download concluído!";'
+            +     'setTimeout(function(){msg.textContent="";},4000);'
+            +   '})'
+            +   '.catch(function(e){'
+            +     'console.error(e);'
+            +     'btn.disabled=false;btn.style.opacity="1";'
+            +     'btn.innerHTML="&#8659;&nbsp;Baixar PDF";'
+            +     'msg.textContent="Erro ao gerar PDF. Tente novamente.";'
+            +   '});'
+            + '}'
+            + 'document.addEventListener("DOMContentLoaded",function(){gerarPDF();});'
+            + '<' + '/script>'
+            + '</body></html>';
+
+        try {
+            var blob = new Blob([fullHTML], { type: 'text/html;charset=utf-8' });
+            var url  = URL.createObjectURL(blob);
+            var a    = document.createElement('a');
+            a.href   = url;
+            a.target = '_blank';
+            a.rel    = 'noopener noreferrer';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            setTimeout(function() { URL.revokeObjectURL(url); }, 120000);
+        } catch (e) {
+            console.error('[PDF]', e);
+            alert('Não foi possível abrir o relatório.\nVerifique se pop-ups estão permitidos para este site.');
+        }
+    }
+
+    // Logo URL placeholder (substituída por base64 em _printPDF)
+    var LOGO_URL = '/images/EQUALIZAGRO ok.png';
+
+    function _pdfHdr(title) {
+        return '<div style="display:flex;align-items:center;gap:16px;border-bottom:3px solid #1a5f3a;padding-bottom:14px;margin-bottom:18px;">' +
+            '<img src="' + LOGO_URL + '" alt="Equalizagro" style="height:52px;width:auto;">' +
+            '<div>' +
+            '<div style="font-size:19px;font-weight:700;color:#1f2937;">' + title + '</div>' +
+            '<div style="font-size:12px;color:#6b7280;">Equalizagro · Consultoria e Tecnologia em Aplicação</div>' +
+            '<div style="font-size:11px;color:#9ca3af;margin-top:3px;">Emitido: ' + new Date().toLocaleString('pt-BR') + '</div>' +
+            '</div></div>';
+    }
+
+    function _pdfSec(label) {
+        return '<div style="font-size:13px;font-weight:700;color:#1f2937;border-left:3px solid #1a5f3a;padding-left:8px;margin:14px 0 6px;">' + label + '</div>';
+    }
+
+    function _pdfTbl(rows) {
+        return '<table style="width:100%;border-collapse:collapse;margin-bottom:16px;font-size:13px;">' + rows + '</table>';
+    }
+
+    function _row(lbl, val, shade) {
+        return '<tr' + (shade ? ' style="background:#f9fafb;"' : '') + '><td style="padding:7px 10px;color:#6b7280;width:45%;">' + lbl + '</td><td style="padding:7px 10px;font-weight:600;">' + val + '</td></tr>';
+    }
+
+    function _resRow(lbl, val, big) {
+        var fs = big ? '18px' : '14px';
+        return '<tr><td style="padding:7px 10px;color:#6b7280;">' + lbl + '</td><td style="padding:7px 10px;font-weight:700;font-size:' + fs + ';color:#1a5f3a;">' + val + '</td></tr>';
+    }
+
+    function _pressRows(bar) {
+        return _resRow('Pressão (bar)',     bar.toFixed(2) + ' bar',                   true) +
+               _resRow('Pressão (PSI)',     (bar * 14.5038).toFixed(1) + ' PSI',       false) +
+               _resRow('Pressão (kgf/cm²)',(bar * 1.019716).toFixed(2) + ' kgf/cm²',  false) +
+               _resRow('Pressão (kPa)',     Math.round(bar * 100) + ' kPa',            false);
+    }
+
+    async function _printPDF(html, filename) {
+        const logo = await _fetchLogo();
+        const htmlFinal = logo
+            ? html.replace(/src="\/images\/EQUALIZAGRO ok\.png"/g, 'src="' + logo + '"')
+            : html;
+        _downloadPDF(
+            '<div style="font-family:Arial,Helvetica,sans-serif;padding:8px 4px;">' + htmlFinal + '</div>' +
+            '<div style="text-align:center;font-size:10px;color:#9ca3af;padding:10px;border-top:1px solid #e5e7eb;margin-top:16px;">Powered by Equalizagro Consultoria e Tecnologia Ltda. · Uso exclusivo de consultores e técnicos agrícolas</div>',
+            filename || 'relatorio-equalizagro.pdf'
+        );
+    }
+
+    // ── Relatório ISO ─────────────────────────────────────────────
+    async function emitirRelatorioISO() {
+        const gpm  = parseFloat(document.getElementById('iso-gpm').value);
+        const vel  = parseFloat(document.getElementById('iso-vel').value);
+        const esp  = parseFloat(document.getElementById('iso-esp').value);
+        const vol  = parseFloat(document.getElementById('iso-vol').value);
+        const tank = parseFloat(document.getElementById('iso-tanque').value);
+        const cvQ  = parseFloat(document.getElementById('conv-vazao').value);
+        const cvP  = parseFloat(document.getElementById('conv-pressao').value);
+
+        const ok   = gpm > 0 && vel > 0 && esp > 0 && vol > 0;
+        const q1   = gpm * 3.78541;
+        const qNec = ok ? (vol * esp * vel) / 60000 : 0;
+        const pBar = ok ? P_ISO_BAR * Math.pow(qNec / q1, 2) : 0;
+
+        const inputRows = [
+            _row('Orifício ISO (GPM a 40 PSI)', isNaN(gpm) ? '—' : gpm, false),
+            _row('Velocidade',                  isNaN(vel) ? '—' : vel + ' km/h', true),
+            _row('Espaçamento entre bicos',     isNaN(esp) ? '—' : esp + ' cm', false),
+            _row('Volume de calda',             isNaN(vol) ? '—' : vol + ' L/ha', true),
+            _row('Capacidade do tanque',        isNaN(tank) ? 'Não informado' : tank + ' L', false),
+        ].join('');
+
+        let resRows = ok
+            ? _resRow('Vazão necessária por bico', qNec.toFixed(3) + ' L/min', true) + _pressRows(pBar)
+            : '<tr><td colspan="2" style="padding:8px;color:#9ca3af;font-style:italic;">Preencha todos os campos para calcular</td></tr>';
+
+        if (ok && tank > 0)
+            resRows += _resRow('Autonomia do tanque', (tank / vol).toFixed(1) + ' ha', false);
+
+        let convSection = '';
+        if (cvQ > 0 && cvP > 0) {
+            const gpmCalc = (cvQ * Math.sqrt(P_ISO_BAR / cvP)) / 3.78541;
+            convSection = _pdfSec('Conversão para ISO') + _pdfTbl(
+                _row('Vazão medida', cvQ + ' L/min', false) +
+                _row('Pressão de referência', cvP + ' bar', true) +
+                `<tr><td style="padding:7px 10px;color:#6b7280;">Código ISO (GPM a 40 PSI)</td>
+                 <td style="padding:7px 10px;font-weight:700;font-size:22px;color:#1a5f3a;">${gpmCalc.toFixed(3)}</td></tr>`
+            );
+        }
+
+        await _printPDF(
+            _pdfHdr('Relatório — Bicos ISO') +
+            _pdfSec('Parâmetros de Entrada') + _pdfTbl(inputRows) +
+            _pdfSec('Resultado') + _pdfTbl(resRows) +
+            convSection,
+            'relatorio-bicos-iso.pdf'
+        );
+        addHistoryEntry('report', 'iso', TAB_LABELS['iso'], 'Bicos ISO — Relatório PDF', collectTabData('iso'));
+    }
+
+    // ── Relatório Sistema ─────────────────────────────────────────
+    async function emitirRelatorioSistema() {
+        const nb    = parseFloat(document.getElementById('sis-nbicos').value);
+        const vm    = parseFloat(document.getElementById('sis-vmedia').value);
+        const vref  = parseFloat(document.getElementById('sis-vref').value);
+        const prefV = parseFloat(document.getElementById('sis-pref').value);
+        const prefU = document.getElementById('sis-pref-unit').value;
+        const vlida = parseFloat(document.getElementById('sis-vlida').value);
+
+        const hasComp  = nb > 0 && vm > 0;
+        const hasPress = vref > 0 && prefV > 0 && vlida > 0;
+        const pBar     = hasPress ? toBar(prefV, prefU) * Math.pow(vlida / vref, 2) : 0;
+
+        const inputRows = [
+            _row('N° de bicos / saídas',      isNaN(nb)    ? '—' : nb, false),
+            _row('Vazão média por bico',       isNaN(vm)    ? '—' : vm + ' L/min', true),
+            _row('Vazão de referência',        isNaN(vref)  ? '—' : vref + ' L/min', false),
+            _row('Pressão de referência',      isNaN(prefV) ? '—' : prefV + ' ' + prefU, true),
+            _row('Vazão lida / nova',          isNaN(vlida) ? '—' : vlida + ' L/min', false),
+        ].join('');
+
+        let resRows = '';
+        if (hasComp)  resRows += _resRow('Vazão total do sistema', (nb * vm).toFixed(2) + ' L/min', true);
+        if (hasPress) resRows += _pressRows(pBar);
+        if (!resRows) resRows = '<tr><td colspan="2" style="padding:8px;color:#9ca3af;font-style:italic;">Dados insuficientes para calcular</td></tr>';
+
+        await _printPDF(
+            _pdfHdr('Relatório — Sistema de Pulverização') +
+            _pdfSec('Parâmetros de Entrada') + _pdfTbl(inputRows) +
+            _pdfSec('Resultado') + _pdfTbl(resRows),
+            'relatorio-sistema.pdf'
+        );
+        addHistoryEntry('report', 'sistema', TAB_LABELS['sistema'], 'Sistema — Relatório PDF', collectTabData('sistema'));
+    }
+
+    // ── Relatório Aérea ───────────────────────────────────────────
+    async function emitirRelatorioAerea() {
+        const pRef  = parseFloat(document.getElementById('aer-pref').value);
+        const vRef  = parseFloat(document.getElementById('aer-vref').value);
+        const vel   = parseFloat(document.getElementById('aer-vel').value);
+        const faixa = parseFloat(document.getElementById('aer-faixa').value);
+        const nb    = parseFloat(document.getElementById('aer-nbicos').value);
+        const vol   = parseFloat(document.getElementById('aer-vol').value);
+
+        const ok    = pRef > 0 && vRef > 0 && vel > 0 && faixa > 0 && nb > 0 && vol > 0;
+        const esp   = ok ? (faixa / nb) * 100 : 0;
+        const vBico = ok ? (vol * esp * vel) / 60000 : 0;
+        const vSist = ok ? vBico * nb : 0;
+        const pBar  = ok ? pRef * Math.pow(vBico / vRef, 2) : 0;
+
+        const inputRows = [
+            _row('Pressão de referência',          isNaN(pRef)  ? '—' : pRef + ' bar', false),
+            _row('Vazão de referência por bico',   isNaN(vRef)  ? '—' : vRef + ' L/min', true),
+            _row('Velocidade',                     isNaN(vel)   ? '—' : vel + ' km/h', false),
+            _row('Faixa efetiva',                  isNaN(faixa) ? '—' : faixa + ' m', true),
+            _row('Número de bicos',                isNaN(nb)    ? '—' : nb, false),
+            _row('Volume de calda',                isNaN(vol)   ? '—' : vol + ' L/ha', true),
+        ].join('');
+
+        const resRows = ok
+            ? _resRow('Espaçamento entre bicos', esp.toFixed(1) + ' cm', false) +
+              _resRow('Vazão por bico', vBico.toFixed(3) + ' L/min', true) +
+              _resRow('Vazão total do sistema', vSist.toFixed(2) + ' L/min', true) +
+              _pressRows(pBar)
+            : '<tr><td colspan="2" style="padding:8px;color:#9ca3af;font-style:italic;">Preencha todos os campos para calcular</td></tr>';
+
+        await _printPDF(
+            _pdfHdr('Relatório — Calibração de Aeronaves') +
+            _pdfSec('Parâmetros de Entrada') + _pdfTbl(inputRows) +
+            _pdfSec('Resultado') + _pdfTbl(resRows),
+            'relatorio-aerea.pdf'
+        );
+        addHistoryEntry('report', 'aerea', TAB_LABELS['aerea'], 'Aérea — Relatório PDF', collectTabData('aerea'));
+    }
+
+    // ── Relatório Conversões ──────────────────────────────────────
+    async function emitirRelatorioConversoes() {
+        const pVal  = parseFloat(document.getElementById('cv-p-val').value);
+        const pUnit = document.getElementById('cv-p-unit').value;
+        const qVal  = parseFloat(document.getElementById('cv-q-val').value);
+        const qUnit = document.getElementById('cv-q-unit').value;
+        const tVal  = parseFloat(document.getElementById('cv-t-val').value);
+        const tUnit = document.getElementById('cv-t-unit').value;
+
+        let sections = '';
+
+        if (pVal > 0) {
+            const bar = toBar(pVal, pUnit);
+            sections += _pdfSec('Conversão de Pressão') + _pdfTbl(
+                _row('Valor inserido', pVal + ' ' + pUnit, false) +
+                _resRow('bar', bar.toFixed(2), false) +
+                _resRow('PSI', (bar * 14.5038).toFixed(1), false) +
+                _resRow('kgf/cm²', (bar * 1.019716).toFixed(2), false) +
+                _resRow('kPa', Math.round(bar * 100).toString(), false)
+            );
+        }
+
+        if (qVal > 0) {
+            const lmin = qUnit === 'gpm' ? qVal * GPM_TO_LMIN : qVal;
+            sections += _pdfSec('Conversão de Vazão') + _pdfTbl(
+                _row('Valor inserido', qVal + ' ' + qUnit, false) +
+                _resRow('L/min', lmin.toFixed(3), false) +
+                _resRow('GPM', (lmin / GPM_TO_LMIN).toFixed(4), false)
+            );
+        }
+
+        if (tVal > 0) {
+            let lha = tVal;
+            if (tUnit === 'lalq')       lha = tVal / ALQ_HA;
+            else if (tUnit === 'galac') lha = tVal * GAL_ACRE_TO_LHA;
+            sections += _pdfSec('Conversão de Taxa de Aplicação') + _pdfTbl(
+                _row('Valor inserido', tVal + ' ' + tUnit, false) +
+                _resRow('L/ha', lha.toFixed(2), false) +
+                _resRow('L/alq', (lha * ALQ_HA).toFixed(2), false) +
+                _resRow('gal/acre', (lha / GAL_ACRE_TO_LHA).toFixed(3), false)
+            );
+        }
+
+        if (!sections)
+            sections = '<p style="color:#9ca3af;font-style:italic;padding:8px;">Nenhum valor informado para converter.</p>';
+
+        await _printPDF(_pdfHdr('Relatório — Conversões') + sections, 'relatorio-conversoes.pdf');
+        addHistoryEntry('report', 'conversao', TAB_LABELS['conversao'], 'Conversões — Relatório PDF', collectTabData('conversao'));
+    }
+
+    // ── Relatório Espectro ────────────────────────────────────────
+    async function emitirRelatorioEspectro() {
+        const dmv  = parseFloat(document.getElementById('esp-dmv').value)  || 0;
+        const dens = parseFloat(document.getElementById('esp-dens').value) || 0;
+        const taxa = parseFloat(document.getElementById('esp-taxa').value) || 0;
+        const ar   = parseFloat(document.getElementById('esp-ar').value)   || 1.0;
+        const curvaNome = espCurva === '1' ? 'Convencional (terrestres)' : 'Oleosa (>5% óleo)';
+        const modeNome  = espMode === 'dmv' ? 'Calcular DMV' : espMode === 'densidade' ? 'Calcular Densidade' : 'Calcular Taxa';
+
+        const fAR = espFAR(ar);
+        let res = { dmv: 0, dens: 0, taxa: 0 };
+        if (espMode === 'dmv' && taxa > 0 && dens > 0)
+            res.dmv = Math.pow((taxa * ESP_CONST_N * fAR) / (Math.PI * dens), 1/3);
+        else if (espMode === 'densidade' && taxa > 0 && dmv > 0)
+            res.dens = ((taxa * ESP_CONST_N) / (Math.PI * Math.pow(dmv, 3))) * fAR;
+        else if (espMode === 'taxa' && dmv > 0 && dens > 0)
+            res.taxa = (dens * Math.PI * Math.pow(dmv, 3)) / (ESP_CONST_N * fAR);
+
+        const dmvFinal = res.dmv > 0 ? res.dmv : dmv;
+        const divisor  = espCurva === '1' ? 8000 : 3600;
+        const dtLim    = Math.min((dmvFinal * dmvFinal) / divisor, 8.0);
+
+        let inputRows = _row('Curva de evaporação', curvaNome, false) +
+                        _row('Modo de cálculo', modeNome, true) +
+                        _row('AR — Amplitude Relativa', ar.toString(), false);
+        if (dmv  > 0) inputRows += _row('DMV (µm)', dmv.toString(), true);
+        if (dens > 0) inputRows += _row('Densidade (gotas/cm²)', dens.toString(), false);
+        if (taxa > 0) inputRows += _row('Taxa de Aplicação (L/ha)', taxa.toString(), true);
+
+        let resRows = '';
+        if (espMode === 'dmv'       && res.dmv  > 0) resRows += _resRow('DMV calculado (µm)',              res.dmv.toFixed(1),  true);
+        if (espMode === 'densidade' && res.dens > 0) resRows += _resRow('Densidade calculada (gotas/cm²)', res.dens.toFixed(1), true);
+        if (espMode === 'taxa'      && res.taxa > 0) resRows += _resRow('Taxa calculada (L/ha)',            res.taxa.toFixed(2), true);
+        resRows += _resRow('Delta T Limite (°C)', dtLim.toFixed(2), false);
+        if (!resRows.trim()) resRows = '<tr><td colspan="2" style="padding:8px;color:#9ca3af;font-style:italic;">Dados insuficientes para calcular</td></tr>';
+
+        await _printPDF(
+            _pdfHdr('Relatório — Espectro de Gotas') +
+            _pdfSec('Parâmetros de Entrada') + _pdfTbl(inputRows) +
+            _pdfSec('Resultado') + _pdfTbl(resRows),
+            'relatorio-espectro.pdf'
+        );
+        addHistoryEntry('report', 'espectro', TAB_LABELS['espectro'], 'Espectro — Relatório PDF', collectTabData('espectro'));
+    }
+
+    // ── Relatório Delta T ─────────────────────────────────────────
+    async function emitirRelatorioDeltaT() {
+        const T  = parseFloat(document.getElementById('dt-temp').value)    || 25;
+        const RH = parseFloat(document.getElementById('dt-umidade').value) || 50;
+
+        const t1 = T * Math.atan(0.151977 * Math.sqrt(RH + 8.313659));
+        const t2 = Math.atan(T + RH);
+        const t3 = Math.atan(RH - 1.676331);
+        const t4 = 0.00391838 * Math.pow(RH, 1.5) * Math.atan(0.023101 * RH);
+        const dt = Math.max(0, T - (t1 + t2 - t3 + t4 - 4.686035));
+
+        let cond, rec, corBg, corTxt;
+        if      (dt < 2) { cond = 'Muito úmido';        rec = 'Evitar aplicação — risco de deriva térmica';           corBg = '#eff6ff'; corTxt = '#1e40af'; }
+        else if (dt < 4) { cond = 'Ideal';              rec = 'Condições ótimas — aplicação recomendada';             corBg = '#f0fdf4'; corTxt = '#166534'; }
+        else if (dt < 8) { cond = 'Aceitável';          rec = 'Monitorar condições durante a operação';               corBg = '#fefce8'; corTxt = '#854d0e'; }
+        else             { cond = 'Quente e seco';       rec = 'Evitar aplicação — alto risco de evaporação';          corBg = '#fef2f2'; corTxt = '#991b1b'; }
+
+        const inputRows = _row('Temperatura', T + '°C', false) + _row('Umidade Relativa', RH + '%', true);
+        const resRows =
+            `<tr><td style="padding:7px 10px;color:#6b7280;">Delta T obtido</td>
+             <td style="padding:7px 10px;font-weight:700;font-size:26px;color:${corTxt};">${dt.toFixed(1)}°C</td></tr>` +
+            `<tr style="background:${corBg};"><td style="padding:7px 10px;color:#6b7280;">Condição</td>
+             <td style="padding:7px 10px;font-weight:700;color:${corTxt};">${cond}</td></tr>` +
+            _row('Recomendação', rec, false);
+
+        await _printPDF(
+            _pdfHdr('Relatório — Delta T') +
+            _pdfSec('Condições Meteorológicas') + _pdfTbl(inputRows) +
+            _pdfSec('Resultado') + _pdfTbl(resRows),
+            'relatorio-delta-t.pdf'
+        );
+        addHistoryEntry('report', 'deltat', TAB_LABELS['deltat'], 'Delta T — Relatório PDF', collectTabData('deltat'));
+    }
+
+    // ── Relatório PDF ─────────────────────────────────────────────
+    function emitirRelatorio() {
+        // Coleta dados
+        const cliente  = document.getElementById('fl-cliente').value  || '—';
+        const equip    = document.getElementById('fl-equip').value    || '—';
+        const resp     = document.getElementById('fl-resp').value     || '—';
+        const empresa  = document.getElementById('fl-empresa').value  || '—';
+        const dataRaw  = document.getElementById('fl-data').value;
+        const data     = dataRaw ? new Date(dataRaw + 'T12:00:00').toLocaleDateString('pt-BR') : '—';
+        const total    = document.getElementById('fl-total').value    || '—';
+        const coletadas= document.getElementById('fl-coletadas').value|| '—';
+        const tempo    = document.getElementById('fl-tempo').value    || '60';
+        const vazaoInfo= document.getElementById('fl-vazao-info').value|| '—';
+        const constAtual=document.getElementById('fl-constante').value|| '—';
+        const forma    = document.getElementById('fl-forma').value;
+
+        // Coleta valores do grid
+        const inputs = document.querySelectorAll('#fl-grid .bico-item input');
+        let somaML = 0, preenchidas = 0;
+        let bicosHTML = '';
+        let col = 0;
+        inputs.forEach(inp => {
+            const v = parseFloat(inp.value);
+            const bico = inp.dataset.bico;
+            const val = inp.value ? inp.value + ' mL' : '—';
+            bicosHTML += `<td style="padding:4px 8px;border:1px solid #e5e7eb;font-size:12px;text-align:center;">
+                <span style="color:#6b7280;font-size:10px;">Ponta ${bico}</span><br><strong>${val}</strong></td>`;
+            col++;
+            if (col % 6 === 0) bicosHTML += '</tr><tr>';
+            if (!isNaN(v) && v > 0) { somaML += v; preenchidas++; }
+        });
+
+        const tempoN    = parseFloat(tempo) || 60;
+        const totalN    = parseInt(total)   || 0;
+        const coletadasN= parseInt(coletadas)|| 0;
+        const vazaoColetada = totalN > 0 && coletadasN > 0
+            ? ((somaML / coletadasN * totalN) * (60 / tempoN) / 1000).toFixed(2)
+            : '—';
+        const vazaoInfoN = parseFloat(vazaoInfo);
+        const constAtualN= parseFloat(constAtual);
+
+        let desvioHTML = '';
+        if (!isNaN(vazaoInfoN) && vazaoInfoN > 0 && vazaoColetada !== '—') {
+            const d = ((parseFloat(vazaoColetada) - vazaoInfoN) / vazaoInfoN * 100);
+            const status = Math.abs(d) < 3 ? '✅ Dentro do tolerado' : Math.abs(d) < 8 ? '⚠️ Atenção' : '🔴 Fora da faixa';
+            desvioHTML = `<tr><td style="padding:6px 8px;color:#6b7280;font-size:12px;">Desvio</td>
+                <td style="padding:6px 8px;font-weight:600;">${d > 0 ? '+' : ''}${d.toFixed(1)}% — ${status}</td></tr>`;
+        }
+
+        let novaConstHTML = '';
+        if (!isNaN(vazaoInfoN) && vazaoInfoN > 0 && !isNaN(constAtualN) && constAtualN > 0 && vazaoColetada !== '—') {
+            const nc = (vazaoInfoN / parseFloat(vazaoColetada) * constAtualN).toFixed(1);
+            novaConstHTML = `<tr><td style="padding:6px 8px;color:#6b7280;font-size:12px;">Nova Constante</td>
+                <td style="padding:6px 8px;font-weight:700;font-size:16px;color:#16a34a;">${nc}</td></tr>`;
+        }
+
+        // Monta div de relatório
+        const div = document.getElementById('relatorio-pdf');
+        div.innerHTML = `
+        <div style="font-family:Arial,sans-serif;max-width:800px;margin:0 auto;padding:20px;">
+
+            <!-- Cabeçalho -->
+            <div style="display:flex;align-items:center;gap:16px;border-bottom:3px solid #16a34a;padding-bottom:12px;margin-bottom:16px;">
+                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADoAAABQCAYAAABI1GYUAAABCGlDQ1BJQ0MgUHJvZmlsZQAAeJxjYGA8wQAELAYMDLl5JUVB7k4KEZFRCuwPGBiBEAwSk4sLGHADoKpv1yBqL+viUYcLcKakFicD6Q9ArFIEtBxopAiQLZIOYWuA2EkQtg2IXV5SUAJkB4DYRSFBzkB2CpCtkY7ETkJiJxcUgdT3ANk2uTmlyQh3M/Ck5oUGA2kOIJZhKGYIYnBncAL5H6IkfxEDg8VXBgbmCQixpJkMDNtbGRgkbiHEVBYwMPC3MDBsO48QQ4RJQWJRIliIBYiZ0tIYGD4tZ2DgjWRgEL7AwMAVDQsIHG5TALvNnSEfCNMZchhSgSKeDHkMyQx6QJYRgwGDIYMZAKbWPz9HbOBQAAASPElEQVR42tWbeZBddZXHP+f3u/dt/XrJQtIkQSBhCQESQBMUQVEWURDRUmZ0BmpqrEFnlJpxVEYdlXHK0qlRayyrVFActQYB2QyLoJGExRCydGeF7El3QrbO2svr9/q9d+/vzB/39utu0t153ekOclP5J+l+737vOed7vud7fldUVTkllwJC9HUhooKKReTUfLvhVF0qKA4RQcUjNAZwp+zrTxlQJUQwlDq2cfSFLyJBHsSg6tBKxMfv8k4VTEFwxS46X/oy5ddf5JjAxPd8DwhBQcUgb+2IKqhDRTi67KuEbatI1Z2F23o/nc3fR8QHDcc9oma8QToXglg61/4It/13eMmJBJrHJk8jv/Yn5HcsRI0PLhzXO5HxZF2nASIehdanyS2+E5vIoBoTkAi4EJUEtTf+htSkuaAOxLy1IqrqMOJRbN9E19JvYK0dmJyqiPFwYTedL36BoHgkAqnurQNUNQSEsNRF7vm7sMVjqE0fB0I1xPNqkKNb6XjpK6gLiDjYvRWARuQTitCx/N/h0Do0mUFcMFjloBogqQZcyzN0rPkBiO1L779ooC4E41PYcC/BlkfRTC0mBJVhqMAFmFQdpTX30t36BCLemJPTGJKRoq6EmCTd+5eR+8PtWOsDUmXrMIgWUamj9qaHSEw8D7SESOIvLKKqiEkQdO8l99Jd+LEIqLreNMSZFBocpf3lL+GCAmDHrL+asShJcCgOddC+7D+wnbsIEylEHVKl3lERjHOYRA1mfzOdq74HYsE53BiAPXmg4kAdIh5dr91D0PoMmq5D4hqr9haFqI41VCTdQGHTz+nZ+SQYOwSRneIaVQ0RsfS0Laf9mdvxrNc/1Cfx/ALKiQYm3PQQibpZEH/PmxNRVcDgiu10/vmbWIJI8Zx0qglqE9hCG7mld6OuFH+kvjlAFQcidKz8NhzbhPg1Y6Rsol5sEvWU9z1H97qfIcae1Geb0d6IOoeIJdfyJKUtj2NTWRiDWnqjVvYSDXSv+xHFtqaInDQ8dUA1HrvKXa9TXPYdrGdwOvbaQwARi6dlOpd9i6CcQxV0FClsRllBiAidTf+F5vehXgIzTmJc1YGfRQ83k1vzY9RYxJ0KoOpAPPK7n6O88/dIKosJFTee9oALkVQt5Vf/l+LB1WBGPuWYEZMEEATd5Jt/gDU2dvNgfM08xaiPM0U6l92NK+dHzO5m5NE05F/7Ne7QBjybwZ0iJ0+NYsohfrI+Tmkdp4iqQ8VQ6tpFYcN92GSGkGB8I6mxrSYeLt+BnX4Fddf+FONnEDGgMh5AFUXIrf4htnAQTGLco+isxRASFNox59xI3XW/wHpZUGXNjmZ6yoWqGdhUnbLGUty7lPKOhZCqG3U/G1rUa6xJ46nHWEyxiyAUkgvuYuL7f4rnZXEaqa9n1j3Bi5uXIAhhFbOrOXEgHYoSugJdq3/AeLmv4iwqoEaQoIArdKBTL6f+Q7+i4ZI7MbEEtMbHuZCuQhdPrHqMXLErcv9PULPmBPqnIqa7Nz2Etq3A+ElUxxKsgBhEQEoB2tOOZGdRc+V/M+nG+0lNfSfqStFDiL/2WOEY3cVuDucO8WTz4xgxJyRF7wSjDSqWUvc+etZHJKAqCCEn01BEDc6CVdCwTBgUQAxm8lyS53+C7MyPYhK1fQ/aRE6F02h3c6jjIJ2FDmoztSxev4irzruaMyafiWokZEYRUaJ2svZH0L0PMSl6t2KjiRpio30LRaTQRbHUTZioI3HOrWQ/8EsabnqMutm3YxK1EUAk+p3e74uzc9+RvZTCMr4k6Q5yLFz56AnvwBuOgEQMxQNNFLc+gpeoj23MamBJ5SEhkflFUMKFRRQPqWnEnnEZdTPeT2L6u/FqpkWDt4K6cjSpDDN7th5qiUV/SE0yy8qW5Wzet5HZ0+bg1GEGMcGHABq5BqEGdDV/H6MllMwJ/B+JEkRilg4DNCygqmiiFq/hXBJT5uNPezfJxkvx0o0D/KKoXwLiD0GKGpn76mg9sgPP2ggUBuccv1/1BLM/MmdIteQNHszIRc9vfQi3bymkG7BhGXdc/sdEAqiWcGEByorYJFo7FX/CJSROfwde4wK8CedibXJgy0Ljh2OrKgYRw+HOgxxsb8O3Pig4HOlkmrV7mtm85zVmz7hw0Kh6g1WmGENYzlNc/wuMlwQHDkPv+k/FRETlInCqgklOwU69DHv6ApKN7yAxcS6SbKiQgENRV8YBRmykbEYiHnBYLK0Hd5IrdJFOZ3DOVUrFOeWZdU8ye8acQQ05b3A9a+nZtQht34yk6qJlkBGsGpwr44J8FMzsmfhT3oE34z0kp16GX3f2wK+Ie7AgGBEwPvZE7CfD/9+WfZsI38D6Th3pRJoNrevZcWAbsxrPOy6qxwMVg9OQni2/jZq3GjCCKRcohwW05gySZ91E4swPkDx9PjY1sc/FQ1EXxrVmK2ldta4VR6lcJuknj/tvayyBK7Nl3yY86x+3tjBiyId5Fm9YxKzG84aOqAKi0S6z51AzpUMrSPh1qIa4nhw6YSaZ2beRnvlBvMy0PrbXAHEaDcQiYOyI2o9GlgFihC2vb2bGpDNIeskBH6FxB9h7ZC+vt+8i4SWOU0JOHclkkuaWlbR1HGBqfeOAqJoBvmr8t7TlMfzAIa5MGBZJzvsHJn34MWov+nQE0sVeLhrtSawf15yMGGSoIWKExWsWAZDN1B6ncnoxvbZrAz3FIsaYQVWcZzw6C528vPml40Y5M7BvWsr5AxT3voAYpWxrqLnmx9Qv+AY2OQnniqABmFgAnIQ60viPZzx++/L99Gie2WfMqaifgdUUadk1u5vwjT+krlVVEn6CldteoRQUscZWphszULxDcfcSpHMXLjGFuuvvIfu2G1AXIDiMSQ7byKt396JzRkYMP1n0QzoKHdx42S2VVJN+SsjFCmnf0b3sPLidRCIxpLGgqiS8JHvad7Np72sDotoXUbE4lOKup3B4ZK/+H1JTFkTkYrx+PyonFckIjKUUlvju775Fe1c7d1z7T4MrGulL26YdK8iVurBih51Be8e2ph0rB9O6Ubq43G7Ke1aSWfAVUjOuhF45NkZX6EKMGI7kDvONh+6iK9/JF2/5SpSuQzw8a6KHsmrbclI2HSmtYXatTh0JP8HGva9SLPdgxKBoDDR+bMXXX8Q0zKJ23meimjVjcwxJiUjHGsvW/Zv52m++SOhCvv7x/yRpU1EcBpk6egXBpt2v0XJ0Jwk/gcMhw4yJiuJ5Hgc729jV1lpJX9OXjlBsW0320s8h4sf/ImNQj1G0rFgWb/wjdz/8VeozE/jmx79NJlkzpAjvTUOAJRsXDb8xf2MW4BEEZTbv31iJoxc3MVy5E5OcTPrMGyp962RMLSRKVWssPaUeHnr5/1i4+lEunjaPL33ka9Rl6qMoD0FuTh3GGFoO7WD97jVk/AyuKi836svGGHYe3F4Jl9d7U+XuA/jTLsfY5EkvikJCRKP6aj3Uwi+fv5fVrU2869wr+fwH/5W6VB1O3ZAgtV8f/dPaZymWS2RTCcKqxkSJdLH1OHBsP+WwjGe8fhLQpvBPuyTSpieRsc45bExgSzYs4pFlD3Igt58bLrqRT1/3WVJ+eth0jaKpWLG0Ht7Jiu2vkElkqgTZJzA8Y2kvtNNROMbk7BS8XlSJ7PS+gXkUtanq0DhljnYd4YGlv2bp9hfAGf56/m184qpPRgx4ApCR1RJZ/0+vWkg+yFObrB0RUNBoOV0u0FXoioFWZj07avrprUURWLb5zzy6/CFaO3cwyZ/Cp668jfddfF38IPSEte9cVJuv7lnHqu3LqUnWjBBkL57ovnqKPSc2x6pr/gZrLG0dB3hk2YOs2LGMYtDDuafN5u/fdwfnT5sT9U9jTnhwQ9GIL8ISDy99AGdcnGU66rbmYs/XGx3AaB40YgjCgOfW/4Gn1zzB4dxBPONx9QXX8rfv/TvqUvWVCFVzOsW5EGs8nmp6im1tW6jN1FVlTg8dVcF63siBqkZC3MRpvq5lDY83Pcy2g5txoWNidhK3Lvgbrr7ommjrpgFelaLDaQRy24EtLGx+jEyqBg111K1cNRoYMoma6oE6dZXeJAg7D2zn6aaFrN7dRCkoYcQyf+Y7+eSVt9HYMC0WCeBhqyYywdDdk+O+xfdSliJZrSWQYFT2qiCEGpL202RT2eGBRm5B1GpMbFvuOtjKs+ueYtWO5XSHOUSFxvppfGz+rVw15+oBdTtythbuW3IPu4+0UpuupezKMFp6FAjDkPrMBGrTdYMD7VUfRgxioi/Zsm8TL2xYTFPrCrrL3ag4am0dV19wLTfOv5mGzIR4nDIjA4lGOtRYHvzz/SzfvoyaTA0uPLkFliAEYcDUiVPxrU/oguOB9t5ooZRnbetqXtr4PFv2b6LHFQDwTYLL3jafmxd8lLOnzKqQiBnJlBP7Q+oikE+sfIynVj9GNl2Lhm7ULNsfqHMhs6acO5hnpARBmZ2HdrB6exNrWprY17UHo4ZQHD4J5ky7iA9ddjMXnzkv6p8ajV1mhKOcw2GcQQz8bsUjPLLiATLpmpjNx2CviiNlU8xuvKDiB3u9IAWhK5/j+09/h1xPFwk/ET0ba5g77WJumHcT8866rGJwIzqkVq1GXAQE3P/8L/nT+mdJZzKM1WlaEaEclJg64XTOPO3syr95lV2JOibWTeDCxot5advz1KbquOjMuVxz0Qe48IyL+6wNHMYIIz3+4FxkiVhjOdTRxn1L7mHdnmZqM/Wo01jIn/xYaMRQDIrMfdslJPxkpY979HPSLYb3XngN9ZkGrr/kQ0yfNKMSQSfRtGFGCjCeR3vT+8WNS3jklQc4VjhKXaqhnyAYm51rqCEpP80V51014GPfcLpT3+CAh6ASR7DKc7dE7aK37/ZeW/dtZmHTo6xtbSbpJyM2HONDWFYs+VKei2fM465bvh4xekyu3vEbMQhdEKkfjU5QO0d0uGDYRWqkYkzvG4QCYRDw2p5XeeHV51i9q5mylqhJZ1GnYw6y/4Ls2rk3xBrZDb9NM+IRuHK0sapG3fQLdr6nmz1HXufV3etZ3bqKlqM7cQRkvTp88So+0FhfViy5Yo75My/n7TPn45xDzDC7l971+Pa9W/nj2mc4q/EsJmQmU1/TQCaZxvf96HAESlAK6C520547SltnG3uO7mb/0b0c6j5IMSjiewkyfiaSZAQjOhc0YoGgAWk/za3v+lTfRrNfBLzB6Nmp45zp5/H4qof51Us/J5POIk7wxMNYUzkF4kJHoEH8/llUk5718b0ECT8Z/UwlRcfv6JUxhs58B5+8/HamTzpjUBk66FHz3qge6z7Gtx+5m6PFNlKSpkS5zyWXXiu7bwTrXTOcspeMY983V8wx5/QL+bePfDM2AI63T81QTdepY0LNBO647h+R0NKjPQNbi8ZnDuJFUaghLnYRThlIsfSU80xJN/LZ6+/E9/zoGM8gppcZrvE65zh/+gV85rrPE5bCiuQ7zhV4Ey5jLD1hgRqvln++8UtMrp0SL6gGh2ROlPvOOS4/9wo+c/2dhEFI2ZWxYod1y8f3UqyxFEs91NgsX7jpLs5unEngwmEnp6peB+mVUc0tK/nZoh+TD/KkE2lc6EbkoI8BvUY1WehiSn0j/3LDlzlryszK/Q3vLFZZVL1ivOXQDn7+x5/ScmQ72XRdpIV0/M/sihHUKfl8nnlnX8od136OidlJVYEcEdDoNWaHMZbuYo7fLv0NizcvwoiQjtcFY09EihEPAXLlTjImy02X3sLNl38s4hANK/7VGALt5+/EtbC2ZTWPvvIg2w5vIeWlo9FOI6f9ZF7GESRyNxTy5W4U5dIZ8/n4O/+Ks6fOGtACq/7M0byyFQGJF7rlIi9uXMKiDc+y9+gexAhJPxmtJbR356PDsrPBRI6zRD24HJYpl0t41mf2tDl8cO6HuXTW26MSCkOsHfkcfFLvpvVPnZ5ygebtq1i69UW2t22luyeHiuJZD8/4WDHxuYe+pYdq1K9DLRO4Mi4A3/hMqp/M3OmXcMX5V3H+jAv6Wa29ikdOLdA3Ova9V9ux/Wzat5Gt+zex9/BejuQPkS91Ewau7x7jIzcJP0lDsp7J9adx9mmzmD3tQmY1nkMmVTPk54+qHMbqjWBVrdTNgNpRpaPQTkehg0JPvjLxKuB5PrWpWiZkGkj4qeNaGqJVk80pAzoYaISqI9H/d0Sk6hds31SgQ60yhmLYN45U43H9P+kqTeSdt6dcAAAAAElFTkSuQmCC" alt="Equalizagro" style="height:48px;width:auto;">
+                <div>
+                    <div style="font-size:18px;font-weight:700;color:#1f2937;">Relatório de Calibração de Fluxômetro</div>
+                    <div style="font-size:12px;color:#6b7280;">Equalizagro • Consultoria e Tecnologia em Aplicação</div>
+                </div>
+            </div>
+
+            <!-- Identificação -->
+            <table style="width:100%;border-collapse:collapse;margin-bottom:14px;">
+                <tr style="background:#f9fafb;">
+                    <td style="padding:6px 8px;color:#6b7280;font-size:12px;width:140px;">Cliente</td>
+                    <td style="padding:6px 8px;font-weight:600;">${cliente}</td>
+                    <td style="padding:6px 8px;color:#6b7280;font-size:12px;width:140px;">Data</td>
+                    <td style="padding:6px 8px;font-weight:600;">${data}</td>
+                </tr>
+                <tr>
+                    <td style="padding:6px 8px;color:#6b7280;font-size:12px;">Equipamento</td>
+                    <td style="padding:6px 8px;font-weight:600;">${equip}</td>
+                    <td style="padding:6px 8px;color:#6b7280;font-size:12px;">Responsável</td>
+                    <td style="padding:6px 8px;font-weight:600;">${resp}</td>
+                </tr>
+                <tr style="background:#f9fafb;">
+                    <td style="padding:6px 8px;color:#6b7280;font-size:12px;">Empresa</td>
+                    <td style="padding:6px 8px;font-weight:600;" colspan="3">${empresa}</td>
+                </tr>
+            </table>
+
+            <!-- Configuração -->
+            <div style="font-size:13px;font-weight:700;color:#1f2937;margin-bottom:6px;border-left:3px solid #16a34a;padding-left:8px;">Configuração</div>
+            <table style="width:100%;border-collapse:collapse;margin-bottom:14px;">
+                <tr style="background:#f9fafb;">
+                    <td style="padding:6px 8px;color:#6b7280;font-size:12px;">Total de pontas</td>
+                    <td style="padding:6px 8px;font-weight:600;">${total}</td>
+                    <td style="padding:6px 8px;color:#6b7280;font-size:12px;">Pontas coletadas</td>
+                    <td style="padding:6px 8px;font-weight:600;">${coletadas}</td>
+                </tr>
+                <tr>
+                    <td style="padding:6px 8px;color:#6b7280;font-size:12px;">Tempo de coleta</td>
+                    <td style="padding:6px 8px;font-weight:600;">${tempo}s</td>
+                    <td style="padding:6px 8px;color:#6b7280;font-size:12px;">Forma de coleta</td>
+                    <td style="padding:6px 8px;font-weight:600;">${forma}</td>
+                </tr>
+                <tr style="background:#f9fafb;">
+                    <td style="padding:6px 8px;color:#6b7280;font-size:12px;">Vazão informada</td>
+                    <td style="padding:6px 8px;font-weight:600;">${vazaoInfo} L/min</td>
+                    <td style="padding:6px 8px;color:#6b7280;font-size:12px;">Constante atual</td>
+                    <td style="padding:6px 8px;font-weight:600;">${constAtual}</td>
+                </tr>
+            </table>
+
+            <!-- Volumes coletados -->
+            ${inputs.length > 0 ? `
+            <div style="font-size:13px;font-weight:700;color:#1f2937;margin-bottom:6px;border-left:3px solid #16a34a;padding-left:8px;">Volumes Coletados (mL)</div>
+            <table style="width:100%;border-collapse:collapse;margin-bottom:14px;">
+                <tr>${bicosHTML}</tr>
+            </table>` : ''}
+
+            <!-- Resultado -->
+            <div style="font-size:13px;font-weight:700;color:#1f2937;margin-bottom:6px;border-left:3px solid #16a34a;padding-left:8px;">Resultado</div>
+            <table style="width:100%;border-collapse:collapse;margin-bottom:20px;">
+                <tr style="background:#f9fafb;">
+                    <td style="padding:6px 8px;color:#6b7280;font-size:12px;">Vazão coletada</td>
+                    <td style="padding:6px 8px;font-weight:700;font-size:16px;color:#1e40af;">${vazaoColetada} L/min</td>
+                </tr>
+                ${desvioHTML}
+                ${novaConstHTML}
+            </table>
+
+        </div>
+        <div style="text-align:center;font-size:10px;color:#9ca3af;padding:10px;border-top:1px solid #e5e7eb;margin-top:16px;">Powered by Equalizagro Consultoria e Tecnologia Ltda.</div>`;
+
+        _downloadPDF(div.innerHTML, 'relatorio-fluxometro.pdf');
+    }
+
+    function convGrid(items, activeIdx) {
+        const cells = items.map((item, i) => {
+            const active = i === activeIdx;
+            const cls = active ? 'conv-cell conv-cell-active' : 'conv-cell conv-cell-inactive';
+            return `<div class="${cls}">
+                        <div class="conv-cell-label">${item.label}</div>
+                        <div class="conv-cell-val">${item.val}</div>
+                    </div>`;
+        }).join('');
+        return `<div class="conv-grid">${cells}</div>`;
+    }
+
+    // ── ABA 5: Calibração de Fluxômetros ─────────────────────────
+
+    function gerarBicos() {
+        const total     = parseInt(document.getElementById('fl-total').value) || 0;
+        const coletadas = parseInt(document.getElementById('fl-coletadas').value) || 0;
+        const n         = coletadas;
+        const grid   = document.getElementById('fl-grid');
+        const card   = document.getElementById('fl-grid-card');
+        const titulo = document.getElementById('fl-grid-titulo');
+
+        if (!(n > 0 && n <= 120)) {
+            card.style.display = 'none';
+            grid.innerHTML = '';
+            calcFluxo();
+            return;
+        }
+
+        titulo.textContent = total > 0 ? `(${n} coletadas de ${total} pontas)` : `(${n} coletadas)`;
+        card.style.display = 'block';
+
+        // Preserva valores já digitados
+        const existing = {};
+        grid.querySelectorAll('.bico-item input').forEach(inp => {
+            if (inp.value) existing[inp.dataset.bico] = inp.value;
+        });
+
+        grid.innerHTML = '';
+        for (let i = 1; i <= n; i++) {
+            const div = document.createElement('div');
+            div.className = 'bico-item';
+            div.innerHTML = `
+                <label>Ponta ${i}</label>
+                <input type="number" min="0" step="0.1" placeholder="mL"
+                    data-bico="${i}" oninput="onBicoInput(this)" onchange="calcFluxo()">`;
+            if (existing[i]) {
+                const inp = div.querySelector('input');
+                inp.value = existing[i];
+                inp.classList.add('filled');
+            }
+            grid.appendChild(div);
+        }
+        calcFluxo();
+    }
+
+    function onBicoInput(inp) {
+        inp.classList.toggle('filled', inp.value !== '');
+        calcFluxo();
+    }
+
+    function calcFluxo() {
+        const total     = parseInt(document.getElementById('fl-total').value) || 0;
+        const coletadas = parseInt(document.getElementById('fl-coletadas').value) || 0;
+        const tempo     = parseFloat(document.getElementById('fl-tempo').value) || 60;
+        const vazaoInfo = parseFloat(document.getElementById('fl-vazao-info').value) || 0;
+        const constAtual= parseFloat(document.getElementById('fl-constante').value) || 0;
+        const el        = document.getElementById('fl-resultado');
+
+        // Soma todos os valores preenchidos no grid
+        const inputs = document.querySelectorAll('#fl-grid .bico-item input');
+        let somaML = 0;
+        let preenchidas = 0;
+        inputs.forEach(inp => {
+            const v = parseFloat(inp.value);
+            if (!isNaN(v) && v > 0) { somaML += v; preenchidas++; }
+        });
+
+        // Precisa de pelo menos: total, coletadas, tempo e valores no grid
+        if (!(total > 0 && coletadas > 0 && tempo > 0 && preenchidas > 0)) {
+            el.innerHTML = '<div class="empty-state">Preencha os campos e as pontas coletadas para calcular</div>';
+            return;
+        }
+
+        // Fórmula planilha:
+        // vazão coletada (L/min) = (somaML / coletadas * total) * (60 / tempo) / 1000
+        const vazaoColetada = (somaML / coletadas * total) * (60 / tempo) / 1000;
+
+        let html = `
+        <div class="result-box blue" style="margin-bottom:8px;">
+            <div class="result-label">Vazão coletada (L/min)</div>
+            <div class="result-value">${vazaoColetada.toFixed(2)}</div>
+        </div>
+        <div class="result-box" style="margin-bottom:8px;">
+            <div class="result-label">Pontas com valor preenchido</div>
+            <div class="result-value">${preenchidas} de ${coletadas} coletadas</div>
+        </div>`;
+
+        if (vazaoInfo > 0) {
+            // Desvio: quanto a coleta real difere do que o fluxômetro informa
+            const desvio = ((vazaoColetada - vazaoInfo) / vazaoInfo) * 100;
+            const desvioAbs = Math.abs(desvio);
+            const cor = desvioAbs < 3 ? '' : desvioAbs < 8 ? 'orange' : 'blue';
+            const status = desvioAbs < 3 ? '✅ Dentro do tolerado' : desvioAbs < 8 ? '⚠️ Atenção' : '🔴 Fora da faixa';
+            html += `
+        <div class="result-box ${cor}" style="margin-bottom:8px;">
+            <div class="result-label">Desvio (coletada vs. informada)</div>
+            <div class="result-value">${desvio > 0 ? '+' : ''}${desvio.toFixed(1)}% — ${status}</div>
+        </div>`;
+        }
+
+        if (vazaoInfo > 0 && constAtual > 0) {
+            // Nova constante: ajusta o fluxômetro para indicar a vazão real coletada
+            // (vazão coletada / vazão informada) × constante atual
+            const novaConst = (vazaoInfo / vazaoColetada) * constAtual;
+            html += `
+        <div class="result-box purple">
+            <div class="result-label">Nova constante do fluxômetro</div>
+            <div class="result-value">${novaConst.toFixed(1)}</div>
+        </div>`;
+        }
+
+        el.innerHTML = html;
+    }
+
+    // ══════════════════════════════════════════════════════════════
+    // ABA 6 — DESGASTE DE PONTAS
+    // ══════════════════════════════════════════════════════════════
+
+    function gerarBicosDesgaste() {
+        const n      = parseInt(document.getElementById('dg-total').value) || 0;
+        const grid   = document.getElementById('dg-grid');
+        const card   = document.getElementById('dg-grid-card');
+        const titulo = document.getElementById('dg-grid-titulo');
+
+        if (!(n > 0 && n <= 120)) {
+            card.style.display = 'none';
+            grid.innerHTML = '';
+            calcDesgaste();
+            return;
+        }
+
+        titulo.textContent = `(${n} pontas)`;
+        card.style.display = 'block';
+
+        const existing = {};
+        grid.querySelectorAll('.bico-item input').forEach(inp => {
+            if (inp.value) existing[inp.dataset.bico] = inp.value;
+        });
+
+        grid.innerHTML = '';
+        for (let i = 1; i <= n; i++) {
+            const div = document.createElement('div');
+            div.className = 'bico-item';
+            div.innerHTML = `
+                <label>Ponta ${i}</label>
+                <input type="number" min="0" step="0.1" placeholder="mL"
+                    data-bico="${i}" oninput="onBicoDesgasteInput(this)">`;
+            if (existing[i]) {
+                const inp = div.querySelector('input');
+                inp.value = existing[i];
+                inp.classList.add('filled');
+            }
+            grid.appendChild(div);
+        }
+        calcDesgaste();
+    }
+
+    function onBicoDesgasteInput(inp) {
+        inp.classList.toggle('filled', inp.value !== '');
+        calcDesgaste();
+    }
+
+    function calcDesgaste() {
+        const prefVal  = parseFloat(document.getElementById('dg-pref-val').value);
+        const prefUnit = document.getElementById('dg-pref-unit').value;
+        const vNomRaw  = parseFloat(document.getElementById('dg-vnom').value);
+        const vNom     = vNomRaw > 0 ? vNomRaw : 0;  // campo já é em L/min
+        const pColVal  = parseFloat(document.getElementById('dg-pcol-val').value);
+        const pColUnit = document.getElementById('dg-pcol-unit').value;
+        const tempo    = parseFloat(document.getElementById('dg-tempo').value) || 60;
+        const elRes    = document.getElementById('dg-resultado');
+        const elTab    = document.getElementById('dg-tabela');
+        const elTabCard= document.getElementById('dg-tabela-card');
+
+        // Coleta valores do grid
+        const inputs = document.querySelectorAll('#dg-grid .bico-item input');
+        const valores = [];
+        inputs.forEach(inp => {
+            const v = parseFloat(inp.value);
+            if (!isNaN(v) && v > 0) valores.push({ bico: inp.dataset.bico, ml: v });
+        });
+
+        if (valores.length === 0) {
+            elRes.innerHTML = '<div class="empty-state">Preencha os campos e as pontas para calcular</div>';
+            elTabCard.style.display = 'none';
+            return;
+        }
+
+        // Converte mL coletado → L/min para cada ponta
+        // Se há pressão de coleta ≠ referência, corrige via lei: Q_ref = Q_col × √(P_ref/P_col)
+        const pRefBar = (prefVal > 0) ? toBar(prefVal, prefUnit) : 0;
+        const pColBar = (pColVal > 0) ? toBar(pColVal, pColUnit) : 0;
+        const fator   = (pRefBar > 0 && pColBar > 0) ? Math.sqrt(pRefBar / pColBar) : 1;
+
+        // L/min coletada diretamente
+        const vazoes = valores.map(v => ({
+            bico: v.bico,
+            ml:   v.ml,
+            lmin: (v.ml / 1000) * (60 / tempo),          // vazão na pressão de coleta
+            lminRef: (v.ml / 1000) * (60 / tempo) * fator // corrigida para pressão ref
+        }));
+
+        const n       = vazoes.length;
+        const soma    = vazoes.reduce((s, v) => s + v.lminRef, 0);
+        const media   = soma / n;
+        const variancia = vazoes.reduce((s, v) => s + Math.pow(v.lminRef - media, 2), 0) / n;
+        const dp      = Math.sqrt(variancia);
+        const cv      = (media > 0) ? (dp / media) * 100 : 0;
+
+        // Limites
+        const LIM_NOM = 10;  // % em relação à vazão nominal
+        const LIM_CV  = 5;   // % coeficiente de variação
+
+        // Status por ponta — critério exclusivamente em relação à nominal (quando disponível)
+        let nOk = 0, nWarn = 0, nDanger = 0;
+        const linhas = vazoes.map(v => {
+            // Desvio em relação à nominal (referência principal)
+            const desvNom = vNom > 0 ? ((v.lminRef - vNom) / vNom) * 100 : null;
+            // Desvio em relação à média (exibição apenas, não define status quando nominal disponível)
+            const desvMed = ((v.lminRef - media) / media) * 100;
+
+            let recomendacao = 'OK';
+            let badgeCls = 'ok';
+            let falha = false;
+
+            if (desvNom !== null) {
+                // Com nominal: usa só desvNom para decidir status e direção
+                if (Math.abs(desvNom) > LIM_NOM) {
+                    falha = true;
+                    if (desvNom < 0) { recomendacao = 'Verificar';   badgeCls = 'warn'; }
+                    else             { recomendacao = 'Substituir';  badgeCls = 'danger'; }
+                }
+            } else {
+                // Sem nominal: usa desvMed como fallback
+                if (Math.abs(desvMed) > LIM_NOM) {
+                    falha = true;
+                    if (desvMed < 0) { recomendacao = 'Verificar';  badgeCls = 'warn'; }
+                    else             { recomendacao = 'Substituir'; badgeCls = 'danger'; }
+                }
+            }
+
+            const status = falha ? badgeCls : 'ok';
+            if (!falha) nOk++; else if (badgeCls === 'warn') nWarn++; else nDanger++;
+
+            const nomStr = desvNom !== null
+                ? `${desvNom > 0 ? '+' : ''}${desvNom.toFixed(1)}%`
+                : '—';
+            return { bico: v.bico, lmin: v.lminRef, desvNom: nomStr, desvMed, status, badgeCls, badgeTxt: recomendacao };
+        });
+
+        // Regra: >10% das pontas fora do range → trocar conjunto
+        const nFora   = nWarn + nDanger;
+        const pctFora = n > 0 ? (nFora / n) * 100 : 0;
+        const trocarConjunto = cv > LIM_CV || pctFora > 10;
+
+        const cvStatus = cv > LIM_CV ? 'danger' : cv > LIM_CV * 0.7 ? 'warn' : 'ok';
+
+        // Vazão nominal corrigida para a pressão de coleta: vNom ÷ fator
+        const vNomCol = (vNom > 0 && fator > 0) ? vNom / fator : null;
+
+        // Resumo
+        const resumoHTML = `
+        <div class="dg-summary">
+            <div class="dg-stat ${media > 0 ? 'ok' : ''}">
+                <div class="dg-stat-label">Média coletada</div>
+                <div class="dg-stat-val">${media.toFixed(3)}</div>
+            </div>
+            ${vNomCol !== null ? `
+            <div class="dg-stat" style="border-color:#6366f1;background:#eef2ff;">
+                <div class="dg-stat-label" style="color:#4338ca;">Nominal p/ coleta</div>
+                <div class="dg-stat-val" style="color:#3730a3;">${vNomCol.toFixed(3)}</div>
+            </div>` : ''}
+            <div class="dg-stat ${cvStatus}">
+                <div class="dg-stat-label">CV (%)</div>
+                <div class="dg-stat-val">${cv.toFixed(1)}%</div>
+            </div>
+            <div class="dg-stat ${nDanger > 0 ? 'danger' : 'ok'}">
+                <div class="dg-stat-label">Substituir</div>
+                <div class="dg-stat-val">${nDanger}</div>
+            </div>
+            <div class="dg-stat ${nWarn > 0 ? 'warn' : 'ok'}">
+                <div class="dg-stat-label">Verificar</div>
+                <div class="dg-stat-val">${nWarn}</div>
+            </div>
+            <div class="dg-stat ok">
+                <div class="dg-stat-label">OK</div>
+                <div class="dg-stat-val">${nOk}</div>
+            </div>
+        </div>`;
+
+        // Alertas
+        const cvAlerta = cv > LIM_CV
+            ? `<div class="result-box" style="border-color:#ef4444;background:#fef2f2;margin-top:8px;">
+                <div class="result-label">⚠️ Coeficiente de Variação acima do limite</div>
+                <div class="result-value" style="color:#991b1b;font-size:18px;">CV = ${cv.toFixed(1)}% (limite: ${LIM_CV}%)</div>
+               </div>`
+            : `<div class="result-box" style="margin-top:8px;">
+                <div class="result-label">✅ Coeficiente de Variação dentro do limite</div>
+                <div class="result-value" style="font-size:18px;">CV = ${cv.toFixed(1)}% (limite: ${LIM_CV}%)</div>
+               </div>`;
+
+        const conjuntoAlerta = trocarConjunto
+            ? `<div class="result-box" style="border-color:#7c3aed;background:#f5f3ff;margin-top:8px;">
+                <div class="result-label">🔴 Recomendação</div>
+                <div class="result-value" style="color:#6d28d9;font-size:16px;">Trocar conjunto de pontas</div>
+               </div>`
+            : '';
+
+        elRes.innerHTML = resumoHTML + cvAlerta + conjuntoAlerta;
+
+        // Tabela por ponta
+        const linhasHTML = linhas.map(l => `
+            <tr class="${l.status}">
+                <td><strong>${l.bico}</strong></td>
+                <td>${l.lmin.toFixed(3)}</td>
+                <td>${l.desvNom}</td>
+                <td>${l.desvMed > 0 ? '+' : ''}${l.desvMed.toFixed(1)}%</td>
+                <td><span class="dg-badge ${l.badgeCls}">${l.badgeTxt}</span></td>
+            </tr>`).join('');
+
+        elTab.innerHTML = `
+        <div style="overflow-x:auto;">
+        <table class="dg-table">
+            <thead><tr>
+                <th>Ponta</th>
+                <th>L/min</th>
+                <th>Δ Nominal</th>
+                <th>Δ Média</th>
+                <th>Status</th>
+            </tr></thead>
+            <tbody>${linhasHTML}</tbody>
+        </table>
+        </div>`;
+        elTabCard.style.display = 'block';
+    }
+
+    // ── Relatório Desgaste ────────────────────────────────────────
+    function emitirRelatorioDesgaste() {
+        const cliente  = document.getElementById('dg-cliente').value  || '—';
+        const equip    = document.getElementById('dg-equip').value    || '—';
+        const resp     = document.getElementById('dg-resp').value     || '—';
+        const empresa  = document.getElementById('dg-empresa').value  || '—';
+        const dataRaw  = document.getElementById('dg-data').value;
+        const data     = dataRaw ? new Date(dataRaw + 'T12:00:00').toLocaleDateString('pt-BR') : '—';
+        const modelo   = document.getElementById('dg-modelo').value    || '—';
+        const prefVal  = document.getElementById('dg-pref-val').value || '—';
+        const prefUnit = document.getElementById('dg-pref-unit').value;
+        const vNomRawPdf  = document.getElementById('dg-vnom').value || '—';
+        const vNomDisplayPdf = vNomRawPdf !== '—' ? `${vNomRawPdf} L/min` : '—';
+        const vNom = vNomRawPdf !== '—' ? parseFloat(vNomRawPdf) : 0;
+        const pColVal  = document.getElementById('dg-pcol-val').value || '—';
+        const pColUnit = document.getElementById('dg-pcol-unit').value;
+        const tempo    = document.getElementById('dg-tempo').value    || '60';
+        const forma    = document.getElementById('dg-forma').value;
+        const totalPontas = document.getElementById('dg-total').value || '—';
+
+        // Recalcula para ter os dados frescos
+        const pRefBarPdf = toBar(parseFloat(prefVal) || 0, prefUnit);
+        const pColBarPdf = toBar(parseFloat(pColVal) || 0, pColUnit);
+        const fatorPdf   = (pRefBarPdf > 0 && pColBarPdf > 0) ? Math.sqrt(pRefBarPdf / pColBarPdf) : 1;
+        const vNomColPdf = (vNom > 0 && fatorPdf > 0) ? (vNom / fatorPdf).toFixed(3) : null;
+        const tempoN   = parseFloat(tempo) || 60;
+        const vNomN    = vNom || 0;
+
+        const inputs = document.querySelectorAll('#dg-grid .bico-item input');
+        const vazoes = [];
+        inputs.forEach(inp => {
+            const v = parseFloat(inp.value);
+            if (!isNaN(v) && v > 0) {
+                const lminRef = (v / 1000) * (60 / tempoN) * fatorPdf;
+                vazoes.push({ bico: inp.dataset.bico, ml: v, lminRef });
+            }
+        });
+
+        const n       = vazoes.length;
+        const media   = n > 0 ? vazoes.reduce((s, v) => s + v.lminRef, 0) / n : 0;
+        const dp      = n > 0 ? Math.sqrt(vazoes.reduce((s, v) => s + Math.pow(v.lminRef - media, 2), 0) / n) : 0;
+        const cv      = media > 0 ? (dp / media) * 100 : 0;
+
+        const linhasHTML = n === 0
+            ? `<tr><td colspan="5" style="padding:12px;text-align:center;color:#9ca3af;font-style:italic;">Nenhuma ponta coletada</td></tr>`
+            : vazoes.map(v => {
+            const desvNom = vNomN > 0 ? ((v.lminRef - vNomN) / vNomN) * 100 : null;
+            const desvMed = ((v.lminRef - media) / media) * 100;
+            let falha, dir;
+            if (desvNom !== null) { falha = Math.abs(desvNom) > 10; dir = desvNom; }
+            else                  { falha = Math.abs(desvMed) > 10; dir = desvMed; }
+            let cor, status;
+            if (!falha)      { cor = '#f0fdf4'; status = '✅ OK'; }
+            else if (dir < 0){ cor = '#fefce8'; status = '⚠️ Verificar'; }
+            else             { cor = '#fef2f2'; status = '🔴 Substituir'; }
+            return `<tr style="background:${cor};">
+                <td style="padding:5px 7px;border:1px solid #e5e7eb;text-align:center;font-weight:600;">${v.bico}</td>
+                <td style="padding:5px 7px;border:1px solid #e5e7eb;text-align:center;">${v.lminRef.toFixed(3)}</td>
+                <td style="padding:5px 7px;border:1px solid #e5e7eb;text-align:center;">${desvNom !== null ? (desvNom > 0 ? '+' : '') + desvNom.toFixed(1) + '%' : '—'}</td>
+                <td style="padding:5px 7px;border:1px solid #e5e7eb;text-align:center;">${desvMed > 0 ? '+' : ''}${desvMed.toFixed(1)}%</td>
+                <td style="padding:5px 7px;border:1px solid #e5e7eb;text-align:center;font-weight:600;">${status}</td>
+            </tr>`;
+        }).join('');
+
+        const nFora = vazoes.filter(v => {
+            if (vNomN > 0) return Math.abs((v.lminRef - vNomN) / vNomN) * 100 > 10;
+            return Math.abs((v.lminRef - media) / media) * 100 > 10;
+        }).length;
+        const pctFora = n > 0 ? (nFora / n) * 100 : 0;
+        const trocar  = cv > 5 || pctFora > 10;
+
+        const cvCor   = cv > 5 ? '#fef2f2' : '#f0fdf4';
+        const cvTxt   = cv > 5 ? '⚠️ Acima do limite' : '✅ Dentro do limite';
+        const trocarHTML = trocar
+            ? `<tr style="background:#f5f3ff;">
+                <td style="padding:6px 8px;color:#6b7280;font-size:12px;" colspan="2">Recomendação geral</td>
+                <td style="padding:6px 8px;font-weight:700;color:#6d28d9;" colspan="2">🔴 Trocar conjunto de pontas</td>
+               </tr>`
+            : '';
+
+        const div = document.getElementById('relatorio-pdf');
+        div.innerHTML = `
+        <div style="font-family:Arial,sans-serif;max-width:800px;margin:0 auto;padding:20px;">
+
+            <div style="display:flex;align-items:center;gap:16px;border-bottom:3px solid #16a34a;padding-bottom:12px;margin-bottom:16px;">
+                <img src="data:image/png;base64,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" alt="Equalizagro" style="height:48px;width:auto;">
+                <div>
+                    <div style="font-size:18px;font-weight:700;color:#1f2937;">Relatório de Desgaste de Pontas</div>
+                    <div style="font-size:12px;color:#6b7280;">Equalizagro • Consultoria e Tecnologia em Aplicação</div>
+                </div>
+            </div>
+
+            <table style="width:100%;border-collapse:collapse;margin-bottom:14px;">
+                <tr style="background:#f9fafb;">
+                    <td style="padding:6px 8px;color:#6b7280;font-size:12px;width:130px;">Cliente</td>
+                    <td style="padding:6px 8px;font-weight:600;">${cliente}</td>
+                    <td style="padding:6px 8px;color:#6b7280;font-size:12px;width:130px;">Data</td>
+                    <td style="padding:6px 8px;font-weight:600;">${data}</td>
+                </tr>
+                <tr>
+                    <td style="padding:6px 8px;color:#6b7280;font-size:12px;">Equipamento</td>
+                    <td style="padding:6px 8px;font-weight:600;">${equip}</td>
+                    <td style="padding:6px 8px;color:#6b7280;font-size:12px;">Responsável</td>
+                    <td style="padding:6px 8px;font-weight:600;">${resp}</td>
+                </tr>
+                <tr style="background:#f9fafb;">
+                    <td style="padding:6px 8px;color:#6b7280;font-size:12px;">Empresa</td>
+                    <td style="padding:6px 8px;font-weight:600;" colspan="3">${empresa}</td>
+                </tr>
+            </table>
+
+            <div style="font-size:13px;font-weight:700;color:#1f2937;margin-bottom:6px;border-left:3px solid #16a34a;padding-left:8px;">Referência e Coleta</div>
+            <table style="width:100%;border-collapse:collapse;margin-bottom:14px;">
+                <tr style="background:#f9fafb;">
+                    <td style="padding:6px 8px;color:#6b7280;font-size:12px;">Marca / Modelo da Ponta</td>
+                    <td style="padding:6px 8px;font-weight:600;" colspan="3">${modelo}</td>
+                </tr>
+                <tr>
+                    <td style="padding:6px 8px;color:#6b7280;font-size:12px;">Pressão de referência</td>
+                    <td style="padding:6px 8px;font-weight:600;">${prefVal} ${prefUnit}</td>
+                    <td style="padding:6px 8px;color:#6b7280;font-size:12px;">Vazão nominal</td>
+                    <td style="padding:6px 8px;font-weight:600;">${vNomDisplayPdf}</td>
+                </tr>
+                <tr>
+                    <td style="padding:6px 8px;color:#6b7280;font-size:12px;">Pressão de coleta</td>
+                    <td style="padding:6px 8px;font-weight:600;">${pColVal} ${pColUnit}</td>
+                    <td style="padding:6px 8px;color:#6b7280;font-size:12px;">Tempo de coleta</td>
+                    <td style="padding:6px 8px;font-weight:600;">${tempo}s</td>
+                </tr>
+                <tr style="background:#f9fafb;">
+                    <td style="padding:6px 8px;color:#6b7280;font-size:12px;">Forma de coleta</td>
+                    <td style="padding:6px 8px;font-weight:600;">${forma}</td>
+                    <td style="padding:6px 8px;color:#6b7280;font-size:12px;">Total de pontas</td>
+                    <td style="padding:6px 8px;font-weight:600;">${totalPontas}</td>
+                </tr>
+            </table>
+
+            <div style="font-size:13px;font-weight:700;color:#1f2937;margin-bottom:6px;border-left:3px solid #16a34a;padding-left:8px;">Resumo Estatístico</div>
+            <table style="width:100%;border-collapse:collapse;margin-bottom:14px;">
+                <tr style="background:#f9fafb;">
+                    <td style="padding:6px 8px;color:#6b7280;font-size:12px;">Pontas avaliadas</td>
+                    <td style="padding:6px 8px;font-weight:600;">${n}</td>
+                    <td style="padding:6px 8px;color:#6b7280;font-size:12px;">Média coletada (L/min)</td>
+                    <td style="padding:6px 8px;font-weight:600;">${media.toFixed(3)}</td>
+                </tr>
+                ${vNomColPdf ? `<tr>
+                    <td style="padding:6px 8px;color:#6b7280;font-size:12px;">Nominal p/ pressão coleta</td>
+                    <td style="padding:6px 8px;font-weight:600;color:#3730a3;">${vNomColPdf} L/min</td>
+                    <td style="padding:6px 8px;color:#6b7280;font-size:12px;">Pontas fora do range</td>
+                    <td style="padding:6px 8px;font-weight:700;color:${nFora > 0 ? '#991b1b' : '#15803d'};">${nFora} (${pctFora.toFixed(0)}%)</td>
+                </tr>` : `<tr>
+                    <td style="padding:6px 8px;color:#6b7280;font-size:12px;">Desvio padrão</td>
+                    <td style="padding:6px 8px;font-weight:600;">${dp.toFixed(4)}</td>
+                    <td style="padding:6px 8px;color:#6b7280;font-size:12px;">Pontas fora do range</td>
+                    <td style="padding:6px 8px;font-weight:700;color:${nFora > 0 ? '#991b1b' : '#15803d'};">${nFora} (${pctFora.toFixed(0)}%)</td>
+                </tr>`}
+                <tr>
+                    <td style="padding:6px 8px;color:#6b7280;font-size:12px;">Desvio padrão</td>
+                    <td style="padding:6px 8px;font-weight:600;" colspan="3">${dp.toFixed(4)}</td>
+                </tr>
+                <tr style="background:${cvCor};">
+                    <td style="padding:6px 8px;color:#6b7280;font-size:12px;">CV (%)</td>
+                    <td style="padding:6px 8px;font-weight:700;" colspan="3">${cv.toFixed(1)}% — ${cvTxt} (limite: 5%)</td>
+                </tr>
+                ${trocarHTML}
+            </table>
+
+            <div style="font-size:13px;font-weight:700;color:#1f2937;margin-bottom:6px;border-left:3px solid #16a34a;padding-left:8px;">Resultado por Ponta</div>
+            <table style="width:100%;border-collapse:collapse;margin-bottom:20px;font-size:12px;">
+                <thead>
+                    <tr style="background:#f3f4f6;">
+                        <th style="padding:6px 7px;border:1px solid #e5e7eb;text-align:center;">Ponta</th>
+                        <th style="padding:6px 7px;border:1px solid #e5e7eb;text-align:center;">L/min</th>
+                        <th style="padding:6px 7px;border:1px solid #e5e7eb;text-align:center;">Δ Nominal</th>
+                        <th style="padding:6px 7px;border:1px solid #e5e7eb;text-align:center;">Δ Média</th>
+                        <th style="padding:6px 7px;border:1px solid #e5e7eb;text-align:center;">Status</th>
+                    </tr>
+                </thead>
+                <tbody>${linhasHTML}</tbody>
+            </table>
+
+        </div>
+        <div style="text-align:center;font-size:10px;color:#9ca3af;padding:10px;border-top:1px solid #e5e7eb;margin-top:16px;">Powered by Equalizagro Consultoria e Tecnologia Ltda.</div>`;
+
+        _downloadPDF(div.innerHTML, 'relatorio-desgaste.pdf');
+    }
+
+    // ══════════════════════════════════════════════════════════════
+    // ABA 7 — ESPECTRO DE GOTAS
+    // ══════════════════════════════════════════════════════════════
+    const ESP_CONST_Z = 1.28155;
+    const ESP_CONST_N = 60000000;
+    let espMode  = 'dmv';
+    let espCurva = '1';
+
+    function selectCurva(val) {
+        espCurva = val;
+        document.getElementById('radio-conv').classList.toggle('active',  val === '1');
+        document.getElementById('radio-oleo').classList.toggle('active',  val === '2');
+        const rr = document.getElementById('radio-risco');
+        if (rr) rr.classList.toggle('active', val === '3');
+        document.querySelectorAll('[name="curva"]').forEach(r => r.checked = (r.value === val));
+        calcEspectro();
+    }
+
+    function setModeEsp(mode, btn) {
+        espMode = mode;
+        document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('esp-dmv-field').classList.toggle('hidden',  mode === 'dmv');
+        document.getElementById('esp-dens-field').classList.toggle('hidden', mode === 'densidade');
+        document.getElementById('esp-taxa-field').classList.toggle('hidden', mode === 'taxa');
+        document.getElementById('esp-dmv-result').classList.toggle('hidden',  mode !== 'dmv');
+        document.getElementById('esp-dens-result').classList.toggle('hidden', mode !== 'densidade');
+        document.getElementById('esp-taxa-result').classList.toggle('hidden', mode !== 'taxa');
+        calcEspectro();
+    }
+
+    function espFAR(ar) {
+        const a = parseFloat(ar) || 1.0;
+        if (a <= 0) return 1.886;
+        const sigma = Math.asinh(a / 2) / ESP_CONST_Z;
+        return Math.exp(4.5 * sigma * sigma);
+    }
+
+    function calcEspectro() {
+        const dmv  = parseFloat(document.getElementById('esp-dmv').value)  || 0;
+        const dens = parseFloat(document.getElementById('esp-dens').value) || 0;
+        const taxa = parseFloat(document.getElementById('esp-taxa').value) || 0;
+        const ar   = parseFloat(document.getElementById('esp-ar').value)   || 1.0;
+        const fAR  = espFAR(ar);
+        let res = { dmv: 0, dens: 0, taxa: 0 };
+
+        if (espMode === 'dmv') {
+            if (taxa > 0 && dens > 0)
+                res.dmv = Math.pow((taxa * ESP_CONST_N * fAR) / (Math.PI * dens), 1/3);
+            res.dens = dens; res.taxa = taxa;
+        } else if (espMode === 'densidade') {
+            if (taxa > 0 && dmv > 0)
+                res.dens = ((taxa * ESP_CONST_N) / (Math.PI * Math.pow(dmv, 3))) * fAR;
+            res.dmv = dmv; res.taxa = taxa;
+        } else {
+            if (dmv > 0 && dens > 0)
+                res.taxa = (dens * Math.PI * Math.pow(dmv, 3)) / (ESP_CONST_N * fAR);
+            res.dmv = dmv; res.dens = dens;
+        }
+
+        // Curva 1: Convencional        → vida média 90s  → divisor 8000, DeltaT máx 8.0
+        // Curva 2: Baixo Vol. Oleoso   → vida média 60s  → divisor 3600, DeltaT máx 8.0
+        // Curva 3: Produtos Alto Risco → vida média 120s → divisor 10667, DeltaT máx 7.0
+        //   Divisor ∝ vida_média → maior vida média = divisor maior = ΔT menor = mais conservadora
+        const dmvFinal = res.dmv > 0 ? res.dmv : dmv;
+        const divisor  = espCurva === '1' ? 8000 : espCurva === '2' ? 3600 : 10667;
+        const dtMax    = espCurva === '3' ? 7.0 : 8.0;
+        const dtLim    = Math.min((dmvFinal * dmvFinal) / divisor, dtMax);
+
+        document.getElementById('esp-dmv-val').textContent  = (!res.dmv  || isNaN(res.dmv))  ? '—' : res.dmv.toFixed(1);
+        document.getElementById('esp-dens-val').textContent = (!res.dens || isNaN(res.dens))  ? '—' : res.dens.toFixed(1);
+        document.getElementById('esp-taxa-val').textContent = (!res.taxa || isNaN(res.taxa))  ? '—' : res.taxa.toFixed(2);
+        document.getElementById('esp-dt-limite').textContent = dtLim.toFixed(2);
+    }
+
+    // Inicializa espectro — aguarda DOM
+    window.addEventListener('load', function() {
+        const modeBtn = document.getElementById('mode-dmv');
+        if (modeBtn) setModeEsp('dmv', modeBtn);
+    });
+
+    // ══════════════════════════════════════════════════════════════
+    // ABA 8 — DELTA T
+    // ══════════════════════════════════════════════════════════════
+    function syncDT(field, value) {
+        if (field === 'umid') {
+            document.getElementById('dt-umidade').value     = value;
+            document.getElementById('dt-umidade-num').value = value;
+            document.getElementById('dt-umid-val').textContent = value;
+        } else {
+            document.getElementById('dt-temp').value     = value;
+            document.getElementById('dt-temp-num').value = value;
+            document.getElementById('dt-temp-val').textContent = value;
+        }
+    }
+
+    function calcDeltaT() {
+        const T  = parseFloat(document.getElementById('dt-temp').value)    || 25;
+        const RH = parseFloat(document.getElementById('dt-umidade').value) || 50;
+
+        const t1 = T * Math.atan(0.151977 * Math.sqrt(RH + 8.313659));
+        const t2 = Math.atan(T + RH);
+        const t3 = Math.atan(RH - 1.676331);
+        const t4 = 0.00391838 * Math.pow(RH, 1.5) * Math.atan(0.023101 * RH);
+        const dt = Math.max(0, T - (t1 + t2 - t3 + t4 - 4.686035));
+
+        const el = document.getElementById('dt-result');
+        let bg, tc, bc;
+
+        if      (dt < 1) { bg='#1e3a8a'; tc='#bfdbfe'; bc='#1e40af'; }  // azulão
+        else if (dt < 2) { bg='#1d4ed8'; tc='#dbeafe'; bc='#3b82f6'; }  // azul
+        else if (dt < 3) { bg='#60a5fa'; tc='#1e3a8a'; bc='#93c5fd'; }  // azulzinho
+        else if (dt < 4) { bg='#14532d'; tc='#bbf7d0'; bc='#16a34a'; }  // verdão
+        else if (dt < 5) { bg='#16a34a'; tc='#dcfce7'; bc='#4ade80'; }  // verde
+        else if (dt < 6) { bg='#86efac'; tc='#14532d'; bc='#4ade80'; }  // verdinho
+        else if (dt < 7) { bg='#fef08a'; tc='#713f12'; bc='#facc15'; }  // amarelo
+        else if (dt < 8) { bg='#fb923c'; tc='#431407'; bc='#f97316'; }  // laranja
+        else if (dt < 9) { bg='#fca5a5'; tc='#7f1d1d'; bc='#ef4444'; }  // vermelhinho
+        else             { bg='#991b1b'; tc='#fee2e2'; bc='#dc2626'; }  // vermelhão
+
+        el.style.background  = bg;
+        el.style.borderColor = bc;
+        el.innerHTML = `
+            <div class="deltat-emoji">💧</div>
+            <div class="deltat-value" style="color:${tc}">${dt.toFixed(1)}°C</div>`;
+    }
+
+    window.addEventListener('load', calcDeltaT);
+
+    // ══════════════════════════════════════════════════════════════
+    // SIDEBAR CONTROLS
+    // ══════════════════════════════════════════════════════════════
+    function openSidebar() {
+        document.getElementById('app-sidebar').classList.add('open');
+        document.getElementById('app-overlay').classList.add('visible');
+    }
+
+    function closeSidebar() {
+        document.getElementById('app-sidebar').classList.remove('open');
+        document.getElementById('app-overlay').classList.remove('visible');
+    }
+
+    // ══════════════════════════════════════════════════════════════
+    // HISTORY — localStorage
+    // ══════════════════════════════════════════════════════════════
+    const HISTORY_KEY  = 'eq_calc_history';
+    const CLIENTS_KEY  = 'eq_clients';
+    const EQUIP_KEY    = 'eq_equipments';
+    const MAX_HISTORY  = 60;
+
+    function getHistory() {
+        try { return JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]'); }
+        catch { return []; }
+    }
+
+    function saveHistory(arr) {
+        localStorage.setItem(HISTORY_KEY, JSON.stringify(arr));
+        updateHistoryBadge();
+    }
+
+    function updateHistoryBadge() {
+        const h  = getHistory();
+        const el = document.getElementById('sidebar-history-count');
+        if (!el) return;
+        if (h.length > 0) {
+            el.textContent   = h.length > 99 ? '99+' : String(h.length);
+            el.style.display = '';
+        } else {
+            el.style.display = 'none';
+        }
+    }
+
+    function addHistoryEntry(type, tabId, tabLabel, summary, data) {
+        const h = getHistory();
+        h.unshift({ id: Date.now(), type, tabId, tabLabel, summary, data,
+                    time: new Date().toISOString() });
+        if (h.length > MAX_HISTORY) h.splice(MAX_HISTORY);
+        saveHistory(h);
+    }
+
+    function showHistory() {
+        document.getElementById('history-panel').classList.remove('hidden');
+        renderHistory();
+        closeSidebar();
+    }
+
+    function closeHistory() {
+        document.getElementById('history-panel').classList.add('hidden');
+    }
+
+    function clearHistory() {
+        if (!confirm('Apagar todo o histórico de cálculos?')) return;
+        localStorage.removeItem(HISTORY_KEY);
+        updateHistoryBadge();
+        renderHistory();
+    }
+
+    function renderHistory() {
+        const h   = getHistory();
+        const el  = document.getElementById('history-list');
+        if (!el) return;
+
+        if (h.length === 0) {
+            el.innerHTML = '<div class="empty-state" style="padding:32px 0;">Nenhum cálculo registrado ainda.<br>Use as calculadoras e os dados serão salvos aqui.</div>';
+            return;
+        }
+
+        el.innerHTML = h.map(function(entry) {
+            const d       = new Date(entry.time);
+            const dateStr = d.toLocaleDateString('pt-BR');
+            const timeStr = d.toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
+            const isReport = entry.type === 'report';
+            return '<div class="history-item" onclick="restoreEntry(' + entry.id + ')">' +
+                '<div class="history-item-top">' +
+                '<span class="history-item-tab">' + (entry.tabLabel || entry.tabId) + '</span>' +
+                '<span class="history-item-time">' + dateStr + ' ' + timeStr + '</span>' +
+                '</div>' +
+                '<div class="history-item-summary">' + entry.summary + '</div>' +
+                '<div class="history-item-type' + (isReport ? ' report' : '') + '">' +
+                (isReport ? 'Relatório exportado' : 'Cálculo salvo') +
+                '</div></div>';
+        }).join('');
+    }
+
+    function restoreEntry(id) {
+        const h     = getHistory();
+        const entry = h.find(function(e) { return e.id === id; });
+        if (!entry || !entry.data) return;
+
+        // Switch to the right tab
+        const btn = document.querySelector('.sidebar-item[data-tab="' + entry.tabId + '"]');
+        if (btn) switchTab(entry.tabId, btn);
+        closeHistory();
+
+        // Restore field values after animation frame
+        requestAnimationFrame(function() {
+            var data = entry.data;
+            Object.keys(data).forEach(function(fieldId) {
+                var el = document.getElementById(fieldId);
+                if (el && data[fieldId] !== undefined) {
+                    el.value = data[fieldId];
+                    el.dispatchEvent(new Event('input', { bubbles: true }));
+                    el.dispatchEvent(new Event('change', { bubbles: true }));
+                }
+            });
+        });
+    }
+
+    // ── Auto-save (3 second debounce on any input) ────────────────
+    var autoSaveTimer = null;
+    var currentTab    = 'iso';
+
+    function collectTabData(tabId) {
+        var data    = {};
+        var content = document.getElementById(tabId);
+        if (!content) return data;
+        content.querySelectorAll('input, select').forEach(function(el) {
+            if (el.id && el.value !== '') data[el.id] = el.value;
+        });
+        return data;
+    }
+
+    function tabSummary(tabId) {
+        var data      = collectTabData(tabId);
+        var cliente   = data['fl-cliente'] || data['dg-cliente'] || '';
+        var label     = TAB_LABELS[tabId] || tabId;
+        if (cliente) return label + ' — ' + cliente;
+        var vals = Object.values(data).filter(function(v) { return v && v.trim(); }).slice(0, 3);
+        if (vals.length > 0) return label + ' — ' + vals.join(', ');
+        return label;
+    }
+
+    function scheduleAutoSave() {
+        clearTimeout(autoSaveTimer);
+        autoSaveTimer = setTimeout(doAutoSave, 3000);
+    }
+
+    function doAutoSave() {
+        var tabId = currentTab;
+        var data  = collectTabData(tabId);
+        if (Object.keys(data).length === 0) return;
+        addHistoryEntry('calc', tabId, TAB_LABELS[tabId] || tabId, tabSummary(tabId), data);
+    }
+
+    // Listen for any input to trigger auto-save debounce
+    document.addEventListener('input', function(e) {
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') {
+            scheduleAutoSave();
+        }
+    });
+    document.addEventListener('change', function(e) {
+        if (e.target.tagName === 'SELECT') {
+            scheduleAutoSave();
+        }
+    });
+
+    // ══════════════════════════════════════════════════════════════
+    // AUTOCOMPLETE — client & equipment lists
+    // ══════════════════════════════════════════════════════════════
+    function getClients()    { try { return JSON.parse(localStorage.getItem(CLIENTS_KEY) || '[]'); } catch { return []; } }
+    function getEquipments() { try { return JSON.parse(localStorage.getItem(EQUIP_KEY)   || '[]'); } catch { return []; } }
+
+    function addClient(name) {
+        if (!name || name.trim().length < 2) return;
+        var list = getClients();
+        var n    = name.trim();
+        if (!list.includes(n)) {
+            list.unshift(n);
+            if (list.length > 40) list.splice(40);
+            localStorage.setItem(CLIENTS_KEY, JSON.stringify(list));
+            updateDatalist('client-suggestions', list);
+        }
+    }
+
+    function addEquipment(name) {
+        if (!name || name.trim().length < 2) return;
+        var list = getEquipments();
+        var n    = name.trim();
+        if (!list.includes(n)) {
+            list.unshift(n);
+            if (list.length > 40) list.splice(40);
+            localStorage.setItem(EQUIP_KEY, JSON.stringify(list));
+            updateDatalist('equipment-suggestions', list);
+        }
+    }
+
+    function updateDatalist(id, items) {
+        var dl = document.getElementById(id);
+        if (!dl) return;
+        dl.innerHTML = items.map(function(item) {
+            return '<option value="' + item.replace(/"/g, '&quot;') + '"></option>';
+        }).join('');
+    }
+
+    function initDatalist() {
+        updateDatalist('client-suggestions', getClients());
+        updateDatalist('equipment-suggestions', getEquipments());
+    }
+
+    // ── Autofill banner ───────────────────────────────────────────
+    var pendingAutofill = null;
+
+    function onClientInput(el, tabId) {
+        var name = el.value.trim();
+        if (name.length < 2) { dismissAutofill(); return; }
+
+        // Look for previous entry for this client on this tab
+        var h     = getHistory();
+        var nameLc = name.toLowerCase();
+        var match = null;
+        for (var i = 0; i < h.length; i++) {
+            var e = h[i];
+            if (e.tabId !== tabId || !e.data) continue;
+            var c = (e.data['fl-cliente'] || e.data['dg-cliente'] || '').toLowerCase();
+            if (c === nameLc) { match = e; break; }
+        }
+
+        if (match) {
+            pendingAutofill = match;
+            var d   = new Date(match.time);
+            var msg = 'Dados de "' + name + '" encontrados (' + d.toLocaleDateString('pt-BR') + ') — aplicar?';
+            document.getElementById('autofill-msg').textContent = msg;
+            document.getElementById('autofill-banner').classList.remove('hidden');
+        } else {
+            dismissAutofill();
+        }
+    }
+
+    function applyAutofill() {
+        if (!pendingAutofill || !pendingAutofill.data) return;
+        var data = pendingAutofill.data;
+        Object.keys(data).forEach(function(fieldId) {
+            var el = document.getElementById(fieldId);
+            if (el) {
+                el.value = data[fieldId];
+                el.dispatchEvent(new Event('input', { bubbles: true }));
+                el.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+        });
+        dismissAutofill();
+    }
+
+    function dismissAutofill() {
+        var banner = document.getElementById('autofill-banner');
+        if (banner) banner.classList.add('hidden');
+        pendingAutofill = null;
+    }
+
+    // ── Init on load ──────────────────────────────────────────────
+    window.addEventListener('load', function() {
+        initDatalist();
+        updateHistoryBadge();
+        // Render all Lucide icons (sidebar, topbar, history button)
+        if (window.lucide) lucide.createIcons();
+    });
+</script>
+</body>
+</html>

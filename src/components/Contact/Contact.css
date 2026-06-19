@@ -1,6 +1,6 @@
 .contact {
   padding: var(--section-padding) 0;
-  background: white;
+  background: rgb(244, 242, 242);
   position: relative;
   overflow: hidden;
 }

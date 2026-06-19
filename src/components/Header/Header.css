@@ -21,8 +21,8 @@
 .header__top-bar {
   background: var(--gradient-primary);
   color: white;
-  padding: 0.25rem 0;
-  font-size: 0.75rem;
+  padding: 0.15rem 0;
+  font-size: 0.7rem;
   text-align: center;
 }
 
@@ -92,16 +92,17 @@
 }
 
 .header__main {
-  padding: 0.5rem 0;
+  padding: 0.4rem 0;
 }
 
 .header__container {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 var(--container-padding);
+  gap: 2rem;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0 1rem;
 }
 
 .header__logo {
@@ -111,6 +112,7 @@
   text-decoration: none;
   color: var(--neutral-900);
   transition: transform var(--transition-fast);
+  flex-shrink: 0;
 }
 
 .header__logo:hover {
@@ -118,10 +120,10 @@
 }
 
 .header__logo-image {
-  height: 50px;
+  height: 45px;
   width: auto;
   object-fit: contain;
-  max-width: 200px;
+  max-width: 190px;
 }
 
 .header__logo-text {
@@ -146,13 +148,15 @@
 .header__nav {
   display: flex;
   align-items: center;
-  gap: 2rem;
+  justify-content: center;
+  flex: 1;
+  gap: 1.8rem;
 }
 
 .header__nav-list {
   display: flex;
   align-items: center;
-  gap: 2rem;
+  gap: 1.8rem;
   list-style: none;
   margin: 0;
   padding: 0;
@@ -165,10 +169,10 @@
 .header__nav-link {
   font-family: var(--font-poppins);
   font-weight: 500;
-  font-size: 1rem;
+  font-size: 0.87rem;
   color: var(--neutral-700);
   text-decoration: none;
-  padding: 0.5rem 0;
+  padding: 0.35rem 0;
   transition: all var(--transition-fast);
   position: relative;
 }
@@ -204,46 +208,39 @@
   display: flex;
   align-items: center;
   gap: 1rem;
+  flex-shrink: 0;
 }
 
 .header__cta-button {
-  padding: 0.75rem 1.5rem;
-  font-size: 0.95rem;
+  padding: 0.5rem 1.1rem;
+  font-size: 0.8rem;
 }
 
 .header__mobile-toggle {
   display: none;
   flex-direction: column;
-  gap: 4px;
+  gap: 5px;
   background: none;
   border: none;
   cursor: pointer;
   padding: 0.5rem;
   border-radius: var(--radius-md);
   transition: background var(--transition-fast);
+  margin-left: auto;
 }
 
 .header__mobile-toggle:hover {
   background: var(--neutral-100);
 }
 
-.header__mobile-line {
-  width: 24px;
-  height: 2px;
-  background: var(--neutral-700);
-  transition: all var(--transition-fast);
+.header__mobile-toggle svg {
+  display: block;
+  color: var(--neutral-700);
+  transition: transform var(--transition-fast);
 }
 
-.header__mobile-toggle--active .header__mobile-line:nth-child(1) {
-  transform: rotate(45deg) translate(6px, 6px);
-}
-
-.header__mobile-toggle--active .header__mobile-line:nth-child(2) {
-  opacity: 0;
-}
-
-.header__mobile-toggle--active .header__mobile-line:nth-child(3) {
-  transform: rotate(-45deg) translate(6px, -6px);
+.header__mobile-toggle:hover svg {
+  color: var(--primary-green);
 }
 
 .header__mobile-menu {
@@ -360,3 +357,421 @@
     padding: 0 1rem;
   }
 }
+
+/* ============================================
+   ESTILOS DAS 7 OPÇÕES DE DESIGN
+   ============================================ */
+
+/* OPÇÃO 1: Badge Pill Minimalista */
+.header__ia-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.7rem;
+  background: rgba(26, 95, 58, 0.08);
+  border: 1px solid rgba(26, 95, 58, 0.2);
+  border-radius: 20px;
+  color: #1a5f3a;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.header__ia-badge-pill:hover {
+  background: rgba(26, 95, 58, 0.15);
+  border-color: rgba(26, 95, 58, 0.4);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(26, 95, 58, 0.15);
+}
+
+.header__ia-badge-pill svg {
+  transition: transform 0.3s ease;
+}
+
+.header__ia-badge-pill:hover svg {
+  transform: rotate(10deg) scale(1.1);
+}
+
+/* OPÇÃO 2: Apenas Ícone com Tooltip */
+.header__ia-icon-only {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  color: #1a5f3a;
+  background: transparent;
+  transition: all 0.3s ease;
+  margin-left: 0.5rem;
+  position: relative;
+}
+
+.header__ia-icon-only:hover {
+  background: rgba(26, 95, 58, 0.1);
+  transform: scale(1.05);
+}
+
+.header__ia-icon-only svg {
+  animation: iconPulse 2s ease-in-out infinite;
+}
+
+.header__ia-icon-only:hover svg {
+  animation: none;
+  transform: scale(1.1);
+}
+
+@keyframes iconPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+/* OPÇÃO 3: Estilo New/Novo */
+.header__ia-new-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 0.8rem;
+  color: #333;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  margin-left: 0.5rem;
+  position: relative;
+}
+
+.header__ia-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: linear-gradient(135deg, #1a5f3a, #2d8a54);
+  color: white;
+  font-size: 0.6rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 8px;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  animation: badgePulse 2s ease-in-out infinite;
+}
+
+@keyframes badgePulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.header__ia-new-tag:hover {
+  color: #1a5f3a;
+  transform: translateY(-2px);
+}
+
+.header__ia-new-tag:hover .header__ia-badge {
+  animation: none;
+  transform: scale(1.1);
+}
+
+/* OPÇÃO 4: Botão ConsultorIA — estilo hero__ia-button */
+.header__ia-ghost-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 1.2rem;
+  background: linear-gradient(135deg, rgba(26, 95, 58, 0.1), rgba(5, 150, 105, 0.1));
+  border: 1px solid rgba(26, 95, 58, 0.3);
+  border-radius: 2rem;
+  color: #1a5f3a;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.88rem;
+  white-space: nowrap;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.header__ia-ghost-button:hover {
+  background: linear-gradient(135deg, rgba(26, 95, 58, 0.2), rgba(5, 150, 105, 0.2));
+  border-color: #1a5f3a;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(26, 95, 58, 0.15);
+}
+
+.header__ia-ghost-button svg {
+  transition: transform 0.3s ease;
+}
+
+.header__ia-ghost-button:hover svg:last-child {
+  transform: translateX(4px);
+}
+
+/* OPÇÃO 5: Integrado ao Menu */
+.header__ia-menu-item {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 0.4rem;
+  color: #1a5f3a !important;
+}
+
+.header__ia-menu-item svg {
+  transition: transform 0.3s ease;
+}
+
+.header__ia-menu-item:hover svg {
+  transform: scale(1.15);
+}
+
+/* OPÇÃO 6: Floating Button */
+.header__ia-floating {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.6rem 1rem;
+  background: linear-gradient(135deg, #1a5f3a, #2d8a54);
+  color: white;
+  border-radius: 25px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: 0 3px 10px rgba(26, 95, 58, 0.3);
+  transition: all 0.3s ease;
+  z-index: 10;
+}
+
+.header__ia-floating:hover {
+  transform: translateY(-50%) translateY(-2px);
+  box-shadow: 0 5px 15px rgba(26, 95, 58, 0.4);
+}
+
+.header__ia-floating svg {
+  transition: transform 0.3s ease;
+}
+
+.header__ia-floating:hover svg {
+  transform: scale(1.2) rotate(10deg);
+}
+
+/* OPÇÃO 7: Dropdown Style */
+.header__ia-dropdown {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  color: #333;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  margin-left: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.header__ia-dropdown:hover {
+  border-color: #1a5f3a;
+  color: #1a5f3a;
+  box-shadow: 0 2px 6px rgba(26, 95, 58, 0.15);
+}
+
+.header__ia-dropdown svg:last-child {
+  transition: transform 0.3s ease;
+}
+
+.header__ia-dropdown:hover svg:last-child {
+  transform: translateY(2px);
+}
+
+.header__ia-dropdown svg:first-of-type {
+  color: #1a5f3a;
+}
+
+/* Responsive para todas as opções */
+@media (max-width: 768px) {
+  .header__ia-badge-pill,
+  .header__ia-ghost-button,
+  .header__ia-new-tag,
+  .header__ia-dropdown {
+    margin-left: 0.5rem;
+    padding: 0.4rem 0.7rem;
+    font-size: 0.8rem;
+  }
+
+  .header__ia-floating {
+    right: 0.5rem;
+    padding: 0.5rem 0.8rem;
+    font-size: 0.75rem;
+  }
+}
+
+/* ============================================
+   SKELETON — enquanto verifica sessão
+   ============================================ */
+
+@keyframes headerSkeletonPulse {
+  0%, 100% { opacity: 0.35; }
+  50%       { opacity: 0.7; }
+}
+
+.header__session-skeleton {
+  width: 148px;
+  height: 36px;
+  border-radius: 9px;
+  background: rgba(26, 95, 58, 0.12);
+  animation: headerSkeletonPulse 1.4s ease-in-out infinite;
+}
+
+/* ============================================
+   SESSÃO ATIVA — Avatar + Dashboard
+   ============================================ */
+
+.header__user-session {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+/* Avatar circular com inicial do nome */
+.header__user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #1a5f3a;
+  border: 2px solid #d4af37;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: default;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(26, 95, 58, 0.3);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.header__user-avatar:hover {
+  transform: scale(1.05);
+  box-shadow: 0 3px 10px rgba(26, 95, 58, 0.4);
+}
+
+.header__user-avatar span {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1;
+  letter-spacing: 0;
+}
+
+/* Botão Dashboard */
+.header__dashboard-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.38rem 0.85rem;
+  background: #1a5f3a;
+  color: #ffffff;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  white-space: nowrap;
+  box-shadow: 0 2px 6px rgba(26, 95, 58, 0.25);
+}
+
+.header__dashboard-btn:hover {
+  background: #134a2e;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(26, 95, 58, 0.35);
+}
+
+.header__dashboard-btn svg {
+  flex-shrink: 0;
+}
+
+/* Wrapper dos botões CTA — desktop */
+.header__cta-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* No mobile menu — layout em coluna */
+.header__mobile-cta .header__user-session {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.header__mobile-cta .header__dashboard-btn {
+  padding: 0.55rem 1.2rem;
+  font-size: 0.9rem;
+}
+
+.header__mobile-cta .header__user-avatar {
+  width: 42px;
+  height: 42px;
+}
+
+.header__mobile-cta .header__user-avatar span {
+  font-size: 1rem;
+}
+
+/* Mobile menu CTA — botões não-logado em coluna, full-width */
+.header__mobile-cta .header__cta-group {
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.header__mobile-cta .header__ia-ghost-button {
+  width: 100%;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.95rem;
+  border-radius: 0.5rem;
+}
+
+.header__mobile-cta .header__login-btn {
+  width: 100%;
+  justify-content: center;
+}
+
+/* ── Botão "Painel do Usuário" (link para /login) ── */
+.header__login-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: var(--gradient-primary);
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: all 0.3s ease;
+}
+
+.header__login-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-green);
+}
+
+.header__login-btn--logo {
+  padding: 0.6rem 1.5rem;
+  background: var(--gradient-primary);
+}
+
+.header__go2apply-logo {
+  height: 22px;
+  width: auto;
+  display: block;
+  object-fit: contain;
+}
+

@@ -1,0 +1,78 @@
+/* ====================================================
+   CALCULADORA DE BICOS — wrapper page
+   Paleta Equalizagro: verde primário + branco
+   ==================================================== */
+
+@keyframes bicosSpin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Auth loading ── */
+.bicos-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  gap: 0.875rem;
+  background: #f4f9f5;
+  color: #1a5f3a;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.bicos-loading__spinner {
+  width: 44px;
+  height: 44px;
+  border: 3px solid rgba(26, 95, 58, 0.18);
+  border-top-color: #1a5f3a;
+  border-radius: 50%;
+  animation: bicosSpin 0.75s linear infinite;
+}
+
+/* ── Fullscreen wrapper ── */
+.bicos-fullscreen {
+  position: fixed;
+  inset: 0;
+  background: #f4f9f5;
+}
+
+/* ── Loading overlay over iframe ── */
+.bicos-iframe-loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.875rem;
+  background: #f4f9f5;
+  color: #1a5f3a;
+  font-size: 0.875rem;
+  font-weight: 500;
+  z-index: 5;
+}
+
+.bicos-iframe-loading__spinner {
+  width: 38px;
+  height: 38px;
+  border: 3px solid rgba(26, 95, 58, 0.18);
+  border-top-color: #1a5f3a;
+  border-radius: 50%;
+  animation: bicosSpin 0.75s linear infinite;
+}
+
+/* ── Iframe ── */
+.bicos-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.bicos-iframe--ready {
+  opacity: 1;
+}

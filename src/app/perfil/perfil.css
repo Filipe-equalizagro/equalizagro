@@ -1,0 +1,145 @@
+@keyframes pfFadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes pfSpin { to { transform: rotate(360deg); } }
+
+.pf-checking {
+  display: flex; align-items: center; justify-content: center;
+  min-height: 100vh; background: #f4f9f5;
+}
+.pf-spinner {
+  width: 36px; height: 36px;
+  border: 3px solid rgba(26,95,58,0.15);
+  border-top-color: #1a5f3a;
+  border-radius: 50%;
+  animation: pfSpin 0.75s linear infinite;
+}
+
+.pf-root {
+  min-height: 100vh;
+  background: #f4f9f5;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 3rem 1.5rem 4rem;
+}
+
+.pf-card {
+  width: 100%;
+  max-width: 520px;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 4px 32px rgba(26,95,58,0.09);
+  padding: 2.5rem 2.5rem 2rem;
+  animation: pfFadeUp 0.35s ease;
+}
+
+/* ── Back link ── */
+.pf-back {
+  display: inline-flex; align-items: center; gap: 0.35rem;
+  color: #6b7280; font-size: 0.84rem; text-decoration: none;
+  margin-bottom: 1.75rem; transition: color 0.2s;
+}
+.pf-back:hover { color: #1a5f3a; }
+
+/* ── Header ── */
+.pf-header { margin-bottom: 2rem; }
+.pf-avatar {
+  width: 60px; height: 60px; border-radius: 50%;
+  background: linear-gradient(135deg, #1a5f3a, #2d8a54);
+  color: #fff; font-size: 1.5rem; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 1rem;
+}
+.pf-title { font-size: 1.4rem; font-weight: 800; color: #1f2937; margin: 0 0 0.25rem; }
+.pf-sub   { font-size: 0.88rem; color: #6b7280; margin: 0; }
+
+/* ── Section label ── */
+.pf-section {
+  font-size: 0.72rem; font-weight: 700; color: #9ca3af;
+  text-transform: uppercase; letter-spacing: 0.07em;
+  margin: 1.75rem 0 1rem; padding-bottom: 0.5rem;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+/* ── Form ── */
+.pf-form { display: flex; flex-direction: column; gap: 1.1rem; }
+
+.pf-field  { display: flex; flex-direction: column; gap: 0.35rem; }
+.pf-field label { font-size: 0.85rem; font-weight: 600; color: #374151; }
+
+.pf-input-wrap { position: relative; display: flex; align-items: center; }
+.pf-icon { position: absolute; left: 0.875rem; color: #9ca3af; pointer-events: none; }
+
+.pf-input {
+  width: 100%;
+  padding: 0.75rem 1rem 0.75rem 2.6rem;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 10px;
+  font-size: 0.92rem;
+  font-family: inherit;
+  color: #1f2937;
+  background: #f9fafb;
+  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+  -webkit-appearance: none; appearance: none;
+}
+.pf-input:focus {
+  outline: none; background: #fff;
+  border-color: #1a5f3a;
+  box-shadow: 0 0 0 3px rgba(26,95,58,0.1);
+}
+.pf-input--err { border-color: #ef4444; background: #fff; }
+.pf-input--err:focus { box-shadow: 0 0 0 3px rgba(239,68,68,0.1); }
+.pf-input:disabled { opacity: 0.55; cursor: not-allowed; background: #f3f4f6; }
+
+.pf-field-hint { font-size: 0.78rem; color: #9ca3af; margin: 0; }
+
+.pf-err {
+  display: flex; align-items: center; gap: 0.4rem;
+  font-size: 0.8rem; color: #ef4444; margin: 0;
+}
+
+/* ── Alerts ── */
+.pf-alert {
+  display: flex; align-items: center; gap: 0.6rem;
+  padding: 0.75rem 1rem;
+  border-radius: 8px; font-size: 0.88rem;
+}
+.pf-alert--error {
+  background: #fee2e2; border: 1px solid #fecaca; color: #991b1b;
+}
+.pf-alert--success {
+  background: #dcfce7; border: 1px solid #bbf7d0; color: #166534;
+}
+
+/* ── Buttons ── */
+.pf-btn {
+  padding: 0.875rem 1.75rem;
+  background: linear-gradient(135deg, #1a5f3a 0%, #2d8a54 100%);
+  color: #fff; border: none; border-radius: 10px;
+  font-size: 0.95rem; font-weight: 700; font-family: inherit;
+  cursor: pointer; transition: all 0.25s;
+  align-self: flex-start;
+}
+.pf-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(26,95,58,0.28);
+}
+.pf-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+/* ── Read-only info row ── */
+.pf-info-row {
+  display: flex; flex-direction: column; gap: 0.25rem;
+  padding: 0.8rem 1rem;
+  background: #f9fafb; border: 1.5px solid #e5e7eb; border-radius: 10px;
+}
+.pf-info-label { font-size: 0.78rem; font-weight: 600; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.05em; }
+.pf-info-value { font-size: 0.92rem; color: #374151; font-weight: 500; }
+
+/* ── Responsive ── */
+@media (max-width: 600px) {
+  .pf-root { padding: 1.5rem 1rem 3rem; }
+  .pf-card { padding: 1.75rem 1.25rem 1.5rem; border-radius: 14px; }
+  .pf-btn  { width: 100%; }
+}

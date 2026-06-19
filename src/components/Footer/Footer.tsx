@@ -98,12 +98,6 @@ export default function Footer() {
                   </a>
                 </li>
                 <li>
-                  <a href="#results" className="footer__section-link">
-                    <ArrowRight className="footer__section-link-icon" size={16} />
-                    Resultados
-                  </a>
-                </li>
-                <li>
                   <a href="#contact" className="footer__section-link">
                     <ArrowRight className="footer__section-link-icon" size={16} />
                     Contato
@@ -145,7 +139,7 @@ export default function Footer() {
 
         <div className="footer__bottom">
           <div className="footer__copyright">
-            © 2025 Equalizagro. Todos os direitos reservados.
+            © Equalizagro 2025. Todos os direitos reservados.
           </div>
           
           <div className="footer__development">

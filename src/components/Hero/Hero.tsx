@@ -4,7 +4,8 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { 
   ArrowRight, 
-  Play
+  Phone,
+  Brain
 } from 'lucide-react';
 import './Hero.css';
 
@@ -39,10 +40,10 @@ export default function Hero() {
                 <span>Começar Agora</span>
                 <ArrowRight size={20} />
               </Link>
-              <Link href="#services" className="btn btn--outline btn--large hero__cta-secondary">
-                <Play size={20} />
-                <span>Ver Demonstração</span>
-              </Link>
+              <a href="https://api.whatsapp.com/send/?phone=555533432606&text=Ol%C3%A1!+Vim+atrav%C3%A9s+do+site+da+Equalizagro%2C+gostaria+de+mais+informa%C3%A7%C3%B5es+sobre+seus+servi%C3%A7os.&type=phone_number&app_absent=0" className="btn btn--outline btn--large hero__cta-secondary">
+                <Phone size={20} />
+                <span>Solicitar Orçamento</span>
+              </a>
             </div>
           </div>
 

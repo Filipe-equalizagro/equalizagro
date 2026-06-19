@@ -89,7 +89,7 @@ export default function Contact() {
             </p>
             <div className="contact__map-embed">
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d4163.996758888566!2d-53.60279937639443!3d-28.64504509907205!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94fd97d637cf90dd%3A0xcd471181c8a6bd1e!2sEqualizagro%20Consultoria%20e%20Tecnologia%20Ltda!5e0!3m2!1spt-BR!2sus!4v1769628133354!5m2!1spt-BR!2sus"
+                src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d7002.979895293025!2d-53.6027994!3d-28.6450451!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94fd97d637cf90dd%3A0xcd471181c8a6bd1e!2sEqualizagro%20Consultoria%20e%20Tecnologia%20Ltda!5e0!3m2!1spt-BR!2sbr!4v1769798328496!5m2!1spt-BR!2sbr"
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
                 allowFullScreen

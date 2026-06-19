@@ -1,0 +1,1769 @@
+'use client';
+
+import { useState, useEffect, useRef, useMemo } from 'react';
+import { Send, Plus, Menu, X, LogOut, Settings, Trash2, Archive, Search, User, Pencil, Leaf } from 'lucide-react';
+import { getAuthToken, getUserId, logout, verifySession } from '@/lib/auth';
+import './ConsultorIA.css';
+
+// Função para formatar markdown básico em HTML
+function formatMessageContent(content: string): string {
+  let formatted = content;
+  
+  // Escapar HTML
+  formatted = formatted
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+  
+  // Converter **texto** em negrito
+  formatted = formatted.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  
+  // Converter *texto* em itálico
+  formatted = formatted.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+  
+  // Detectar linhas que são itens de tabela (começam e terminam com |)
+  const lines = formatted.split('\n');
+  let inTable = false;
+  let tableLines: string[] = [];
+  const result: string[] = [];
+  
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i].trim();
+    
+    // Verificar se é uma linha de tabela
+    if (line.startsWith('|') && line.endsWith('|')) {
+      if (!inTable) {
+        inTable = true;
+        tableLines = [];
+      }
+      tableLines.push(line);
+    } else {
+      // Se estávamos em uma tabela, fechar ela
+      if (inTable && tableLines.length > 0) {
+        result.push(convertTableToHtml(tableLines));
+        inTable = false;
+        tableLines = [];
+      }
+      
+      // Processar linha normal
+      if (line) {
+        // Detectar linhas que parecem itens numerados como "| 1 |" ou "|| 2 |"
+        const numberedMatch = line.match(/^\|?\|?\s*(\d+)\s*\|\s*(.+)$/);
+        if (numberedMatch) {
+          result.push(`<div class="consultor__formatted-item"><span class="consultor__item-number">${numberedMatch[1]}</span><span class="consultor__item-content">${numberedMatch[2]}</span></div>`);
+        } else {
+          result.push(`<p class="consultor__formatted-paragraph">${line}</p>`);
+        }
+      } else {
+        result.push('<br/>');
+      }
+    }
+  }
+  
+  // Se terminou ainda em tabela
+  if (inTable && tableLines.length > 0) {
+    result.push(convertTableToHtml(tableLines));
+  }
+  
+  return result.join('');
+}
+
+function convertTableToHtml(tableLines: string[]): string {
+  const rows = tableLines.map(line => {
+    const cells = line.split('|').filter(cell => cell.trim() !== '');
+    return cells.map(cell => cell.trim());
+  });
+  
+  if (rows.length === 0) return '';
+  
+  // Verificar se a segunda linha é separador (---)
+  const hasSeparator = rows.length > 1 && rows[1].every(cell => /^-+$/.test(cell.trim()));
+  
+  let html = '<div class="consultor__table-wrapper"><table class="consultor__table">';
+  
+  if (hasSeparator && rows.length > 0) {
+    // Primeira linha como cabeçalho
+    html += '<thead><tr>';
+    rows[0].forEach(cell => {
+      html += `<th>${cell}</th>`;
+    });
+    html += '</tr></thead><tbody>';
+    
+    // Resto como corpo (pular separador)
+    for (let i = 2; i < rows.length; i++) {
+      html += '<tr>';
+      rows[i].forEach(cell => {
+        html += `<td>${cell}</td>`;
+      });
+      html += '</tr>';
+    }
+    html += '</tbody>';
+  } else {
+    // Sem cabeçalho, tudo como corpo
+    html += '<tbody>';
+    rows.forEach(row => {
+      html += '<tr>';
+      row.forEach(cell => {
+        html += `<td>${cell}</td>`;
+      });
+      html += '</tr>';
+    });
+    html += '</tbody>';
+  }
+  
+  html += '</table></div>';
+  return html;
+}
+
+// Componente para mensagem formatada
+function FormattedMessage({ content, role }: { content: string; role: 'user' | 'assistant' }) {
+  const formattedHtml = useMemo(() => {
+    if (role === 'user') {
+      return content;
+    }
+    return formatMessageContent(content);
+  }, [content, role]);
+  
+  if (role === 'user') {
+    return <p className="consultor__message-text">{content}</p>;
+  }
+  
+  return (
+    <div 
+      className="consultor__message-text consultor__message-formatted"
+      dangerouslySetInnerHTML={{ __html: formattedHtml }}
+    />
+  );
+}
+
+interface Message {
+  id: string;
+  role: 'user' | 'assistant';
+  content: string;
+  timestamp: Date;
+}
+
+interface Conversation {
+  id: string;
+  title: string;
+  createdAt: Date;
+  messages: Message[];
+  gptmakerContextId?: string;
+  isArchived?: boolean;
+  lastMessageAt?: Date;
+}
+
+interface PlanData {
+  planName: string;
+  creditsAvailable: number;
+  creditsUsed: number;
+  monthlyLimit: number;
+  renewalDate: Date;
+  fullName?: string;
+  email?: string;
+  userId?: string;
+}
+
+function createWelcomeAssistantMessages(): Message[] {
+  const ts = new Date();
+  return [
+    {
+      id: '1',
+      role: 'assistant',
+      content: `Olá! Sou o **Consultor.IA Equalizagro** 🌱
+
+Fui desenvolvido para auxiliar consultores e técnicos agrícolas com:
+
+• **Caldas de aplicação** — ordem de mistura, compatibilidade de produtos, volumes e adjuvantes
+
+• **Calibração e bicos** — seleção de pontas, pressão de trabalho e espectro de gotas
+
+• **Condições de pulverização** — Delta T, janela de aplicação e risco de deriva
+
+• **Defensivos e manejo** — recomendações técnicas por cultura, praga e estágio fenológico
+
+Como posso ajudar hoje?`,
+      timestamp: ts,
+    },
+  ];
+}
+
+/** ID vindo do PostgreSQL (mensagem persistida no banco) */
+function isPersistedMessageId(id: string): boolean {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+    id
+  );
+}
+
+function isUuid(id: string): boolean {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+    id
+  );
+}
+
+export default function ConsultorIA() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [sessionError, setSessionError] = useState<string | null>(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+  const [conversations, setConversations] = useState<Conversation[]>([]);
+  const [currentConversationId, setCurrentConversationId] = useState<string | null>(null);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [inputValue, setInputValue] = useState('');
+  const [isSending, setIsSending] = useState(false);
+  const [planData, setPlanData] = useState<PlanData | null>(null);
+  const [planLoading, setPlanLoading] = useState(false);
+  const [contextMenuId, setContextMenuId] = useState<string | null>(null);
+  const [editingConversationId, setEditingConversationId] = useState<string | null>(null);
+  const [editingTitle, setEditingTitle] = useState('');
+  const editInputRef = useRef<HTMLInputElement>(null);
+  const [archivedConversations, setArchivedConversations] = useState<Conversation[]>([]);
+  const [gptContextId, setGptContextId] = useState<string | null>(null);
+  const [showArchived, setShowArchived] = useState(false);
+  const [sidebarSearch, setSidebarSearch] = useState('');
+  const [userId, setUserId] = useState<string | null>(null);
+  const [isLoadingConversations, setIsLoadingConversations] = useState(false);
+  const [isLoadingMessages, setIsLoadingMessages] = useState(false);
+  const [pendingMessages, setPendingMessages] = useState<Message[]>([]);
+  const [typingTimeout, setTypingTimeout] = useState<NodeJS.Timeout | null>(null);
+  const [timeUntilSend, setTimeUntilSend] = useState<number>(0);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const pendingMessagesRef = useRef<Message[]>([]);
+  const messagesRef = useRef<Message[]>([]);
+  const isSendingRef = useRef<boolean>(false);
+  const TYPING_DELAY = 10000; // 10 segundos de espera
+  
+  // Manter refs atualizados
+  useEffect(() => {
+    pendingMessagesRef.current = pendingMessages;
+  }, [pendingMessages]);
+  
+  useEffect(() => {
+    messagesRef.current = messages;
+  }, [messages]);
+  
+  useEffect(() => {
+    isSendingRef.current = isSending;
+  }, [isSending]);
+
+  // Verificar autenticação completa ao carregar (token + 2FA + dispositivo)
+  useEffect(() => {
+    const checkSession = async () => {
+      console.log('[ConsultorIA] Verificando sessão...');
+      
+      const result = await verifySession();
+      
+      if (!result.valid) {
+        console.log('[ConsultorIA] Sessão inválida:', result.reason, result.message);
+        
+        // Se 2FA expirou ou dispositivo mudou, mostrar mensagem e redirecionar
+        if (result.reason === '2fa_expired' || result.reason === 'device_changed') {
+          setSessionError(result.message || 'Sua sessão expirou. Faça login novamente.');
+          // Aguardar 2 segundos para mostrar a mensagem
+          setTimeout(() => {
+            logout();
+            window.location.href = '/';
+          }, 2500);
+          return;
+        }
+        
+        // Outros casos (sem token, token inválido), redirecionar imediatamente
+        window.location.href = '/';
+        return;
+      }
+      
+      console.log('[ConsultorIA] Sessão válida para:', result.email);
+      setIsAuthenticated(true);
+      
+      // Se veio userId da verificação, definir
+      if (result.userId) {
+        setUserId(result.userId);
+      }
+      
+      fetchPlanData(); // Buscar dados do plano
+    };
+    
+    checkSession();
+  }, []);
+
+  // Salvar conversa completa no localStorage
+  const saveConversationToLocalStorage = (conversation: Conversation, msgs: Message[]) => {
+    try {
+      // Salvar mensagens da conversa
+      const msgKey = `equalizagro_msgs_${conversation.id}`;
+      localStorage.setItem(msgKey, JSON.stringify(msgs.map(m => ({
+        ...m,
+        timestamp: m.timestamp.toISOString()
+      }))));
+
+      // Salvar metadados da conversa
+      const convKey = `equalizagro_conv_${conversation.id}`;
+      localStorage.setItem(convKey, JSON.stringify({
+        id: conversation.id,
+        title: conversation.title,
+        createdAt: conversation.createdAt.toISOString(),
+        gptmakerContextId: conversation.gptmakerContextId,
+        isArchived: conversation.isArchived || false,
+        lastMessageAt: new Date().toISOString(),
+      }));
+      
+      // Atualizar índice de conversas do usuário
+      const userKey = userId || 'local';
+      const indexKey = `equalizagro_convs_index_${userKey}`;
+      const existingIndex = JSON.parse(localStorage.getItem(indexKey) || '[]');
+      if (!existingIndex.includes(conversation.id)) {
+        existingIndex.unshift(conversation.id); // Adicionar no início
+        localStorage.setItem(indexKey, JSON.stringify(existingIndex));
+      }
+      
+      console.log('[LocalStorage] Conversa salva:', conversation.id);
+    } catch (e) {
+      console.error('[LocalStorage] Erro ao salvar conversa:', e);
+    }
+  };
+
+  // Carregar todas as conversas do localStorage
+  const loadConversationsFromLocalStorage = (): Conversation[] => {
+    try {
+      const userKey = userId || 'local';
+      const indexKey = `equalizagro_convs_index_${userKey}`;
+      const conversationIds = JSON.parse(localStorage.getItem(indexKey) || '[]');
+      
+      const conversations: Conversation[] = [];
+      for (const convId of conversationIds) {
+        const convKey = `equalizagro_conv_${convId}`;
+        const convData = localStorage.getItem(convKey);
+        if (convData) {
+          const parsed = JSON.parse(convData);
+          if (!parsed.isArchived) {
+            conversations.push({
+              id: parsed.id,
+              title: parsed.title,
+              createdAt: new Date(parsed.createdAt),
+              messages: [],
+              gptmakerContextId: parsed.gptmakerContextId,
+              isArchived: parsed.isArchived,
+              lastMessageAt: parsed.lastMessageAt ? new Date(parsed.lastMessageAt) : undefined,
+            });
+          }
+        }
+      }
+      
+      console.log('[LocalStorage] Conversas carregadas:', conversations.length);
+      return conversations;
+    } catch (e) {
+      console.error('[LocalStorage] Erro ao carregar conversas:', e);
+      return [];
+    }
+  };
+
+  // Carregar mensagens do localStorage
+  const loadMessagesFromLocalStorage = (conversationId: string): Message[] | null => {
+    try {
+      const key = `equalizagro_msgs_${conversationId}`;
+      const data = localStorage.getItem(key);
+      if (data) {
+        const msgs = JSON.parse(data).map((m: any) => ({
+          ...m,
+          timestamp: new Date(m.timestamp)
+        }));
+        console.log('[LocalStorage] Mensagens carregadas:', msgs.length);
+        return msgs;
+      }
+    } catch (e) {
+      console.error('[LocalStorage] Erro ao carregar mensagens:', e);
+    }
+    return null;
+  };
+
+  // Alias para compatibilidade
+  const saveToLocalStorage = (conversationId: string, msgs: Message[]) => {
+    const conv = conversations.find(c => c.id === conversationId);
+    if (conv) {
+      saveConversationToLocalStorage(conv, msgs);
+    } else {
+      // Criar conversa temporária para salvar
+      const tempConv: Conversation = {
+        id: conversationId,
+        title: 'Conversa',
+        createdAt: new Date(),
+        messages: msgs,
+      };
+      saveConversationToLocalStorage(tempConv, msgs);
+    }
+  };
+
+  /** Remove conversa do cache local (evita “ressuscitar” após excluir no servidor) */
+  const removeConversationFromLocalStorage = (conversationId: string) => {
+    try {
+      const userKey = userId || 'local';
+      const indexKey = `equalizagro_convs_index_${userKey}`;
+      localStorage.removeItem(`equalizagro_msgs_${conversationId}`);
+      localStorage.removeItem(`equalizagro_conv_${conversationId}`);
+      const existingIndex = JSON.parse(localStorage.getItem(indexKey) || '[]');
+      const next = existingIndex.filter((id: string) => id !== conversationId);
+      localStorage.setItem(indexKey, JSON.stringify(next));
+    } catch (e) {
+      console.error('[LocalStorage] Erro ao remover conversa:', e);
+    }
+  };
+
+  const loadFromLocalStorage = loadMessagesFromLocalStorage;
+
+  // Carregar conversas quando userId estiver disponível
+  useEffect(() => {
+    if (userId) {
+      loadConversations();
+    } else {
+      // Se não conseguir carregar userId após um tempo, mostrar a interface mesmo assim
+      const timeout = setTimeout(() => {
+        if (!userId) {
+          setIsLoading(false);
+          // Criar conversa local como fallback
+          const fallbackConversation: Conversation = {
+            id: Date.now().toString(),
+            title: 'Nova Conversa',
+            createdAt: new Date(),
+            messages: createWelcomeAssistantMessages(),
+          };
+          setConversations([fallbackConversation]);
+          setCurrentConversationId(fallbackConversation.id);
+          setMessages(fallbackConversation.messages);
+        }
+      }, 3000);
+      return () => clearTimeout(timeout);
+    }
+  }, [userId]);
+
+  // Scroll para última mensagem
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
+  // Filtrar conversas pela busca do sidebar (estilo Gemini)
+  const filteredConversations = useMemo(() => {
+    const list = showArchived ? archivedConversations : conversations;
+    if (!sidebarSearch.trim()) return list;
+    const q = sidebarSearch.trim().toLowerCase();
+    return list.filter((c) => c.title.toLowerCase().includes(q));
+  }, [conversations, archivedConversations, showArchived, sidebarSearch]);
+
+  // Carregar conversas salvas do banco de dados
+  const loadConversations = async () => {
+    if (!userId) {
+      console.log('[ConsultorIA] loadConversations: userId não disponível');
+      return;
+    }
+
+    console.log('[ConsultorIA] Carregando conversas para userId:', userId);
+    setIsLoadingConversations(true);
+    try {
+      // Carregar conversas não arquivadas
+      const response = await fetch(`/api/consultor/conversations?userId=${userId}&includeArchived=false`);
+      const data = await response.json();
+      
+      console.log('[ConsultorIA] Resposta da API:', data);
+
+      if (data.success && data.conversations && data.conversations.length > 0) {
+        const loadedConversations: Conversation[] = data.conversations.map((conv: any) => ({
+          id: conv.id,
+          title: conv.title,
+          createdAt: new Date(conv.createdAt),
+          messages: [],
+          gptmakerContextId: conv.gptmakerContextId,
+          isArchived: conv.isArchived,
+          lastMessageAt: conv.lastMessageAt ? new Date(conv.lastMessageAt) : undefined,
+        }));
+        
+        console.log('[ConsultorIA] Conversas carregadas:', loadedConversations.length);
+
+        // Carregar conversas arquivadas
+        const archivedResponse = await fetch(`/api/consultor/conversations?userId=${userId}&includeArchived=true`);
+        const archivedData = await archivedResponse.json();
+
+        if (archivedData.success) {
+          const archived = archivedData.conversations
+            .filter((conv: any) => conv.isArchived)
+            .map((conv: any) => ({
+              id: conv.id,
+              title: conv.title,
+              createdAt: new Date(conv.createdAt),
+              messages: [],
+              gptmakerContextId: conv.gptmakerContextId,
+              isArchived: true,
+            }));
+          setArchivedConversations(archived);
+        }
+
+        setConversations(loadedConversations);
+        // Selecionar a primeira conversa (mais recente)
+        const firstConv = loadedConversations[0];
+        setCurrentConversationId(firstConv.id);
+        setGptContextId(firstConv.gptmakerContextId || null);
+        // Carregar mensagens da primeira conversa
+        await loadMessages(firstConv.id);
+      } else {
+        console.log('[ConsultorIA] Nenhuma conversa no banco, tentando localStorage...');
+        // Tentar carregar do localStorage
+        const localConversations = loadConversationsFromLocalStorage();
+        if (localConversations.length > 0) {
+          console.log('[ConsultorIA] Conversas encontradas no localStorage:', localConversations.length);
+          setConversations(localConversations);
+          const firstConv = localConversations[0];
+          setCurrentConversationId(firstConv.id);
+          setGptContextId(firstConv.gptmakerContextId || null);
+          // Carregar mensagens do localStorage
+          const localMsgs = loadMessagesFromLocalStorage(firstConv.id);
+          if (localMsgs && localMsgs.length > 0) {
+            setMessages(localMsgs);
+          } else {
+            setMessages(createWelcomeAssistantMessages());
+          }
+        } else {
+          console.log('[ConsultorIA] Nenhuma conversa encontrada, criando nova...');
+          await createNewConversation();
+        }
+      }
+    } catch (error) {
+      console.error('[ConsultorIA] Erro ao carregar conversas:', error);
+      // Tentar carregar do localStorage como fallback
+      const localConversations = loadConversationsFromLocalStorage();
+      if (localConversations.length > 0) {
+        console.log('[ConsultorIA] Fallback: usando conversas do localStorage');
+        setConversations(localConversations);
+        const firstConv = localConversations[0];
+        setCurrentConversationId(firstConv.id);
+        const localMsgs = loadMessagesFromLocalStorage(firstConv.id);
+        if (localMsgs) {
+          setMessages(localMsgs);
+        }
+      } else {
+        // Criar primeira conversa em caso de erro
+        await createNewConversation();
+      }
+    } finally {
+      setIsLoadingConversations(false);
+      setIsLoading(false);
+    }
+  };
+
+  // Carregar mensagens de uma conversa específica
+  const loadMessages = async (conversationId: string) => {
+    if (!userId) {
+      console.log('[ConsultorIA] loadMessages: userId não disponível');
+      return;
+    }
+
+    console.log('[ConsultorIA] Carregando mensagens da conversa:', conversationId);
+    setIsLoadingMessages(true);
+    try {
+      const response = await fetch(
+        `/api/consultor/conversations/messages?conversationId=${conversationId}&userId=${userId}`
+      );
+      const data = await response.json();
+
+      console.log('[ConsultorIA] Mensagens carregadas:', data);
+
+      // Sempre que o servidor responde com sucesso, ele é a fonte da verdade (inclui lista vazia).
+      // Antes: messages.length === 0 caía no localStorage e reapareciam mensagens “apagadas”.
+      if (data.success && Array.isArray(data.messages)) {
+        const loadedMessages: Message[] =
+          data.messages.length > 0
+            ? data.messages.map((msg: any) => ({
+                id: msg.id,
+                role: msg.role,
+                content: msg.content,
+                timestamp: new Date(msg.timestamp),
+              }))
+            : createWelcomeAssistantMessages();
+
+        console.log('[ConsultorIA] Total de mensagens (servidor):', loadedMessages.length);
+
+        setMessages(loadedMessages);
+        saveToLocalStorage(conversationId, loadedMessages);
+
+        if (data.conversation?.gptmakerContextId) {
+          setGptContextId(data.conversation.gptmakerContextId);
+        }
+        return;
+      }
+
+      if (response.status === 404) {
+        removeConversationFromLocalStorage(conversationId);
+        setMessages(createWelcomeAssistantMessages());
+        return;
+      }
+
+      console.log('[ConsultorIA] Resposta inesperada, tentando localStorage...');
+      const localMessages = loadFromLocalStorage(conversationId);
+      if (localMessages && localMessages.length > 0) {
+        setMessages(localMessages);
+      } else {
+        setMessages(createWelcomeAssistantMessages());
+      }
+    } catch (error) {
+      console.error('[ConsultorIA] Erro ao carregar mensagens:', error);
+      const localMessages = loadFromLocalStorage(conversationId);
+      if (localMessages && localMessages.length > 0) {
+        setMessages(localMessages);
+      } else {
+        setMessages(createWelcomeAssistantMessages());
+      }
+    } finally {
+      setIsLoadingMessages(false);
+    }
+  };
+
+  // Criar nova conversa no banco de dados
+  const createNewConversation = async () => {
+    if (!userId) {
+      console.log('[ConsultorIA] createNewConversation: userId não disponível');
+      return null;
+    }
+
+    console.log('[ConsultorIA] Criando nova conversa para userId:', userId);
+
+    try {
+      const response = await fetch('/api/consultor/conversations', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId,
+          title: 'Nova Conversa',
+        }),
+      });
+
+      const data = await response.json();
+      console.log('[ConsultorIA] Resposta criação conversa:', data);
+
+      if (data.success && data.conversation) {
+        const welcomeMessages = createWelcomeAssistantMessages();
+
+        const newConversation: Conversation = {
+          id: data.conversation.id,
+          title: data.conversation.title,
+          createdAt: new Date(data.conversation.createdAt),
+          messages: welcomeMessages,
+          gptmakerContextId: data.conversation.gptmakerContextId,
+        };
+
+        console.log('[ConsultorIA] Nova conversa criada:', newConversation.id);
+        setConversations(prev => [newConversation, ...prev]);
+        setCurrentConversationId(newConversation.id);
+        setMessages(newConversation.messages);
+        setGptContextId(null);
+        
+        // Salvar no localStorage também
+        saveConversationToLocalStorage(newConversation, welcomeMessages);
+        
+        return newConversation;
+      } else {
+        console.error('[ConsultorIA] Falha ao criar conversa no banco:', data);
+        // Criar conversa local como fallback
+        const localId = `local_${Date.now()}`;
+        const welcomeMessages = createWelcomeAssistantMessages();
+
+        const localConversation: Conversation = {
+          id: localId,
+          title: 'Nova Conversa',
+          createdAt: new Date(),
+          messages: welcomeMessages,
+        };
+
+        console.log('[ConsultorIA] Conversa local criada:', localId);
+        setConversations(prev => [localConversation, ...prev]);
+        setCurrentConversationId(localConversation.id);
+        setMessages(localConversation.messages);
+        setGptContextId(null);
+        
+        // Salvar no localStorage
+        saveConversationToLocalStorage(localConversation, welcomeMessages);
+        
+        return localConversation;
+      }
+    } catch (error) {
+      console.error('[ConsultorIA] Erro ao criar conversa:', error);
+      
+      // Criar conversa local como fallback
+      const localId = `local_${Date.now()}`;
+      const welcomeMessages = createWelcomeAssistantMessages();
+
+      const localConversation: Conversation = {
+        id: localId,
+        title: 'Nova Conversa',
+        createdAt: new Date(),
+        messages: welcomeMessages,
+      };
+
+      setConversations(prev => [localConversation, ...prev]);
+      setCurrentConversationId(localConversation.id);
+      setMessages(localConversation.messages);
+      setGptContextId(null);
+      
+      // Salvar no localStorage
+      saveConversationToLocalStorage(localConversation, welcomeMessages);
+      
+      return localConversation;
+    }
+    return null;
+  };
+
+  // Salvar mensagens no banco de dados
+  const saveMessages = async (
+    conversationId: string,
+    messagesToSave: Message[],
+    contextId?: string
+  ): Promise<{
+    success: boolean;
+    messages?: { id: string; role: string; content: string; created_at: string }[];
+  } | null> => {
+    if (!userId || messagesToSave.length === 0) {
+      console.log('[ConsultorIA] saveMessages: userId ou mensagens inválidos');
+      return null;
+    }
+
+    console.log('[ConsultorIA] Salvando mensagens:', {
+      conversationId,
+      userId,
+      messagesCount: messagesToSave.length,
+      contextId,
+    });
+
+    try {
+      const response = await fetch('/api/consultor/conversations/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          conversationId,
+          userId,
+          gptmakerContextId: contextId,
+          messages: messagesToSave.map(msg => ({
+            role: msg.role,
+            content: msg.content,
+          })),
+        }),
+      });
+
+      const result = await response.json();
+      console.log('[ConsultorIA] Resultado do salvamento:', result);
+
+      if (!result.success) {
+        console.error('[ConsultorIA] Erro ao salvar mensagens:', result);
+        return null;
+      }
+      return result;
+    } catch (error) {
+      console.error('[ConsultorIA] Erro ao salvar mensagens:', error);
+      return null;
+    }
+  };
+
+  // Adicionar mensagem do usuário e reiniciar timer
+  const addUserMessage = () => {
+    if (!inputValue.trim()) return;
+    
+    const userMessage: Message = {
+      id: Date.now().toString(),
+      role: 'user',
+      content: inputValue,
+      timestamp: new Date(),
+    };
+    
+    // Adicionar à lista de mensagens pendentes
+    setPendingMessages(prev => [...prev, userMessage]);
+    
+    // Adicionar às mensagens exibidas
+    setMessages(prev => [...prev, userMessage]);
+    setInputValue('');
+    
+    // Resetar textarea height
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+    }
+    
+    // Cancelar timer anterior
+    if (typingTimeout) {
+      clearTimeout(typingTimeout);
+    }
+    
+    // Iniciar novo timer de 10 segundos
+    setTimeUntilSend(10);
+    const newTimeout = setTimeout(() => {
+      sendPendingMessages();
+    }, TYPING_DELAY);
+    setTypingTimeout(newTimeout);
+  };
+  
+  // Countdown do timer
+  useEffect(() => {
+    if (timeUntilSend > 0 && pendingMessages.length > 0) {
+      const interval = setInterval(() => {
+        setTimeUntilSend(prev => Math.max(0, prev - 1));
+      }, 1000);
+      return () => clearInterval(interval);
+    }
+  }, [timeUntilSend, pendingMessages.length]);
+  
+  // Enviar mensagens pendentes para a IA
+  const sendPendingMessages = async () => {
+    // Usar refs para obter valores atualizados
+    const currentPendingMessages = pendingMessagesRef.current;
+    const currentMessages = [...messagesRef.current];
+    
+    console.log('[ConsultorIA] sendPendingMessages chamado, pendentes:', currentPendingMessages.length);
+    
+    if (currentPendingMessages.length === 0) {
+      console.log('[ConsultorIA] Nenhuma mensagem pendente');
+      return;
+    }
+    
+    if (isSendingRef.current) {
+      console.log('[ConsultorIA] Já está enviando');
+      return;
+    }
+    
+    // Limpar timer
+    if (typingTimeout) {
+      clearTimeout(typingTimeout);
+      setTypingTimeout(null);
+    }
+    setTimeUntilSend(0);
+    
+    // Combinar todas as mensagens pendentes em uma única mensagem
+    const combinedMessage = currentPendingMessages.map(m => m.content).join('\n\n');
+    console.log('[ConsultorIA] Enviando mensagem combinada:', combinedMessage.substring(0, 100));
+    
+    setPendingMessages([]);
+    setIsSending(true);
+    
+    // Salvar no localStorage imediatamente (backup)
+    if (currentConversationId) {
+      saveToLocalStorage(currentConversationId, currentMessages);
+    }
+
+    try {
+      const response = await fetch('/api/consultor/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message: combinedMessage,
+          contextId: gptContextId,
+          userName: planData?.fullName || 'Usuário',
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Salvar contextId para manter o histórico da conversa no GPTMaker
+        if (data.contextId) {
+          setGptContextId(data.contextId);
+        }
+
+        const aiMessage: Message = {
+          id: (Date.now() + 1).toString(),
+          role: 'assistant',
+          content: data.response,
+          timestamp: new Date(),
+        };
+
+        const finalMessages = [...currentMessages, aiMessage];
+
+        let messagesForUi = finalMessages;
+        if (currentConversationId) {
+          const userMsgsToSave = currentMessages
+            .filter(m => m.role === 'user')
+            .slice(-currentPendingMessages.length || -1);
+          const saveResult = await saveMessages(
+            currentConversationId,
+            [...userMsgsToSave, aiMessage],
+            data.contextId
+          );
+          if (saveResult?.messages?.length) {
+            const k = saveResult.messages.length;
+            messagesForUi = finalMessages.map((m, i) => {
+              const rel = i - (finalMessages.length - k);
+              if (rel >= 0 && rel < k) {
+                const row = saveResult.messages![rel];
+                return {
+                  ...m,
+                  id: row.id,
+                  timestamp: new Date(row.created_at),
+                };
+              }
+              return m;
+            });
+          }
+        }
+
+        setMessages(messagesForUi);
+
+        if (currentConversationId) {
+          saveToLocalStorage(currentConversationId, messagesForUi);
+
+          const currentConv = conversations.find(c => c.id === currentConversationId);
+          if (currentConv && currentConv.title === 'Nova Conversa') {
+            const firstUserMsg = currentMessages.find(m => m.role === 'user');
+            if (firstUserMsg) {
+              const newTitle =
+                firstUserMsg.content.substring(0, 50) +
+                (firstUserMsg.content.length > 50 ? '...' : '');
+              const updatedConv = { ...currentConv, title: newTitle };
+              setConversations(prev =>
+                prev.map(c => (c.id === currentConversationId ? updatedConv : c))
+              );
+              saveConversationToLocalStorage(updatedConv, messagesForUi);
+            }
+          }
+        }
+      } else {
+        const errorMessage: Message = {
+          id: (Date.now() + 1).toString(),
+          role: 'assistant',
+          content: data.message || 'Desculpe, ocorreu um erro ao processar sua mensagem. Tente novamente.',
+          timestamp: new Date(),
+        };
+        const finalMessages = [...currentMessages, errorMessage];
+        setMessages(finalMessages);
+        
+        // Salvar no localStorage mesmo com erro
+        if (currentConversationId) {
+          saveToLocalStorage(currentConversationId, finalMessages);
+        }
+      }
+    } catch (error) {
+      console.error('Erro ao enviar mensagem:', error);
+      const errorMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        role: 'assistant',
+        content: 'Desculpe, não foi possível conectar ao servidor. Verifique sua conexão e tente novamente.',
+        timestamp: new Date(),
+      };
+      const finalMessages = [...currentMessages, errorMessage];
+      setMessages(finalMessages);
+      
+      // Salvar no localStorage mesmo com erro de conexão
+      if (currentConversationId) {
+        saveToLocalStorage(currentConversationId, finalMessages);
+      }
+    } finally {
+      setIsSending(false);
+    }
+  };
+
+  const handleNewChat = async () => {
+    setSidebarOpen(false); // fecha o sidebar no celular
+    const newConv = await createNewConversation();
+    if (!newConv) {
+      // Fallback local se falhar ao criar no banco
+      const newConversation: Conversation = {
+        id: Date.now().toString(),
+        title: 'Nova Conversa',
+        createdAt: new Date(),
+        messages: createWelcomeAssistantMessages(),
+      };
+      setConversations(prev => [newConversation, ...prev]);
+      setCurrentConversationId(newConversation.id);
+      setMessages(newConversation.messages);
+      setGptContextId(null);
+    }
+  };
+
+  const handleSelectConversation = async (conversationId: string) => {
+    const conversation = conversations.find(c => c.id === conversationId) || 
+                        archivedConversations.find(c => c.id === conversationId);
+    if (conversation) {
+      setCurrentConversationId(conversationId);
+      setContextMenuId(null);
+      setGptContextId(conversation.gptmakerContextId || null);
+      setSidebarOpen(false); // fecha o sidebar no celular ao escolher conversa
+      await loadMessages(conversationId);
+    }
+  };
+
+  const handleArchiveConversation = async (conversationId: string) => {
+    const conversation = conversations.find(c => c.id === conversationId);
+    if (!conversation || !userId) return;
+
+    try {
+      // Atualizar no banco de dados
+      await fetch('/api/consultor/conversations', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          conversationId,
+          userId,
+          isArchived: true,
+        }),
+      });
+
+      // Atualizar estado local
+      const archivedConv = { ...conversation, isArchived: true };
+      setArchivedConversations(prev => [...prev, archivedConv]);
+      setConversations(prev => prev.filter(c => c.id !== conversationId));
+      
+      if (currentConversationId === conversationId) {
+        const remaining = conversations.filter(c => c.id !== conversationId);
+        if (remaining.length > 0) {
+          setCurrentConversationId(remaining[0].id);
+          await loadMessages(remaining[0].id);
+        } else {
+          await handleNewChat();
+        }
+      }
+    } catch (error) {
+      console.error('Erro ao arquivar conversa:', error);
+    }
+    setContextMenuId(null);
+  };
+
+  const handleDeleteConversation = async (conversationId: string) => {
+    if (!userId) return;
+
+    try {
+      // Conversas locais (ex: "local_...") não existem no banco — apagar só localmente.
+      if (!isUuid(conversationId)) {
+        removeConversationFromLocalStorage(conversationId);
+
+        let nextList: Conversation[] = [];
+        setConversations(prev => {
+          nextList = prev.filter(c => c.id !== conversationId);
+          return nextList;
+        });
+
+        if (currentConversationId === conversationId) {
+          if (nextList.length > 0) {
+            setCurrentConversationId(nextList[0].id);
+            await loadMessages(nextList[0].id);
+          } else {
+            await handleNewChat();
+          }
+        }
+
+        setContextMenuId(null);
+        return;
+      }
+
+      const res = await fetch(
+        `/api/consultor/conversations?conversationId=${conversationId}&userId=${userId}`,
+        { method: 'DELETE' }
+      );
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok || !data.success) {
+        console.error('[ConsultorIA] Falha ao deletar conversa:', data?.message || res.status);
+        setContextMenuId(null);
+        return;
+      }
+
+      removeConversationFromLocalStorage(conversationId);
+
+      let nextList: Conversation[] = [];
+      setConversations(prev => {
+        nextList = prev.filter(c => c.id !== conversationId);
+        return nextList;
+      });
+
+      if (currentConversationId === conversationId) {
+        if (nextList.length > 0) {
+          setCurrentConversationId(nextList[0].id);
+          await loadMessages(nextList[0].id);
+        } else {
+          await handleNewChat();
+        }
+      }
+    } catch (error) {
+      console.error('Erro ao deletar conversa:', error);
+    }
+    setContextMenuId(null);
+  };
+
+  const handleRestoreConversation = async (conversationId: string) => {
+    const conversation = archivedConversations.find(c => c.id === conversationId);
+    if (!conversation || !userId) return;
+
+    try {
+      // Atualizar no banco de dados
+      await fetch('/api/consultor/conversations', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          conversationId,
+          userId,
+          isArchived: false,
+        }),
+      });
+
+      // Atualizar estado local
+      const restoredConv = { ...conversation, isArchived: false };
+      setConversations(prev => [restoredConv, ...prev]);
+      setArchivedConversations(prev => prev.filter(c => c.id !== conversationId));
+    } catch (error) {
+      console.error('Erro ao restaurar conversa:', error);
+    }
+    setContextMenuId(null);
+  };
+
+  const handleDeleteArchivedConversation = async (conversationId: string) => {
+    if (!userId) return;
+
+    try {
+      if (!isUuid(conversationId)) {
+        removeConversationFromLocalStorage(conversationId);
+        setArchivedConversations(prev => prev.filter(c => c.id !== conversationId));
+        setContextMenuId(null);
+        return;
+      }
+
+      const res = await fetch(
+        `/api/consultor/conversations?conversationId=${conversationId}&userId=${userId}`,
+        { method: 'DELETE' }
+      );
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.success) {
+        console.error('[ConsultorIA] Falha ao deletar conversa arquivada:', data?.message || res.status);
+        setContextMenuId(null);
+        return;
+      }
+      removeConversationFromLocalStorage(conversationId);
+      setArchivedConversations(prev => prev.filter(c => c.id !== conversationId));
+    } catch (error) {
+      console.error('Erro ao deletar conversa arquivada:', error);
+    }
+    setContextMenuId(null);
+  };
+
+  const handleStartRename = (conversation: Conversation) => {
+    setContextMenuId(null);
+    setEditingConversationId(conversation.id);
+    setEditingTitle(conversation.title);
+    setTimeout(() => editInputRef.current?.focus(), 50);
+  };
+
+  const handleRenameConversation = async (conversationId: string, newTitle: string) => {
+    const t = newTitle.trim();
+    if (!t || !userId) {
+      setEditingConversationId(null);
+      return;
+    }
+    setEditingConversationId(null);
+    try {
+      const res = await fetch('/api/consultor/conversations', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ conversationId, userId, title: t }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        const upd = (c: Conversation) => (c.id === conversationId ? { ...c, title: t } : c);
+        setConversations(prev => prev.map(upd));
+        setArchivedConversations(prev => prev.map(upd));
+      }
+    } catch (error) {
+      console.error('Erro ao renomear conversa:', error);
+    }
+  };
+
+  const getPlanData = () => {
+    // Mock data - será integrado com backend
+    return {
+      planName: 'Profissional',
+      creditsAvailable: 15000,
+      creditsUsed: 3450,
+      renewalDate: new Date(2026, 1, 28), // 28 de fevereiro de 2026
+      monthlyLimit: 20000,
+    };
+  };
+
+  // Extrair userId do token JWT
+  const extractUserIdFromToken = (token: string): string | null => {
+    try {
+      const parts = token.split('.');
+      if (parts.length !== 3) return null;
+      const payload = JSON.parse(atob(parts[1]));
+      return payload.userId || payload.sub || payload.id || null;
+    } catch {
+      return null;
+    }
+  };
+
+  const fetchPlanData = async () => {
+    try {
+      setPlanLoading(true);
+      const token = getAuthToken();
+      const storedUserId = getUserId(); // Usar userId do localStorage
+      
+      console.log('[ConsultorIA] Buscando dados do plano...');
+      console.log('[ConsultorIA] userId do localStorage:', storedUserId);
+      
+      // Se temos userId no localStorage, usar imediatamente
+      if (storedUserId && !userId) {
+        setUserId(storedUserId);
+      }
+
+      // Construir URL com userId do localStorage como fallback
+      let url = '/api/consultor/user-plan';
+      if (storedUserId) {
+        url += `?userId=${storedUserId}`;
+      }
+
+      const response = await fetch(url, {
+        headers: token ? {
+          'Authorization': `Bearer ${token}`,
+        } : {},
+      });
+      
+      if (!response.ok) {
+        console.error('[ConsultorIA] Erro ao buscar dados do plano:', response.status);
+        // Mesmo com erro, usar userId do localStorage se disponível
+        if (storedUserId) {
+          setUserId(storedUserId);
+        }
+        return;
+      }
+      const result = await response.json();
+      console.log('[ConsultorIA] Resposta user-plan:', result);
+      
+      if (result.success && result.data) {
+        // Salvar userId para uso nas operações de histórico
+        console.log('[ConsultorIA] Definindo userId:', result.data.userId);
+        setUserId(result.data.userId);
+        
+        setPlanData({
+          planName: result.data.planName,
+          creditsAvailable: result.data.creditsAvailable,
+          creditsUsed: result.data.creditsUsed,
+          monthlyLimit: result.data.monthlyLimit,
+          renewalDate: new Date(result.data.renewalDate),
+          fullName: result.data.fullName,
+          email: result.data.email,
+          userId: result.data.userId,
+        });
+      } else if (storedUserId) {
+        // Se a API não retornou dados mas temos userId do localStorage, usar como fallback
+        setUserId(storedUserId);
+      }
+    } catch (error) {
+      console.error('[ConsultorIA] Erro ao carregar dados do plano:', error);
+      // Tentar usar userId do token como fallback
+      const token = getAuthToken();
+      if (token) {
+        const fallbackUserId = extractUserIdFromToken(token);
+        if (fallbackUserId) {
+          console.log('[ConsultorIA] Usando userId do token como fallback:', fallbackUserId);
+          setUserId(fallbackUserId);
+        }
+      }
+    } finally {
+      setPlanLoading(false);
+    }
+  };
+
+  const handleLogout = () => {
+    logout();
+    window.location.href = '/';
+  };
+
+  // Mostrar mensagem de sessão expirada
+  if (sessionError) {
+    return (
+      <div className="consultor-loading">
+        <div className="consultor-session-error">
+          <div className="consultor-session-error__icon">⚠️</div>
+          <h2>Sessão Expirada</h2>
+          <p>{sessionError}</p>
+          <p className="consultor-session-error__redirect">Redirecionando para login...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <div className="consultor-loading">
+        <div className="consultor-loading__spinner"></div>
+        <p>Carregando Consultor.IA...</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="consultor">
+      {/* Sidebar - Layout vertical estilo Gemini (de cima para baixo) */}
+      <div className={`consultor__sidebar consultor__sidebar--vertical ${sidebarOpen ? 'consultor__sidebar--open' : ''}`}>
+        {/* Topo: Logo + Fechar */}
+        <div className="consultor__sidebar-header">
+          <a href="/dashboard" className="consultor__logo">
+            <img 
+              src="/images/EQUALIZAGRO ok.png" 
+              alt="Equalizagro Logo" 
+              className="header__logo-image" 
+            />
+          </a>
+          <button
+            onClick={() => setSidebarOpen(false)}
+            className="consultor__sidebar-close"
+            aria-label="Fechar menu"
+          >
+            <X size={20} />
+          </button>
+        </div>
+
+        {/* Conta (mobile/tablet) */}
+        <div className="consultor__sidebar-account">
+          <div className="consultor__sidebar-account-avatar">
+            <User size={20} />
+          </div>
+          <div className="consultor__sidebar-account-info">
+            <span className="consultor__sidebar-account-name">
+              {planData?.fullName || 'Minha conta'}
+            </span>
+            <span className="consultor__sidebar-account-plan">
+              {planData?.planName ? `Plano ${planData.planName}` : 'Consultor.IA'}
+            </span>
+          </div>
+        </div>
+
+        {/* Nova conversa */}
+        <button onClick={handleNewChat} className="consultor__new-chat">
+          <Plus size={20} />
+          <span>Nova conversa</span>
+        </button>
+
+        {/* Pesquisa de conversas */}
+        <div className="consultor__sidebar-search-wrap">
+          <Search size={18} className="consultor__sidebar-search-icon" />
+          <input
+            type="text"
+            className="consultor__sidebar-search"
+            placeholder="Pesquise conversas"
+            value={sidebarSearch}
+            onChange={(e) => setSidebarSearch(e.target.value)}
+            aria-label="Pesquisar conversas"
+          />
+        </div>
+
+        {/* Histórico: Conversas */}
+        <div className="consultor__conversations">
+          <div className="consultor__conversations-header">
+            <h3 className="consultor__conversations-title">
+              {showArchived ? 'Conversas arquivadas' : 'Conversas'}
+            </h3>
+            {archivedConversations.length > 0 && (
+              <button
+                onClick={() => setShowArchived(!showArchived)}
+                className="consultor__conversations-toggle"
+                title={showArchived ? 'Ver conversas recentes' : 'Ver arquivadas'}
+              >
+                <Archive size={16} />
+              </button>
+            )}
+          </div>
+          <div className="consultor__conversations-list">
+            {isLoadingConversations ? (
+              <div className="consultor__conversations-loading">
+                <div className="consultor__typing-indicator" style={{ justifyContent: 'center' }}>
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
+              </div>
+            ) : filteredConversations.map(conversation => (
+              <div
+                key={conversation.id}
+                className="consultor__conversation-item-container"
+              >
+                <button
+                  onClick={() => !editingConversationId && handleSelectConversation(conversation.id)}
+                  className={`consultor__conversation-item ${
+                    conversation.id === currentConversationId ? 'consultor__conversation-item--active' : ''
+                  }`}
+                >
+                  {editingConversationId === conversation.id ? (
+                    <input
+                      ref={editInputRef}
+                      type="text"
+                      className="consultor__conversation-edit-input"
+                      value={editingTitle}
+                      onChange={e => setEditingTitle(e.target.value)}
+                      onBlur={() => handleRenameConversation(conversation.id, editingTitle)}
+                      onKeyDown={e => {
+                        if (e.key === 'Enter') handleRenameConversation(conversation.id, editingTitle);
+                        if (e.key === 'Escape') setEditingConversationId(null);
+                      }}
+                      onClick={e => e.stopPropagation()}
+                      aria-label="Novo nome da conversa"
+                    />
+                  ) : (
+                    <span className="consultor__conversation-title">{conversation.title}</span>
+                  )}
+                </button>
+                <div className="consultor__conversation-actions">
+                  <button
+                    onClick={(e) => { e.stopPropagation(); setContextMenuId(contextMenuId === conversation.id ? null : conversation.id); }}
+                    className="consultor__conversation-menu-button"
+                    aria-label="Opções: Renomear, Arquivar, Deletar"
+                  >
+                    ⋮
+                  </button>
+                  {contextMenuId === conversation.id && (
+                    <div className="consultor__context-menu">
+                      <button
+                        onClick={() => handleStartRename(conversation)}
+                        className="consultor__context-menu-item"
+                      >
+                        <Pencil size={14} />
+                        Renomear
+                      </button>
+                      {!showArchived ? (
+                        <>
+                          <button
+                            onClick={() => handleArchiveConversation(conversation.id)}
+                            className="consultor__context-menu-item"
+                          >
+                            <Archive size={14} />
+                            Arquivar
+                          </button>
+                          <button
+                            onClick={() => handleDeleteConversation(conversation.id)}
+                            className="consultor__context-menu-item consultor__context-menu-item--danger"
+                          >
+                            <Trash2 size={14} />
+                            Deletar
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <button
+                            onClick={() => handleRestoreConversation(conversation.id)}
+                            className="consultor__context-menu-item"
+                          >
+                            <Archive size={14} />
+                            Restaurar
+                          </button>
+                          <button
+                            onClick={() => handleDeleteArchivedConversation(conversation.id)}
+                            className="consultor__context-menu-item consultor__context-menu-item--danger"
+                          >
+                            <Trash2 size={14} />
+                            Deletar
+                          </button>
+                        </>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+            {!isLoadingConversations && filteredConversations.length === 0 && (
+              <p className="consultor__conversations-empty">
+                {sidebarSearch.trim()
+                  ? 'Nenhuma conversa encontrada'
+                  : showArchived
+                    ? 'Nenhuma conversa arquivada'
+                    : 'Nenhuma conversa recente'}
+              </p>
+            )}
+          </div>
+        </div>
+
+        {/* Rodapé: Configurações e saída (de cima para baixo) */}
+        <div className="consultor__sidebar-footer">
+          <button 
+            onClick={() => setShowSettings(true)}
+            className="consultor__sidebar-button"
+          >
+            <Settings size={18} />
+            <span>Configurações e ajuda</span>
+          </button>
+          <button onClick={handleLogout} className="consultor__sidebar-button consultor__sidebar-button--danger">
+            <LogOut size={18} />
+            <span>Sair</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Overlay do Sidebar (mobile) */}
+      {sidebarOpen && (
+        <div
+          className="consultor__sidebar-overlay"
+          onClick={() => setSidebarOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+
+      {/* Main Chat Area */}
+      <div className="consultor__main">
+        <div className="consultor__header">
+          <button
+            onClick={() => setSidebarOpen(true)}
+            className="consultor__menu-button"
+            aria-label="Abrir menu"
+          >
+            <Menu size={20} />
+          </button>
+          <h1 className="consultor__title">Consultor.IA</h1>
+          <div className="consultor__header-spacer" style={{ width: '36px' }}></div>
+        </div>
+
+        <div className="consultor__messages-container">
+          <div className="consultor__messages">
+            {isLoadingMessages ? (
+              <div className="consultor__empty-state">
+                <div className="consultor__typing-indicator" style={{ justifyContent: 'center' }}>
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
+                <p className="consultor__empty-description">Carregando conversa...</p>
+              </div>
+            ) : messages.length === 0 ? (
+              <div className="consultor__empty-state">
+                <div className="consultor__empty-icon" style={{ color: '#1a5f3a', display: 'flex', justifyContent: 'center' }}>
+                  <Leaf size={48} strokeWidth={1.5} />
+                </div>
+                <h2 className="consultor__empty-title">Bem-vindo ao Consultor.IA</h2>
+                <p className="consultor__empty-description">
+                  Faça perguntas sobre aplicação de defensivos, manejo de plantas daninhas,
+                  consultoria agrícola e muito mais!
+                </p>
+              </div>
+            ) : (
+              messages.map(message => (
+                <div
+                  key={message.id}
+                  className={`consultor__message consultor__message--${message.role}`}
+                >
+                  <div className="consultor__message-avatar">
+                    {message.role === 'user' ? (
+                      <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#fff' }}>U</span>
+                    ) : (
+                      <img src="/images/Equalizagro-gota-logo.png" alt="Consultor IA" className="consultor__message-avatar-image" />
+                    )}
+                  </div>
+                  <div className="consultor__message-content">
+                    <FormattedMessage content={message.content} role={message.role} />
+                    <span className="consultor__message-time">
+                      {message.timestamp.toLocaleTimeString('pt-BR', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })}
+                    </span>
+                  </div>
+                </div>
+              ))
+            )}
+            {isSending && (
+              <div className="consultor__message consultor__message--assistant">
+                <div className="consultor__message-avatar">
+                  <img src="/images/Equalizagro-gota-logo.png" alt="Consultor IA" className="consultor__message-avatar-image" />
+                </div>
+                <div className="consultor__message-content">
+                  <div className="consultor__typing-indicator">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                  </div>
+                </div>
+              </div>
+            )}
+            <div ref={messagesEndRef} />
+          </div>
+        </div>
+
+        <div className="consultor__input-area">
+          {/* Timer indicator */}
+          {pendingMessages.length > 0 && timeUntilSend > 0 && (
+            <div className="consultor__timer-indicator">
+              <span>IA responderá em {timeUntilSend}s</span>
+              <button 
+                onClick={sendPendingMessages}
+                className="consultor__send-now-btn"
+                type="button"
+              >
+                Enviar agora
+              </button>
+            </div>
+          )}
+          <form 
+            onSubmit={(e) => {
+              e.preventDefault();
+              addUserMessage();
+            }} 
+            className="consultor__input-form"
+          >
+            <textarea
+              ref={textareaRef}
+              value={inputValue}
+              onChange={e => {
+                setInputValue(e.target.value);
+                // Auto-resize textarea
+                e.target.style.height = 'auto';
+                e.target.style.height = Math.min(e.target.scrollHeight, 150) + 'px';
+              }}
+              onKeyDown={e => {
+                // Enter sem Shift envia a mensagem
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault();
+                  addUserMessage();
+                }
+                // Shift+Enter adiciona quebra de linha (comportamento padrão do textarea)
+              }}
+              placeholder="Digite sua mensagem..."
+              className="consultor__input consultor__input--textarea"
+              disabled={isSending}
+              rows={1}
+            />
+            <button
+              type="submit"
+              className="consultor__send-button"
+              disabled={!inputValue.trim() || isSending}
+              aria-label="Adicionar mensagem"
+            >
+              <Send size={20} />
+            </button>
+          </form>
+          <p className="consultor__disclaimer">
+            Consultor.IA pode cometer erros. Sempre verifique informações críticas antes de implementar.
+            <br />
+            
+          </p>
+        </div>
+      </div>
+
+      {/* Settings Modal */}
+      {showSettings && (
+        <div className="consultor__modal-overlay" onClick={() => setShowSettings(false)}>
+          <div className="consultor__modal" onClick={e => e.stopPropagation()}>
+            <div className="consultor__modal-header">
+              <h2 className="consultor__modal-title">Configurações da Conta</h2>
+              <button 
+                onClick={() => setShowSettings(false)}
+                className="consultor__modal-close"
+                aria-label="Fechar"
+              >
+                <X size={24} />
+              </button>
+            </div>
+
+            <div className="consultor__modal-content">
+              {/* Plan Info Card */}
+              <div className="consultor__settings-card">
+                <div className="consultor__plan-header">
+                  <h3 className="consultor__plan-name">
+                    Plano {planData?.planName || 'Carregando...'}
+                  </h3>
+                  <span className="consultor__plan-badge">
+                    {planData?.planName || 'Carregando...'}
+                  </span>
+                </div>
+
+                {/* Credits Section */}
+                <div className="consultor__settings-section">
+                  <h4 className="consultor__settings-title">Créditos Disponíveis</h4>
+                  <div className="consultor__credits-container">
+                    <div className="consultor__credits-info">
+                      <span className="consultor__credits-label">Créditos disponíveis:</span>
+                      <span className="consultor__credits-value">
+                        {planData 
+                          ? planData.creditsAvailable.toLocaleString('pt-BR')
+                          : '0'
+                        }
+                      </span>
+                    </div>
+                    <div className="consultor__progress-bar">
+                      <div 
+                        className={`consultor__progress-fill ${
+                          planData && ((planData.creditsUsed / planData.monthlyLimit) * 100) > 70
+                            ? 'progress-high'
+                            : planData && ((planData.creditsUsed / planData.monthlyLimit) * 100) > 50
+                            ? 'progress-medium'
+                            : ''
+                        }`}
+                        style={{
+                          width: planData 
+                            ? `${((planData.creditsUsed / planData.monthlyLimit) * 100)}%`
+                            : '0%'
+                        }}
+                      />
+                    </div>
+                    <div className="consultor__credits-details">
+                      <span className="consultor__credits-used">
+                        Usados: {planData 
+                          ? planData.creditsUsed.toLocaleString('pt-BR')
+                          : '0'
+                        }
+                      </span>
+                      <span className="consultor__credits-limit">
+                        Limite: {planData 
+                          ? planData.monthlyLimit.toLocaleString('pt-BR')
+                          : '0'
+                        }
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Renewal Section */}
+                <div className="consultor__settings-section">
+                  <h4 className="consultor__settings-title">Renovação do Plano</h4>
+                  <div className="consultor__renewal-info">
+                    <span className="consultor__renewal-label">Próxima renovação:</span>
+                    <span className="consultor__renewal-date">
+                      {planData
+                        ? planData.renewalDate.toLocaleDateString('pt-BR', {
+                            day: '2-digit',
+                            month: 'long',
+                            year: 'numeric'
+                          })
+                        : 'Carregando...'
+                      }
+                    </span>
+                    <p className="consultor__renewal-description">
+                      Seu plano se renova automaticamente todos os meses
+                    </p>
+                  </div>
+                </div>
+
+                {/* Upgrade Section */}
+                <div className="consultor__settings-section">
+                  <button className="consultor__upgrade-button">
+                    <span>Evoluir para Plano Premium</span>
+                  </button>
+                  <p className="consultor__upgrade-description">
+                    Desbloqueie créditos ilimitados, prioridade de atendimento e recursos exclusivos
+                  </p>
+                </div>
+
+                {/* Add Credits Section */}
+                <div className="consultor__settings-section">
+                  <h4 className="consultor__settings-title">Adicionar Créditos</h4>
+                  <div className="consultor__add-credits-container">
+                    <div className="consultor__credit-packages">
+                      <button className="consultor__credit-package">
+                        <span className="consultor__package-amount">5.000</span>
+                        <span className="consultor__package-price">R$ 49,90</span>
+                      </button>
+                      <button className="consultor__credit-package">
+                        <span className="consultor__package-amount">15.000</span>
+                        <span className="consultor__package-price">R$ 129,90</span>
+                      </button>
+                      <button className="consultor__credit-package">
+                        <span className="consultor__package-amount">30.000</span>
+                        <span className="consultor__package-price">R$ 249,90</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

@@ -530,4 +530,19 @@ p {
   }
 }
 
+/* ─── Grid Background Sutil ─── */
+.site-grid-bg {
+  position: relative;
+}
 
+.site-grid-bg::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(26, 95, 58, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(26, 95, 58, 0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+  z-index: 0;
+}

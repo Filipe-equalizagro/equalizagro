@@ -1,0 +1,149 @@
+/* ==================== IA PAGE — PREMIUM LAYOUT ==================== */
+
+/* Spinner enquanto verifica sessão */
+@keyframes iaPageSpin {
+  to { transform: rotate(360deg); }
+}
+
+.ia-page__checking {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: #f4f9f5;
+}
+
+.ia-page__checking-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(26, 95, 58, 0.18);
+  border-top-color: #1a5f3a;
+  border-radius: 50%;
+  animation: iaPageSpin 0.75s linear infinite;
+}
+
+.ia-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: #f9f9f9;
+}
+
+/* ─── HEADER ─── */
+.ia-page__header {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(26, 95, 58, 0.15);
+  padding: 0;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.ia-page__header-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 70px;
+}
+
+.ia-page__logo-link {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  transition: opacity 0.3s ease;
+}
+
+.ia-page__logo-link:hover {
+  opacity: 0.8;
+}
+
+.ia-page__logo {
+  height: 42px;
+  width: auto;
+  object-fit: contain;
+  filter: brightness(1.1);
+}
+
+/* Header Center Label */
+.ia-page__header-center {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #484848;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.ia-page__header-center svg:first-child {
+  color: #0caf00;
+}
+
+.ia-page__header-sparkle {
+  color: #d4af37;
+  animation: sparkleAnim 3s ease-in-out infinite;
+}
+
+@keyframes sparkleAnim {
+  0%, 100% { transform: rotate(0deg) scale(1); opacity: 0.7; }
+  50% { transform: rotate(15deg) scale(1.2); opacity: 1; }
+}
+
+/* Back Button */
+.ia-page__back-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.2rem;
+  background: rgba(26, 95, 58, 0.1);
+  border: 1px solid rgba(26, 95, 58, 0.2);
+  border-radius: 10px;
+  color: #5e5e5e;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.88rem;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.ia-page__back-button:hover {
+  background: rgba(26, 95, 58, 0.2);
+  border-color: rgba(26, 95, 58, 0.4);
+  color: #535353;
+  transform: translateX(-2px);
+}
+
+/* ─── CONTENT ─── */
+.ia-page__content {
+  flex: 1;
+}
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 768px) {
+  .ia-page__header-container {
+    padding: 0 1rem;
+    height: 60px;
+  }
+
+  .ia-page__logo {
+    height: 35px;
+  }
+
+  .ia-page__header-center {
+    display: none;
+  }
+
+  .ia-page__back-button {
+    padding: 0.5rem 0.9rem;
+    font-size: 0.8rem;
+  }
+
+  .ia-page__back-button span {
+    display: none;
+  }
+}

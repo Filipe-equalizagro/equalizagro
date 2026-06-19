@@ -421,11 +421,54 @@
 }
 
 .services__cta-button {
-  background: var(--gradient-secondary);
-  color: var(--neutral-900);
-  box-shadow: var(--shadow-gold);
+  background: white;
+  color: #1a5f3a !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
   position: relative;
   z-index: 2;
+  overflow: visible;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  min-height: 56px;
+  border: none;
+  position: relative;
+  z-index: 2;
+  overflow: visible;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  min-height: 56px;
+  border: none;
+}
+
+.services__cta-button::before {
+  content: none;
+}
+
+.services__cta-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+  background: #f8f8f8;
+}
+
+
+.services__cta-button:active {
+  transform: scale(0.96);
+  transition: all 0.1s ease;
+  background: #f0f0f0;
+  color: #1a5f3a;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 @media (max-width: 1200px) {

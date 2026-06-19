@@ -1,0 +1,68 @@
+@keyframes rspSpin { to { transform: rotate(360deg); } }
+
+.rsp-root {
+  min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, #f0f7f2, #e8f5ec); padding: 1.5rem;
+}
+.rsp-card {
+  width: 100%; max-width: 420px; background: #fff; border-radius: 20px;
+  padding: 2.5rem 2rem; box-shadow: 0 8px 40px rgba(26,95,58,0.12);
+  display: flex; flex-direction: column; align-items: center;
+}
+.rsp-logo img { height: 40px; width: auto; object-fit: contain; margin-bottom: 1.5rem; }
+
+.rsp-title    { font-size: 1.45rem; font-weight: 800; color: #1f2937; margin: 0 0 0.4rem; text-align: center; }
+.rsp-subtitle { font-size: 0.86rem; color: #6b7280; margin: 0 0 1.75rem; text-align: center; line-height: 1.5; }
+
+.rsp-form  { width: 100%; display: flex; flex-direction: column; gap: 1rem; }
+.rsp-field { display: flex; flex-direction: column; gap: 0.35rem; }
+.rsp-field label { font-size: 0.84rem; font-weight: 600; color: #374151; }
+
+.rsp-input-wrap { position: relative; display: flex; align-items: center; }
+.rsp-icon { position: absolute; left: 0.85rem; color: #9ca3af; pointer-events: none; }
+.rsp-input {
+  width: 100%; padding: 0.75rem 0.875rem 0.75rem 2.5rem;
+  border: 1.5px solid #e5e7eb; border-radius: 10px;
+  font-size: 0.9rem; font-family: inherit; color: #1f2937;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.rsp-input--pass { padding-right: 2.75rem; }
+.rsp-input:focus { outline: none; border-color: #1a5f3a; box-shadow: 0 0 0 3px rgba(26,95,58,0.1); }
+.rsp-eye {
+  position: absolute; right: 0.75rem; background: none; border: none;
+  cursor: pointer; color: #9ca3af; display: flex; align-items: center;
+}
+.rsp-eye:hover { color: #1a5f3a; }
+
+.rsp-error {
+  display: flex; align-items: center; gap: 0.5rem;
+  padding: 0.65rem 0.9rem; background: #fef2f2;
+  border: 1px solid #fecaca; border-radius: 8px;
+  color: #dc2626; font-size: 0.84rem;
+}
+
+.rsp-btn {
+  width: 100%; padding: 0.8rem; background: linear-gradient(135deg, #1a5f3a, #2d8a54);
+  color: #fff; border: none; border-radius: 10px; font-size: 0.95rem;
+  font-weight: 700; font-family: inherit; cursor: pointer; transition: all 0.25s;
+  display: flex; align-items: center; justify-content: center; margin-top: 0.25rem;
+}
+.rsp-btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(26,95,58,0.3); }
+.rsp-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.rsp-spinner {
+  width: 20px; height: 20px; border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: #fff; border-radius: 50%; animation: rspSpin 0.7s linear infinite;
+}
+
+.rsp-success { text-align: center; padding: 1rem 0; }
+.rsp-success-icon { color: #1a5f3a; margin-bottom: 1rem; }
+.rsp-success-icon--green { color: #16a34a; }
+.rsp-success h2 { font-size: 1.2rem; font-weight: 700; color: #1f2937; margin: 0 0 0.6rem; }
+.rsp-success p  { font-size: 0.88rem; color: #6b7280; margin: 0 0 1.5rem; line-height: 1.55; }
+
+.rsp-back {
+  margin-top: 1.5rem; font-size: 0.82rem; color: #9ca3af;
+  text-decoration: none; transition: color 0.2s;
+}
+.rsp-back:hover { color: #1a5f3a; }
