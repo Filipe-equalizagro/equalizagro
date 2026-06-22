@@ -783,17 +783,8 @@ export default function ConsultorIA() {
       textareaRef.current.style.height = 'auto';
     }
     
-    // Cancelar timer anterior
-    if (typingTimeout) {
-      clearTimeout(typingTimeout);
-    }
-    
-    // Iniciar novo timer de 10 segundos
-    setTimeUntilSend(10);
-    const newTimeout = setTimeout(() => {
-      sendPendingMessages();
-    }, TYPING_DELAY);
-    setTypingTimeout(newTimeout);
+    // Enviar imediatamente
+    setTimeout(() => sendPendingMessages(), 0);
   };
   
   // Countdown do timer
@@ -1540,7 +1531,7 @@ export default function ConsultorIA() {
                 >
                   <div className="consultor__message-avatar">
                     {message.role === 'user' ? (
-                      <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#fff' }}>U</span>
+                      <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#fff' }}>{(planData?.fullName || 'U')[0].toUpperCase()}</span>
                     ) : (
                       <img src="/images/Equalizagro-gota-logo.png" alt="Consultor IA" className="consultor__message-avatar-image" />
                     )}
@@ -1576,19 +1567,7 @@ export default function ConsultorIA() {
         </div>
 
         <div className="consultor__input-area">
-          {/* Timer indicator */}
-          {pendingMessages.length > 0 && timeUntilSend > 0 && (
-            <div className="consultor__timer-indicator">
-              <span>IA responderá em {timeUntilSend}s</span>
-              <button 
-                onClick={sendPendingMessages}
-                className="consultor__send-now-btn"
-                type="button"
-              >
-                Enviar agora
-              </button>
-            </div>
-          )}
+
           <form 
             onSubmit={(e) => {
               e.preventDefault();
