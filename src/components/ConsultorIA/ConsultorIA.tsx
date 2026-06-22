@@ -170,19 +170,7 @@ function createWelcomeAssistantMessages(): Message[] {
     {
       id: '1',
       role: 'assistant',
-      content: `Olá! Sou o **Consultor.IA Equalizagro** 🌱
-
-Fui desenvolvido para auxiliar consultores e técnicos agrícolas com:
-
-• **Caldas de aplicação** — ordem de mistura, compatibilidade de produtos, volumes e adjuvantes
-
-• **Calibração e bicos** — seleção de pontas, pressão de trabalho e espectro de gotas
-
-• **Condições de pulverização** — Delta T, janela de aplicação e risco de deriva
-
-• **Defensivos e manejo** — recomendações técnicas por cultura, praga e estágio fenológico
-
-Como posso ajudar hoje?`,
+      content: `Olá! Sou o **Consultor.IA Equalizagro**, estou aqui para ajudar a converter nosso banco de dados em caldas de qualidade.`,
       timestamp: ts,
     },
   ];
