@@ -2,7 +2,7 @@ import ConsultorIA from '@/components/ConsultorIA/ConsultorIA';
 
 // ─────────────────────────────────────────────────────
 //  🔧 MANUTENÇÃO — mude para false para reativar a IA
-const MAINTENANCE = true;
+const MAINTENANCE = false;
 // ─────────────────────────────────────────────────────
 
 export const metadata = {
