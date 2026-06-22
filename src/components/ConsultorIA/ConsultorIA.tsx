@@ -1462,19 +1462,12 @@ export default function ConsultorIA() {
           </div>
         </div>
 
-        {/* Rodapé: Configurações e saída (de cima para baixo) */}
+        {/* Rodapé: Voltar ao Dashboard */}
         <div className="consultor__sidebar-footer">
-          <button 
-            onClick={() => setShowSettings(true)}
-            className="consultor__sidebar-button"
-          >
-            <Settings size={18} />
-            <span>Configurações e ajuda</span>
-          </button>
-          <button onClick={handleLogout} className="consultor__sidebar-button consultor__sidebar-button--danger">
+          <a href="/dashboard" className="consultor__sidebar-button consultor__sidebar-button--danger">
             <LogOut size={18} />
-            <span>Sair</span>
-          </button>
+            <span>Voltar ao Dashboard</span>
+          </a>
         </div>
       </div>
 
