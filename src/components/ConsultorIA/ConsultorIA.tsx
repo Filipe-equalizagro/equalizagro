@@ -212,6 +212,9 @@ export default function ConsultorIA() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [isSending, setIsSending] = useState(false);
+  const [userName, setUserName] = useState<string>(() => {
+    try { return localStorage.getItem('userName') || ''; } catch { return ''; }
+  });
   const [planData, setPlanData] = useState<PlanData | null>(null);
   const [planLoading, setPlanLoading] = useState(false);
   const [contextMenuId, setContextMenuId] = useState<string | null>(null);
@@ -276,10 +279,15 @@ export default function ConsultorIA() {
       
       console.log('[ConsultorIA] Sessão válida para:', result.email);
       setIsAuthenticated(true);
-      
+
       // Se veio userId da verificação, definir
       if (result.userId) {
         setUserId(result.userId);
+      }
+
+      // Capturar nome do usuário da sessão
+      if (result.fullName) {
+        setUserName(result.fullName);
       }
       
       fetchPlanData(); // Buscar dados do plano
@@ -1311,7 +1319,7 @@ export default function ConsultorIA() {
           </div>
           <div className="consultor__sidebar-account-info">
             <span className="consultor__sidebar-account-name">
-              {planData?.fullName || 'Minha conta'}
+              {planData?.fullName || userName || 'Minha conta'}
             </span>
             <span className="consultor__sidebar-account-plan">
               {planData?.planName ? `Plano ${planData.planName}` : 'Consultor.IA'}
@@ -1524,7 +1532,7 @@ export default function ConsultorIA() {
                 >
                   <div className="consultor__message-avatar">
                     {message.role === 'user' ? (
-                      <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#fff' }}>{(planData?.fullName || 'U')[0].toUpperCase()}</span>
+                      <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#fff' }}>{(userName || planData?.fullName || '?')[0].toUpperCase()}</span>
                     ) : (
                       <img src="/images/Equalizagro-gota-logo.png" alt="Consultor IA" className="consultor__message-avatar-image" />
                     )}
