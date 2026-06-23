@@ -13,7 +13,6 @@ import {
   Clock,
   TrendingUp,
   Info,
-  Package,
   Crosshair,
   Monitor
 } from 'lucide-react';
@@ -25,27 +24,18 @@ export default function Services() {
       icon: Droplet,
       iconClass: 'services__item-icon--gold',
       title: 'Consultoria em Tecnologia de Aplicação',
-      description: 'Suporte técnico para todas as aplicações, buscando a máxima perfomance de todos os insumos pulverizados',
+      description: 'Suporte técnico completo para pulverizações, herbologia e distribuição de sólidos, buscando a máxima performance de todos os insumos',
       features: [
         { text: 'Suporte em tempo integral', icon: CheckCircle },
         { text: 'Calibração e configuração periódica dos equipamentos', icon: CheckCircle },
-        { text: 'Treinamento da equipe', icon: CheckCircle },
-        { text: 'Aferição da qualidade das aplicações', icon: CheckCircle }
+        { text: 'Aferição da qualidade das aplicações', icon: CheckCircle },
+        { text: 'Herbologia Aplicada — manejo de plantas daninhas', icon: CheckCircle },
+        { text: 'Posicionamento baseado em pesquisa', icon: CheckCircle },
+        { text: 'Foco na rentabilidade', icon: CheckCircle },
+        { text: 'Distribuição de Sólidos — calibração e perfil de distribuição', icon: CheckCircle },
+        { text: 'Regulagem conforme produto e dose', icon: CheckCircle },
       ],
       backgroundImage: 'services__item-bg--consultoria'
-    },
-    {
-      icon: Sprout,
-      iconClass: 'services__item-icon--green',
-      title: 'Herbologia Aplicada',
-      description: 'Consultoria focada no manejo de plantas daninhas, com definição de herbicidas, doses e estratégias de manejo',
-      features: [
-        { text: 'Suporte em tempo integral', icon: CheckCircle },
-        { text: 'Treinamento da equipe', icon: CheckCircle },
-        { text: 'Posicionamento baseado na pesquisa', icon: CheckCircle },
-        { text: 'Foco na rentabilidade', icon: CheckCircle },
-      ],
-      backgroundImage: 'services__item-bg--treinamento'
     },
     {
       icon: BarChart3,
@@ -73,19 +63,6 @@ export default function Services() {
         { text: 'E muito mais!', icon: CheckCircle },
       ],
       backgroundImage: 'services__item-bg--monitoramento'
-    },
-    {
-      icon: Package,
-      iconClass: 'services__item-icon--gold',
-      title: 'Distribuição de Sólidos',
-      description: 'Consultoria para aplicações de fertilizantes e produtos sólidos, garantindo uniformidade na distribuição e máxima eficiência no campo',
-      features: [
-        { text: 'Calibração de distribuidoras', icon: CheckCircle },
-        { text: 'Perfil de distribuição e coeficiente de variação', icon: CheckCircle },
-        { text: 'Regulagem conforme produto e dose', icon: CheckCircle },
-        { text: 'Seleção do equipamento adequado', icon: CheckCircle },
-      ],
-      backgroundImage: 'services__item-bg--treinamento'
     },
     {
       icon: Crosshair,
