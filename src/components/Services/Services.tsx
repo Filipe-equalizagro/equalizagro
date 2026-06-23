@@ -24,7 +24,7 @@ export default function Services() {
       icon: Droplet,
       iconClass: 'services__item-icon--gold',
       title: 'Consultoria',
-      description: 'Suporte técnico completo para pulverizações, herbologia e distribuição de sólidos, buscando a máxima performance de todos os insumos',
+      description: 'Suporte técnico completo para pulverizações e herbologia aplicada',
       features: [
         { text: 'Suporte em tempo integral', icon: CheckCircle },
         { text: 'Calibração e configuração periódica dos equipamentos', icon: CheckCircle },
