@@ -2,6 +2,7 @@
 import { NextRequest } from 'next/server';
 import { ApiError, apiResponse, apiError } from '@/lib/api-utils';
 import { query } from '@/lib/database';
+import { ensureConversationTables } from '@/lib/db-init';
 
 /**
  * GET - Buscar mensagens de uma conversa
@@ -9,6 +10,7 @@ import { query } from '@/lib/database';
  */
 export async function GET(request: NextRequest) {
   try {
+    await ensureConversationTables();
     const { searchParams } = new URL(request.url);
     const conversationId = searchParams.get('conversationId');
     const userId = searchParams.get('userId');
@@ -93,6 +95,7 @@ export async function GET(request: NextRequest) {
  */
 export async function POST(request: NextRequest) {
   try {
+    await ensureConversationTables();
     const body = await request.json();
     const { conversationId, userId, messages, gptmakerContextId } = body;
 

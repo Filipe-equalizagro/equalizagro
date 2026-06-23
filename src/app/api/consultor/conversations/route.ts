@@ -2,6 +2,7 @@
 import { NextRequest } from 'next/server';
 import { ApiError, apiResponse, apiError } from '@/lib/api-utils';
 import { query } from '@/lib/database';
+import { ensureConversationTables } from '@/lib/db-init';
 
 /**
  * GET - Buscar todas as conversas do usuário
@@ -9,6 +10,7 @@ import { query } from '@/lib/database';
  */
 export async function GET(request: NextRequest) {
   try {
+    await ensureConversationTables();
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get('userId');
     const includeArchived = searchParams.get('includeArchived') === 'true';
@@ -74,6 +76,7 @@ export async function GET(request: NextRequest) {
  */
 export async function POST(request: NextRequest) {
   try {
+    await ensureConversationTables();
     const body = await request.json();
     const { userId, title, gptmakerContextId, conversationId } = body;
 
