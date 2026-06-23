@@ -111,6 +111,14 @@ export default function LoginPage() {
           </form>
 
           <p className="lp-forgot"><a href="/recuperar-senha">Esqueci minha senha</a></p>
+
+          <div className="lp-register-notice">
+            <p>Não tem cadastro? Entre em contato com a Equalizagro:</p>
+            <a href="https://api.whatsapp.com/send/?phone=555533432606&text=Ol%C3%A1!+Gostaria+de+criar+meu+acesso+na+plataforma+go2apply." target="_blank" rel="noopener noreferrer">
+              (55) 3343-2606
+            </a>
+          </div>
+
           <p className="lp-footer-link"><a href="/">← Voltar ao site</a></p>
         </div>
       </div>

@@ -251,6 +251,31 @@
   }
 }
 
+.lp-register-notice {
+  margin-top: 1.25rem;
+  padding: 0.875rem 1rem;
+  background: #f0f7f2;
+  border: 1px solid rgba(26, 95, 58, 0.15);
+  border-radius: 10px;
+  text-align: center;
+  font-size: 0.82rem;
+  color: #4b5563;
+}
+
+.lp-register-notice p {
+  margin: 0 0 0.35rem;
+}
+
+.lp-register-notice a {
+  font-weight: 700;
+  color: #1a5f3a;
+  text-decoration: none;
+}
+
+.lp-register-notice a:hover {
+  text-decoration: underline;
+}
+
 /* Mobile */
 @media (max-width: 480px) {
   .lp-form-panel { padding: 1.5rem 1rem; }

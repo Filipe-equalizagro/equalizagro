@@ -23,7 +23,7 @@ export default function Services() {
     {
       icon: Droplet,
       iconClass: 'services__item-icon--gold',
-      title: 'Consultoria em Tecnologia de Aplicação',
+      title: 'Consultoria',
       description: 'Suporte técnico completo para pulverizações, herbologia e distribuição de sólidos, buscando a máxima performance de todos os insumos',
       features: [
         { text: 'Suporte em tempo integral', icon: CheckCircle },
