@@ -216,6 +216,10 @@
   font-size: 0.8rem;
 }
 
+.header__mobile-go2apply {
+  display: none;
+}
+
 .header__mobile-toggle {
   display: none;
   flex-direction: column;
@@ -308,13 +312,19 @@
   .header__nav {
     display: none;
   }
-  
+
   .header__cta {
     display: none;
   }
-  
+
   .header__mobile-toggle {
+    display: none;
+  }
+
+  .header__mobile-go2apply {
     display: flex;
+    align-items: center;
+    margin-left: auto;
   }
 }
 

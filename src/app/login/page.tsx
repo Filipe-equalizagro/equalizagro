@@ -61,7 +61,7 @@ export default function LoginPage() {
 
           <div className="lp-header">
             <h1 className="lp-title">Entrar na plataforma</h1>
-            <p className="lp-sub">Acesse seu painel Equalizagro</p>
+            <p className="lp-sub">Acesse seu painel go2apply</p>
           </div>
 
           <form onSubmit={handleSubmit} className="lp-form">

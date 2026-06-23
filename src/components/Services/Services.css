@@ -82,7 +82,7 @@
 
 .services .services__grid {
   display: grid !important;
-  grid-template-columns: repeat(4, 1fr) !important;
+  grid-template-columns: repeat(3, 1fr) !important;
   gap: 2rem !important;
   margin-bottom: 5rem;
   width: 100%;
@@ -237,6 +237,30 @@
   height: 20px;
   color: var(--primary-green);
   flex-shrink: 0;
+}
+
+.services__go2apply-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1.5rem;
+  padding: 0.7rem 1.8rem;
+  background: var(--gradient-primary);
+  border-radius: var(--radius-xl);
+  text-decoration: none;
+  transition: all var(--transition-fast);
+  box-shadow: var(--shadow-md);
+}
+
+.services__go2apply-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+  opacity: 0.92;
+}
+
+.services__go2apply-logo {
+  height: 20px;
+  width: auto;
 }
 
 .services__item-cta {

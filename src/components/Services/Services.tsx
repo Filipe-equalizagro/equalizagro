@@ -1,18 +1,21 @@
 'use client';
 
-import { 
-  Sprout, 
-  Target, 
-  Shield, 
-  Users, 
-  Award, 
+import {
+  Sprout,
+  Target,
+  Shield,
+  Users,
+  Award,
   Droplet,
-  CheckCircle, 
+  CheckCircle,
   ArrowRight,
   BarChart3,
   Clock,
   TrendingUp,
-  Info
+  Info,
+  Package,
+  Crosshair,
+  Monitor
 } from 'lucide-react';
 import './Services.css';
 
@@ -70,7 +73,46 @@ export default function Services() {
         { text: 'E muito mais!', icon: CheckCircle },
       ],
       backgroundImage: 'services__item-bg--monitoramento'
-    }
+    },
+    {
+      icon: Package,
+      iconClass: 'services__item-icon--gold',
+      title: 'Distribuição de Sólidos',
+      description: 'Consultoria para aplicações de fertilizantes e produtos sólidos, garantindo uniformidade na distribuição e máxima eficiência no campo',
+      features: [
+        { text: 'Calibração de distribuidoras', icon: CheckCircle },
+        { text: 'Perfil de distribuição e coeficiente de variação', icon: CheckCircle },
+        { text: 'Regulagem conforme produto e dose', icon: CheckCircle },
+        { text: 'Seleção do equipamento adequado', icon: CheckCircle },
+      ],
+      backgroundImage: 'services__item-bg--treinamento'
+    },
+    {
+      icon: Crosshair,
+      iconClass: 'services__item-icon--blue',
+      title: 'Pulverização em Taxa Variável',
+      description: 'Aplicação inteligente com modulação de dose em tempo real, reduzindo custos e melhorando a eficiência dos insumos',
+      features: [
+        { text: 'Mapas de prescrição por zona', icon: CheckCircle },
+        { text: 'Integração com GPS e controladores', icon: CheckCircle },
+        { text: 'Redução do desperdício de insumos', icon: CheckCircle },
+        { text: 'Relatórios de aplicação por seção', icon: CheckCircle },
+      ],
+      backgroundImage: 'services__item-bg--pesquisa'
+    },
+    {
+      icon: Monitor,
+      iconClass: 'services__item-icon--green',
+      title: 'Ferramentas Digitais',
+      description: 'Plataformas digitais para apoiar decisões técnicas no campo, com inteligência artificial e dados em tempo real',
+      features: [
+        { text: 'Consultor.IA especializado em caldas', icon: CheckCircle },
+        { text: 'Calculadora de bicos e calibração', icon: CheckCircle },
+        { text: 'Recomendações baseadas em banco de dados', icon: CheckCircle },
+      ],
+      backgroundImage: 'services__item-bg--consultoria',
+      ctaButton: { href: '/login', imageSrc: '/images/go2apply-logo-branco.png', imageAlt: 'go2apply' }
+    },
   ];
 
   const features = [
@@ -130,6 +172,11 @@ export default function Services() {
                   </li>
                 ))}
               </ul>
+              {'ctaButton' in service && service.ctaButton && (
+                <a href={service.ctaButton.href} className="services__go2apply-btn">
+                  <img src={service.ctaButton.imageSrc} alt={service.ctaButton.imageAlt} className="services__go2apply-logo" />
+                </a>
+              )}
             </div>
           ))}
         </div>

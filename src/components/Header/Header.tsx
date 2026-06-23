@@ -214,6 +214,11 @@ export default function Header() {
             </svg>
           </a> */}
 
+          {/* Botão go2apply visível diretamente no mobile */}
+          <div className="header__mobile-go2apply">
+            <SessionCTA />
+          </div>
+
           <button
             className="header__mobile-toggle"
             onClick={toggleMobileMenu}
