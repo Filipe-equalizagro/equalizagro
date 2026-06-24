@@ -170,7 +170,23 @@ function createWelcomeAssistantMessages(): Message[] {
     {
       id: '1',
       role: 'assistant',
-      content: `Olá! Sou o **Consultor.IA Equalizagro**, estou aqui para ajudar a converter nosso banco de dados em caldas de qualidade.`,
+      content: `Olá! Sou o **Consultor.IA Equalizagro**, estou aqui para ajudar a converter nosso banco de dados em caldas de qualidade.
+
+ℹ️ **Dicas de uso:**
+
+• Para reiniciar ou refazer a qualquer momento, escreva **reiniciar**
+
+• Após confirmar os produtos, farei algumas perguntas rápidas — é parte do protocolo
+
+• Se um ou mais produtos não forem encontrados na web ou na base de dados, vou pedir informações
+
+• Informe os produtos que você pretende misturar e as respectivas doses. Lembre de utilizar sempre a marca comercial, ou uma marca referência.
+
+\`\`\`
+ProdutoA 1,0 l/ha
+ProdutoB 0,5 l/ha
+...
+\`\`\``,
       timestamp: ts,
     },
   ];
@@ -192,6 +208,7 @@ function isUuid(id: string): boolean {
 export default function ConsultorIA() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const isMobileDevice = () => /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
   const [sessionError, setSessionError] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
@@ -238,6 +255,13 @@ export default function ConsultorIA() {
   useEffect(() => {
     isSendingRef.current = isSending;
   }, [isSending]);
+
+  // Foco automático no input ao terminar de carregar (apenas desktop)
+  useEffect(() => {
+    if (!isLoading && !isMobileDevice() && textareaRef.current) {
+      textareaRef.current.focus();
+    }
+  }, [isLoading]);
 
   // Verificar autenticação completa ao carregar (token + 2FA + dispositivo)
   useEffect(() => {
@@ -1564,22 +1588,28 @@ export default function ConsultorIA() {
             }} 
             className="consultor__input-form"
           >
+            <button
+              type="button"
+              className="consultor__newline-btn"
+              onClick={() => setInputValue(v => v + '\n')}
+              tabIndex={-1}
+              title="Nova linha"
+            >
+              ↵
+            </button>
             <textarea
               ref={textareaRef}
               value={inputValue}
               onChange={e => {
                 setInputValue(e.target.value);
-                // Auto-resize textarea
                 e.target.style.height = 'auto';
                 e.target.style.height = Math.min(e.target.scrollHeight, 150) + 'px';
               }}
               onKeyDown={e => {
-                // Enter sem Shift envia a mensagem
                 if (e.key === 'Enter' && !e.shiftKey) {
                   e.preventDefault();
                   addUserMessage();
                 }
-                // Shift+Enter adiciona quebra de linha (comportamento padrão do textarea)
               }}
               placeholder="Digite sua mensagem..."
               className="consultor__input consultor__input--textarea"
