@@ -1595,15 +1595,6 @@ export default function ConsultorIA() {
             }} 
             className="consultor__input-form"
           >
-            <button
-              type="button"
-              className="consultor__newline-btn"
-              onClick={() => setInputValue(v => v + '\n')}
-              tabIndex={-1}
-              title="Nova linha"
-            >
-              ↵
-            </button>
             <textarea
               ref={textareaRef}
               value={inputValue}
@@ -1614,6 +1605,7 @@ export default function ConsultorIA() {
               }}
               onKeyDown={e => {
                 if (e.key === 'Enter' && !e.shiftKey) {
+                  if (isMobileDevice()) return; // mobile: Enter = nova linha (padrão do teclado)
                   e.preventDefault();
                   addUserMessage();
                 }
