@@ -263,6 +263,13 @@ export default function ConsultorIA() {
     }
   }, [isLoading]);
 
+  // Restaura foco no input após a IA responder (apenas desktop)
+  useEffect(() => {
+    if (!isSending && !isMobileDevice() && textareaRef.current) {
+      textareaRef.current.focus();
+    }
+  }, [isSending]);
+
   // Verificar autenticação completa ao carregar (token + 2FA + dispositivo)
   useEffect(() => {
     const checkSession = async () => {
