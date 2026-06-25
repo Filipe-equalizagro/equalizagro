@@ -182,11 +182,10 @@ function createWelcomeAssistantMessages(): Message[] {
 
 • Informe os produtos que você pretende misturar e as respectivas doses. Lembre de utilizar sempre a marca comercial, ou uma marca referência.
 
-\`\`\`
 ProdutoA 1,0 l/ha
 ProdutoB 0,5 l/ha
 ...
-\`\`\``,
+
       timestamp: ts,
     },
   ];
