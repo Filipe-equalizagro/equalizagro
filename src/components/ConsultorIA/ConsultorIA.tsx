@@ -8,13 +8,21 @@ import './ConsultorIA.css';
 // Função para formatar markdown básico em HTML
 function formatMessageContent(content: string): string {
   let formatted = content;
-  
-  // Escapar HTML
+
+  // Extrair blocos de código antes de escapar HTML
+  const codeBlocks: string[] = [];
+  formatted = formatted.replace(/```[\w]*\n?([\s\S]*?)```/g, (_, code) => {
+    const idx = codeBlocks.length;
+    codeBlocks.push(`<pre class="consultor__code-block"><code>${code.trim().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</code></pre>`);
+    return `%%CODEBLOCK_${idx}%%`;
+  });
+
+  // Escapar HTML do restante
   formatted = formatted
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;');
-  
+
   // Converter **texto** em negrito
   formatted = formatted.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
   
@@ -64,8 +72,16 @@ function formatMessageContent(content: string): string {
   if (inTable && tableLines.length > 0) {
     result.push(convertTableToHtml(tableLines));
   }
-  
-  return result.join('');
+
+  let output = result.join('');
+
+  // Restaurar blocos de código
+  codeBlocks.forEach((block, idx) => {
+    output = output.replace(`<p class="consultor__formatted-paragraph">%%CODEBLOCK_${idx}%%</p>`, block);
+    output = output.replace(`%%CODEBLOCK_${idx}%%`, block);
+  });
+
+  return output;
 }
 
 function convertTableToHtml(tableLines: string[]): string {
@@ -182,10 +198,11 @@ function createWelcomeAssistantMessages(): Message[] {
 
 • Informe os produtos que você pretende misturar e as respectivas doses. Lembre de utilizar sempre a marca comercial, ou uma marca referência.
 
+\`\`\`
 ProdutoA 1,0 l/ha
 ProdutoB 0,5 l/ha
 ...
-
+\`\`\``,
       timestamp: ts,
     },
   ];
