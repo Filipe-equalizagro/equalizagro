@@ -196,7 +196,11 @@ function createWelcomeAssistantMessages(): Message[] {
 
 • Se um ou mais produtos não forem encontrados na web ou na base de dados, vou pedir informações
 
-• Informe os produtos que você pretende misturar e as respectivas doses. Lembre de utilizar sempre a marca comercial, ou uma marca referência. Ex: ProdutoA 1,0 l/ha, ProdutoB 0,5 l/ha`,
+• Informe os produtos que você pretende misturar e as respectivas doses. Lembre de utilizar sempre a marca comercial, ou uma marca referência.
+
+ProdutoA 1,0 l/ha
+ProdutoB 0,5 l/ha
+...`,
       timestamp: ts,
     },
   ];
