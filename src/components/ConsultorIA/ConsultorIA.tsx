@@ -164,7 +164,6 @@ interface Conversation {
   title: string;
   createdAt: Date;
   messages: Message[];
-  gptmakerContextId?: string;
   isArchived?: boolean;
   lastMessageAt?: Date;
 }
@@ -355,7 +354,6 @@ export default function ConsultorIA() {
         id: conversation.id,
         title: conversation.title,
         createdAt: conversation.createdAt.toISOString(),
-        gptmakerContextId: conversation.gptmakerContextId,
         isArchived: conversation.isArchived || false,
         lastMessageAt: new Date().toISOString(),
       }));
@@ -394,7 +392,6 @@ export default function ConsultorIA() {
               title: parsed.title,
               createdAt: new Date(parsed.createdAt),
               messages: [],
-              gptmakerContextId: parsed.gptmakerContextId,
               isArchived: parsed.isArchived,
               lastMessageAt: parsed.lastMessageAt ? new Date(parsed.lastMessageAt) : undefined,
             });
@@ -523,7 +520,6 @@ export default function ConsultorIA() {
           title: conv.title,
           createdAt: new Date(conv.createdAt),
           messages: [],
-          gptmakerContextId: conv.gptmakerContextId,
           isArchived: conv.isArchived,
           lastMessageAt: conv.lastMessageAt ? new Date(conv.lastMessageAt) : undefined,
         }));
@@ -542,7 +538,6 @@ export default function ConsultorIA() {
               title: conv.title,
               createdAt: new Date(conv.createdAt),
               messages: [],
-              gptmakerContextId: conv.gptmakerContextId,
               isArchived: true,
             }));
           setArchivedConversations(archived);
@@ -552,7 +547,7 @@ export default function ConsultorIA() {
         // Selecionar a primeira conversa (mais recente)
         const firstConv = loadedConversations[0];
         setCurrentConversationId(firstConv.id);
-        setGptContextId(firstConv.gptmakerContextId || null);
+        setGptContextId(null);
         // Carregar mensagens da primeira conversa
         await loadMessages(firstConv.id);
       } else {
@@ -604,10 +599,6 @@ export default function ConsultorIA() {
 
         setMessages(loadedMessages);
         saveToLocalStorage(conversationId, loadedMessages);
-
-        if (data.conversation?.gptmakerContextId) {
-          setGptContextId(data.conversation.gptmakerContextId);
-        }
         return;
       }
 
@@ -667,7 +658,6 @@ export default function ConsultorIA() {
           title: data.conversation.title,
           createdAt: new Date(data.conversation.createdAt),
           messages: welcomeMessages,
-          gptmakerContextId: data.conversation.gptmakerContextId,
         };
 
         console.log('[ConsultorIA] Nova conversa criada:', newConversation.id);
@@ -734,8 +724,7 @@ export default function ConsultorIA() {
   // Salvar mensagens no banco de dados
   const saveMessages = async (
     conversationId: string,
-    messagesToSave: Message[],
-    contextId?: string
+    messagesToSave: Message[]
   ): Promise<{
     success: boolean;
     messages?: { id: string; role: string; content: string; created_at: string }[];
@@ -750,7 +739,6 @@ export default function ConsultorIA() {
       conversationId,
       userId,
       messagesCount: messagesToSave.length,
-      contextId,
     });
 
     try {
@@ -760,7 +748,6 @@ export default function ConsultorIA() {
         body: JSON.stringify({
           conversationId,
           userId: uid,
-          gptmakerContextId: contextId,
           messages: messagesToSave.map(msg => ({
             role: msg.role,
             content: msg.content,
@@ -874,7 +861,7 @@ export default function ConsultorIA() {
       const data = await response.json();
 
       if (data.success) {
-        // Salvar contextId para manter o histórico da conversa no GPTMaker
+        // Salvar contextId para manter o histórico da conversa no n8n
         if (data.contextId) {
           setGptContextId(data.contextId);
         }
@@ -895,8 +882,7 @@ export default function ConsultorIA() {
             .slice(-currentPendingMessages.length || -1);
           const saveResult = await saveMessages(
             convId,
-            [...userMsgsToSave, aiMessage],
-            data.contextId
+            [...userMsgsToSave, aiMessage]
           );
           if (saveResult?.messages?.length) {
             const k = saveResult.messages.length;
@@ -986,7 +972,6 @@ export default function ConsultorIA() {
     if (conversation) {
       setCurrentConversationId(conversationId);
       setContextMenuId(null);
-      setGptContextId(conversation.gptmakerContextId || null);
       setSidebarOpen(false); // fecha o sidebar no celular ao escolher conversa
       await loadMessages(conversationId);
     }

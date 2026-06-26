@@ -23,10 +23,9 @@ export async function GET(request: NextRequest) {
 
     // Buscar conversas do usuário
     const conversationsResult = await query(
-      `SELECT 
+      `SELECT
         c.id,
         c.title,
-        c.gptmaker_context_id,
         c.message_count,
         c.last_message_at,
         c.is_archived,
@@ -55,7 +54,6 @@ export async function GET(request: NextRequest) {
       conversations: conversationsResult.rows.map(conv => ({
         id: conv.id,
         title: conv.title || 'Conversa sem título',
-        gptmakerContextId: conv.gptmaker_context_id,
         messageCount: conv.message_count || 0,
         lastMessageAt: conv.last_message_at,
         lastMessagePreview: conv.last_message_preview?.substring(0, 100),
@@ -72,13 +70,13 @@ export async function GET(request: NextRequest) {
 
 /**
  * POST - Criar nova conversa ou atualizar existente
- * Body: { userId, title, gptmakerContextId }
+ * Body: { userId, title }
  */
 export async function POST(request: NextRequest) {
   try {
     await ensureConversationTables();
     const body = await request.json();
-    const { userId, title, gptmakerContextId, conversationId } = body;
+    const { userId, title, conversationId } = body;
 
     if (!userId) {
       throw new ApiError(400, 'userId é obrigatório');
@@ -89,14 +87,13 @@ export async function POST(request: NextRequest) {
     if (conversationId) {
       // Atualizar conversa existente
       result = await query(
-        `UPDATE equalizagro.conversations 
-         SET 
+        `UPDATE equalizagro.conversations
+         SET
            title = COALESCE($2, title),
-           gptmaker_context_id = COALESCE($3, gptmaker_context_id),
            updated_at = CURRENT_TIMESTAMP
-         WHERE id = $1 AND user_id = $4
-         RETURNING id, title, gptmaker_context_id, created_at`,
-        [conversationId, title, gptmakerContextId, userId]
+         WHERE id = $1 AND user_id = $3
+         RETURNING id, title, created_at`,
+        [conversationId, title, userId]
       );
 
       if (result.rows.length === 0) {
@@ -106,17 +103,16 @@ export async function POST(request: NextRequest) {
       // Criar nova conversa
       result = await query(
         `INSERT INTO equalizagro.conversations (
-           user_id, 
-           title, 
-           gptmaker_context_id, 
+           user_id,
+           title,
            message_count,
            is_archived,
            is_deleted,
-           created_at, 
+           created_at,
            updated_at
-         ) VALUES ($1, $2, $3, 0, false, false, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-         RETURNING id, title, gptmaker_context_id, created_at`,
-        [userId, title || 'Nova Conversa', gptmakerContextId]
+         ) VALUES ($1, $2, 0, false, false, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+         RETURNING id, title, created_at`,
+        [userId, title || 'Nova Conversa']
       );
     }
 
@@ -127,7 +123,6 @@ export async function POST(request: NextRequest) {
       conversation: {
         id: conversation.id,
         title: conversation.title,
-        gptmakerContextId: conversation.gptmaker_context_id,
         createdAt: conversation.created_at,
       },
     });

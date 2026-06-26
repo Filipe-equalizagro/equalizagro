@@ -30,11 +30,15 @@ export async function ensureCalculatorUsageTable(): Promise<void> {
 
 export async function ensureConversationTables(): Promise<void> {
   await query(`
+    ALTER TABLE IF EXISTS equalizagro.conversations
+    DROP COLUMN IF EXISTS gptmaker_context_id
+  `, []);
+
+  await query(`
     CREATE TABLE IF NOT EXISTS equalizagro.conversations (
       id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
       user_id UUID NOT NULL,
       title TEXT NOT NULL DEFAULT 'Nova Conversa',
-      gptmaker_context_id TEXT,
       message_count INTEGER DEFAULT 0,
       last_message_at TIMESTAMP WITH TIME ZONE,
       is_archived BOOLEAN DEFAULT false,

@@ -25,8 +25,8 @@ export async function GET(request: NextRequest) {
 
     // Verificar se a conversa pertence ao usuário
     const conversationCheck = await query(
-      `SELECT id, gptmaker_context_id, title 
-       FROM equalizagro.conversations 
+      `SELECT id, title
+       FROM equalizagro.conversations
        WHERE id = $1 AND user_id = $2 AND is_deleted = false`,
       [conversationId, userId]
     );
@@ -67,7 +67,6 @@ export async function GET(request: NextRequest) {
       conversation: {
         id: conversation.id,
         title: conversation.title,
-        gptmakerContextId: conversation.gptmaker_context_id,
       },
       messages: messagesResult.rows.map(msg => ({
         id: msg.id,
@@ -97,7 +96,7 @@ export async function POST(request: NextRequest) {
   try {
     await ensureConversationTables();
     const body = await request.json();
-    const { conversationId, userId, messages, gptmakerContextId } = body;
+    const { conversationId, userId, messages } = body;
 
     if (!conversationId || !userId) {
       throw new ApiError(400, 'conversationId e userId são obrigatórios');
@@ -159,12 +158,6 @@ export async function POST(request: NextRequest) {
         // Gerar título a partir da primeira mensagem (primeiras 50 chars)
         updateValues.push(firstUserMessage.content.substring(0, 50) + (firstUserMessage.content.length > 50 ? '...' : ''));
       }
-    }
-
-    // Atualizar contextId se fornecido
-    if (gptmakerContextId) {
-      updateFields.push('gptmaker_context_id = $' + (updateValues.length + 1));
-      updateValues.push(gptmakerContextId);
     }
 
     await query(
