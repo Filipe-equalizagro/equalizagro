@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import {
   Users, UserPlus, LogOut, RefreshCw, Search,
   CheckCircle, XCircle, ShieldCheck, ChevronDown,
-  AlertCircle, Eye, EyeOff, Trash2, KeyRound,
+  AlertCircle, Eye, EyeOff, Trash2, KeyRound, BarChart2,
 } from 'lucide-react';
 import { verifySession, logout, getAuthToken } from '@/lib/auth';
 import './admin.css';
@@ -28,7 +28,9 @@ const STATUS_LABELS: Record<string, string> = { verified: 'Verificado', pending:
 
 export default function AdminPage() {
   const [checking, setChecking]   = useState(true);
-  const [tab, setTab]             = useState<'users' | 'create'>('users');
+  const [tab, setTab]             = useState<'users' | 'create' | 'metrics'>('users');
+  const [metrics, setMetrics]     = useState<any>(null);
+  const [metricsLoading, setMetricsLoading] = useState(false);
   const [users, setUsers]         = useState<User[]>([]);
   const [loadingUsers, setLoadingUsers] = useState(false);
   const [search, setSearch]       = useState('');
@@ -64,6 +66,18 @@ export default function AdminPage() {
         loadUsers();
       }
     });
+  }, []);
+
+  const loadMetrics = useCallback(async () => {
+    setMetricsLoading(true);
+    try {
+      const r = await fetch('/api/admin/metrics', {
+        headers: { Authorization: `Bearer ${getAuthToken()}` },
+      });
+      const d = await r.json();
+      if (d.success) setMetrics(d);
+    } catch { /* ignorar */ }
+    finally { setMetricsLoading(false); }
   }, []);
 
   const loadUsers = useCallback(async () => {
@@ -214,6 +228,11 @@ export default function AdminPage() {
             <UserPlus size={16} />
             <span>Cadastrar</span>
           </button>
+
+          <button className={`adm-tab ${tab === 'metrics' ? 'adm-tab--active' : ''}`} onClick={() => { setTab('metrics'); if (!metrics) loadMetrics(); }}>
+            <BarChart2 size={16} />
+            <span>Métricas</span>
+          </button>
         </div>
 
         {/* ── Tab: Usuários ── */}
@@ -345,6 +364,124 @@ export default function AdminPage() {
                 </table>
               )}
             </div>
+          </div>
+        )}
+
+        {/* ── Tab: Métricas ── */}
+        {tab === 'metrics' && (
+          <div className="adm-panel">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
+              <h2 style={{ fontSize: '1rem', fontWeight: 700, color: '#1f2937' }}>Métricas de uso</h2>
+              <button className="adm-refresh" onClick={loadMetrics} disabled={metricsLoading}>
+                <RefreshCw size={15} className={metricsLoading ? 'adm-spin' : ''} />
+              </button>
+            </div>
+
+            {metricsLoading ? (
+              <div className="adm-loading"><div className="adm-spinner" /></div>
+            ) : !metrics ? (
+              <div className="adm-empty">Clique em atualizar para carregar as métricas</div>
+            ) : (
+              <>
+                {/* ── Consultor.IA ── */}
+                <div className="adm-metrics-section">
+                  <div className="adm-metrics-title">
+                    <img src="/images/go2apply-logo-colorido.png" alt="go2apply" style={{ height: 18, width: 'auto' }} />
+                    <span>Consultor.IA</span>
+                  </div>
+
+                  <div className="adm-metrics-cards">
+                    {[
+                      { label: 'Conversas',      value: metrics.consultor.totals.total_conversations },
+                      { label: 'Mensagens',       value: metrics.consultor.totals.total_messages },
+                      { label: 'Usuários ativos', value: metrics.consultor.totals.active_users },
+                    ].map(c => (
+                      <div key={c.label} className="adm-metric-card">
+                        <span className="adm-metric-value">{Number(c.value || 0).toLocaleString('pt-BR')}</span>
+                        <span className="adm-metric-label">{c.label}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  {metrics.consultor.perUser.length > 0 && (
+                    <div className="adm-table-wrap" style={{ marginTop: '1rem' }}>
+                      <table className="adm-table">
+                        <thead><tr>
+                          <th>Usuário</th>
+                          <th>Email</th>
+                          <th>Conversas</th>
+                          <th>Mensagens</th>
+                          <th>Último uso</th>
+                        </tr></thead>
+                        <tbody>
+                          {metrics.consultor.perUser.map((u: any) => (
+                            <tr key={u.email}>
+                              <td><div className="adm-user-cell"><div className="adm-avatar">{u.full_name.charAt(0).toUpperCase()}</div><span>{u.full_name}</span></div></td>
+                              <td className="adm-email">{u.email}</td>
+                              <td className="adm-small">{u.conversations}</td>
+                              <td className="adm-small">{u.messages}</td>
+                              <td className="adm-small">{u.last_active ? new Date(u.last_active).toLocaleDateString('pt-BR') : '—'}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </div>
+
+                {/* ── Calculadora ── */}
+                <div className="adm-metrics-section" style={{ marginTop: '2rem' }}>
+                  <div className="adm-metrics-title">
+                    <img src="/images/EQUALIZAGRO ok.png" alt="Equalizagro" style={{ height: 18, width: 'auto' }} />
+                    <span>Pulverização — uso por ferramenta</span>
+                  </div>
+
+                  {metrics.calculator.byTab.length === 0 ? (
+                    <div className="adm-empty" style={{ marginTop: '0.75rem' }}>Nenhum uso registrado ainda</div>
+                  ) : (
+                    <>
+                      <div className="adm-metrics-bars" style={{ marginTop: '0.75rem' }}>
+                        {(() => {
+                          const max = Math.max(...metrics.calculator.byTab.map((t: any) => Number(t.total)));
+                          return metrics.calculator.byTab.map((t: any) => (
+                            <div key={t.tab_id} className="adm-bar-row">
+                              <span className="adm-bar-label">{t.tab_label}</span>
+                              <div className="adm-bar-track">
+                                <div className="adm-bar-fill" style={{ width: `${Math.round((Number(t.total) / max) * 100)}%` }} />
+                              </div>
+                              <span className="adm-bar-count">{Number(t.total).toLocaleString('pt-BR')}</span>
+                            </div>
+                          ));
+                        })()}
+                      </div>
+
+                      {metrics.calculator.byUser.length > 0 && (
+                        <div className="adm-table-wrap" style={{ marginTop: '1.25rem' }}>
+                          <table className="adm-table">
+                            <thead><tr>
+                              <th>Usuário</th>
+                              <th>Email</th>
+                              <th>Acessos</th>
+                              <th>Último uso</th>
+                            </tr></thead>
+                            <tbody>
+                              {metrics.calculator.byUser.map((u: any) => (
+                                <tr key={u.email}>
+                                  <td><div className="adm-user-cell"><div className="adm-avatar">{u.full_name.charAt(0).toUpperCase()}</div><span>{u.full_name}</span></div></td>
+                                  <td className="adm-email">{u.email}</td>
+                                  <td className="adm-small">{u.total_uses}</td>
+                                  <td className="adm-small">{u.last_use ? new Date(u.last_use).toLocaleDateString('pt-BR') : '—'}</td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
+              </>
+            )}
           </div>
         )}
 

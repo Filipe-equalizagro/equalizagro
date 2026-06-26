@@ -4,6 +4,30 @@ import { query } from './database';
  * Garante que as tabelas de conversas e mensagens existam no banco.
  * Usa CREATE TABLE IF NOT EXISTS — seguro para rodar em toda invocação.
  */
+export async function ensureCalculatorUsageTable(): Promise<void> {
+  await query(`
+    CREATE TABLE IF NOT EXISTS equalizagro.calculator_usage (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      user_id UUID NOT NULL,
+      tab_id TEXT NOT NULL,
+      tab_label TEXT,
+      created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+    )
+  `, []);
+  await query(`
+    CREATE INDEX IF NOT EXISTS idx_calculator_usage_user_id
+    ON equalizagro.calculator_usage(user_id)
+  `, []);
+  await query(`
+    CREATE INDEX IF NOT EXISTS idx_calculator_usage_tab_id
+    ON equalizagro.calculator_usage(tab_id)
+  `, []);
+  await query(`
+    CREATE INDEX IF NOT EXISTS idx_calculator_usage_created_at
+    ON equalizagro.calculator_usage(created_at)
+  `, []);
+}
+
 export async function ensureConversationTables(): Promise<void> {
   await query(`
     CREATE TABLE IF NOT EXISTS equalizagro.conversations (

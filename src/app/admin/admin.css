@@ -317,6 +317,50 @@
   .adm-reg-actions { width: 100%; margin-left: 56px; }
 }
 
+/* ── Métricas ── */
+.adm-metrics-section { padding-bottom: 0.5rem; }
+
+.adm-metrics-title {
+  display: flex; align-items: center; gap: 0.5rem;
+  font-size: 0.9rem; font-weight: 700; color: #1f2937;
+  margin-bottom: 0.9rem;
+}
+
+.adm-metrics-cards {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem;
+}
+
+.adm-metric-card {
+  background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10px;
+  padding: 1rem 1.25rem; display: flex; flex-direction: column; gap: 0.2rem;
+}
+.adm-metric-value {
+  font-size: 1.6rem; font-weight: 800; color: #1a5f3a; line-height: 1;
+}
+.adm-metric-label {
+  font-size: 0.78rem; color: #6b7280; font-weight: 500;
+}
+
+.adm-metrics-bars { display: flex; flex-direction: column; gap: 0.5rem; }
+
+.adm-bar-row {
+  display: grid; grid-template-columns: 110px 1fr 50px; align-items: center; gap: 0.6rem;
+}
+.adm-bar-label { font-size: 0.8rem; color: #374151; font-weight: 500; white-space: nowrap; }
+.adm-bar-track {
+  height: 10px; background: #e5e7eb; border-radius: 99px; overflow: hidden;
+}
+.adm-bar-fill {
+  height: 100%; background: #1a5f3a; border-radius: 99px; transition: width 0.4s ease;
+  min-width: 4px;
+}
+.adm-bar-count { font-size: 0.8rem; color: #6b7280; font-weight: 600; text-align: right; }
+
+@media (max-width: 768px) {
+  .adm-metrics-cards { grid-template-columns: repeat(2, 1fr); }
+  .adm-bar-row { grid-template-columns: 90px 1fr 40px; }
+}
+
 @media (max-width: 768px) {
   .adm-body { padding: 1rem; }
   .adm-form-grid { grid-template-columns: 1fr; }

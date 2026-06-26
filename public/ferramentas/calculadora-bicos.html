@@ -1742,6 +1742,18 @@
         // Track current tab
         currentTab = id;
 
+        // Enviar uso ao servidor (fire-and-forget)
+        try {
+            var _tk = localStorage.getItem('authToken');
+            if (_tk) {
+                fetch('/api/tools/track-usage', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ tabId: id, token: _tk })
+                }).catch(function(){});
+            }
+        } catch(e) {}
+
         // Close mobile sidebar
         closeSidebar();
 
