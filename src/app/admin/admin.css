@@ -364,6 +364,16 @@
   display: block; text-align: center;
 }
 
+/* Header de métricas (título + filtros) */
+.adm-metrics-header {
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid #f3f4f6;
+}
+.adm-metrics-heading {
+  font-size: 1rem; font-weight: 700; color: #1f2937; margin: 0;
+}
+
 /* Filtros de período */
 .adm-metrics-filters {
   display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;

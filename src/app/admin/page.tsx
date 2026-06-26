@@ -375,8 +375,8 @@ export default function AdminPage() {
         {/* ── Tab: Métricas ── */}
         {tab === 'metrics' && (
           <div className="adm-panel">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '0.75rem' }}>
-              <h2 style={{ fontSize: '1rem', fontWeight: 700, color: '#1f2937' }}>Métricas de uso</h2>
+            <div className="adm-metrics-header">
+              <h2 className="adm-metrics-heading">Métricas de uso</h2>
               <div className="adm-metrics-filters">
                 <span className="adm-period-label">Filtrar por:</span>
                 <select className="adm-period-select" value={metricYear} onChange={e => { setMetricYear(e.target.value); setMetricMonth(''); }}>
