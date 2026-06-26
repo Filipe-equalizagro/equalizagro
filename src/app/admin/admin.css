@@ -335,17 +335,30 @@
 
 .adm-metric-card {
   background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10px;
-  padding: 1.75rem 1.5rem;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: 0.35rem; min-height: 90px;
+  padding: 1.75rem 1rem; min-height: 90px;
+  text-align: center;
 }
 .adm-metric-value {
   font-size: 1.75rem; font-weight: 800; color: #1a5f3a; line-height: 1;
-  display: block; width: 100%; text-align: center;
+  text-align: center; display: block; margin: 0 auto 0.3rem;
 }
 .adm-metric-label {
   font-size: 0.75rem; color: #6b7280; font-weight: 500;
-  display: block; width: 100%; text-align: center;
+  text-align: center; display: block; margin: 0 auto;
+}
+
+/* Filtros de período */
+.adm-metrics-filters {
+  display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;
+}
+.adm-period-select {
+  padding: 0.4rem 0.75rem; border: 1.5px solid #e5e7eb; border-radius: 8px;
+  font-size: 0.82rem; font-family: inherit; background: #fff; color: #374151;
+  cursor: pointer; outline: none;
+}
+.adm-period-select:focus { border-color: #1a5f3a; }
+.adm-period-label {
+  font-size: 0.8rem; color: #6b7280; font-weight: 500;
 }
 
 .adm-metrics-bars { display: flex; flex-direction: column; gap: 0.5rem; }

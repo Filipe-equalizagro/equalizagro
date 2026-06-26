@@ -31,6 +31,8 @@ export default function AdminPage() {
   const [tab, setTab]             = useState<'users' | 'create' | 'metrics'>('users');
   const [metrics, setMetrics]     = useState<any>(null);
   const [metricsLoading, setMetricsLoading] = useState(false);
+  const [metricYear, setMetricYear]   = useState('');
+  const [metricMonth, setMetricMonth] = useState('');
   const [users, setUsers]         = useState<User[]>([]);
   const [loadingUsers, setLoadingUsers] = useState(false);
   const [search, setSearch]       = useState('');
@@ -68,10 +70,13 @@ export default function AdminPage() {
     });
   }, []);
 
-  const loadMetrics = useCallback(async () => {
+  const loadMetrics = useCallback(async (year?: string, month?: string) => {
     setMetricsLoading(true);
     try {
-      const r = await fetch('/api/admin/metrics', {
+      const params = new URLSearchParams();
+      if (year)  params.set('year',  year);
+      if (month) params.set('month', month);
+      const r = await fetch(`/api/admin/metrics?${params.toString()}`, {
         headers: { Authorization: `Bearer ${getAuthToken()}` },
       });
       const d = await r.json();
@@ -229,7 +234,7 @@ export default function AdminPage() {
             <span>Cadastrar</span>
           </button>
 
-          <button className={`adm-tab ${tab === 'metrics' ? 'adm-tab--active' : ''}`} onClick={() => { setTab('metrics'); if (!metrics) loadMetrics(); }}>
+          <button className={`adm-tab ${tab === 'metrics' ? 'adm-tab--active' : ''}`} onClick={() => { setTab('metrics'); if (!metrics) loadMetrics(metricYear, metricMonth); }}>
             <BarChart2 size={16} />
             <span>Métricas</span>
           </button>
@@ -370,11 +375,27 @@ export default function AdminPage() {
         {/* ── Tab: Métricas ── */}
         {tab === 'metrics' && (
           <div className="adm-panel">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '0.75rem' }}>
               <h2 style={{ fontSize: '1rem', fontWeight: 700, color: '#1f2937' }}>Métricas de uso</h2>
-              <button className="adm-refresh" onClick={loadMetrics} disabled={metricsLoading}>
-                <RefreshCw size={15} className={metricsLoading ? 'adm-spin' : ''} />
-              </button>
+              <div className="adm-metrics-filters">
+                <span className="adm-period-label">Filtrar por:</span>
+                <select className="adm-period-select" value={metricYear} onChange={e => { setMetricYear(e.target.value); setMetricMonth(''); }}>
+                  <option value="">Todos os anos</option>
+                  {Array.from({ length: new Date().getFullYear() - 2023 }, (_, i) => 2024 + i).map(y => (
+                    <option key={y} value={String(y)}>{y}</option>
+                  ))}
+                  <option value={String(new Date().getFullYear())}>{new Date().getFullYear()}</option>
+                </select>
+                <select className="adm-period-select" value={metricMonth} onChange={e => setMetricMonth(e.target.value)} disabled={!metricYear}>
+                  <option value="">Todos os meses</option>
+                  {['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'].map((m, i) => (
+                    <option key={i+1} value={String(i+1)}>{m}</option>
+                  ))}
+                </select>
+                <button className="adm-refresh" onClick={() => loadMetrics(metricYear, metricMonth)} disabled={metricsLoading} title="Atualizar">
+                  <RefreshCw size={15} className={metricsLoading ? 'adm-spin' : ''} />
+                </button>
+              </div>
             </div>
 
             {metricsLoading ? (
