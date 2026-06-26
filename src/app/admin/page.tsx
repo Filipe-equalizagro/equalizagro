@@ -381,10 +381,12 @@ export default function AdminPage() {
                 <span className="adm-period-label">Filtrar por:</span>
                 <select className="adm-period-select" value={metricYear} onChange={e => { setMetricYear(e.target.value); setMetricMonth(''); }}>
                   <option value="">Todos os anos</option>
-                  {Array.from({ length: new Date().getFullYear() - 2023 }, (_, i) => 2024 + i).map(y => (
+                  {Array.from(
+                    { length: new Date().getFullYear() - 2025 },
+                    (_, i) => 2026 + i
+                  ).map(y => (
                     <option key={y} value={String(y)}>{y}</option>
                   ))}
-                  <option value={String(new Date().getFullYear())}>{new Date().getFullYear()}</option>
                 </select>
                 <select className="adm-period-select" value={metricMonth} onChange={e => setMetricMonth(e.target.value)} disabled={!metricYear}>
                   <option value="">Todos os meses</option>
