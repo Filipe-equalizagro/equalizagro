@@ -546,44 +546,14 @@ export default function ConsultorIA() {
         // Carregar mensagens da primeira conversa
         await loadMessages(firstConv.id);
       } else {
-        console.log('[ConsultorIA] Nenhuma conversa no banco, tentando localStorage...');
-        // Tentar carregar do localStorage
-        const localConversations = loadConversationsFromLocalStorage();
-        if (localConversations.length > 0) {
-          console.log('[ConsultorIA] Conversas encontradas no localStorage:', localConversations.length);
-          setConversations(localConversations);
-          const firstConv = localConversations[0];
-          setCurrentConversationId(firstConv.id);
-          setGptContextId(firstConv.gptmakerContextId || null);
-          // Carregar mensagens do localStorage
-          const localMsgs = loadMessagesFromLocalStorage(firstConv.id);
-          if (localMsgs && localMsgs.length > 0) {
-            setMessages(localMsgs);
-          } else {
-            setMessages(createWelcomeAssistantMessages());
-          }
-        } else {
-          console.log('[ConsultorIA] Nenhuma conversa encontrada, criando nova...');
-          await createNewConversation();
-        }
+        // Banco não tem conversas: criar sempre uma nova no banco (garante rastreamento)
+        console.log('[ConsultorIA] Nenhuma conversa no banco, criando nova...');
+        await createNewConversation();
       }
     } catch (error) {
       console.error('[ConsultorIA] Erro ao carregar conversas:', error);
-      // Tentar carregar do localStorage como fallback
-      const localConversations = loadConversationsFromLocalStorage();
-      if (localConversations.length > 0) {
-        console.log('[ConsultorIA] Fallback: usando conversas do localStorage');
-        setConversations(localConversations);
-        const firstConv = localConversations[0];
-        setCurrentConversationId(firstConv.id);
-        const localMsgs = loadMessagesFromLocalStorage(firstConv.id);
-        if (localMsgs) {
-          setMessages(localMsgs);
-        }
-      } else {
-        // Criar primeira conversa em caso de erro
-        await createNewConversation();
-      }
+      // Em caso de erro de rede, tentar criar conversa no banco
+      await createNewConversation();
     } finally {
       setIsLoadingConversations(false);
       setIsLoading(false);
