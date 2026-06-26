@@ -318,33 +318,50 @@
 }
 
 /* ── Métricas ── */
-.adm-metrics-section { padding-bottom: 0.5rem; }
+.adm-metrics-body {
+  padding: 1.25rem 1.5rem;
+}
+
+.adm-metrics-section { margin-bottom: 2rem; }
 
 .adm-metrics-title {
   display: flex; align-items: center; gap: 0.5rem;
   font-size: 0.85rem; font-weight: 700; color: #1f2937;
-  margin-bottom: 0.9rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 1.5px solid #e5e7eb;
+  padding: 0.75rem 0;
+  border-bottom: 1.5px solid #f3f4f6;
+  margin-bottom: 1rem;
 }
 .adm-metrics-title img { max-height: 16px; width: auto; }
 
 .adm-metrics-cards {
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.6rem;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.85rem;
 }
 
 .adm-metric-card {
-  background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10px;
-  padding: 1.75rem 1rem; min-height: 90px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1.25rem 1rem;
+  min-height: 80px;
+  display: table;
+  width: 100%;
+  box-sizing: border-box;
+}
+.adm-metric-card-inner {
+  display: table-cell;
+  vertical-align: middle;
   text-align: center;
+  width: 100%;
 }
 .adm-metric-value {
   font-size: 1.75rem; font-weight: 800; color: #1a5f3a; line-height: 1;
-  text-align: center; display: block; margin: 0 auto 0.3rem;
+  display: block; text-align: center;
 }
 .adm-metric-label {
-  font-size: 0.75rem; color: #6b7280; font-weight: 500;
-  text-align: center; display: block; margin: 0 auto;
+  font-size: 0.75rem; color: #6b7280; font-weight: 500; margin-top: 0.3rem;
+  display: block; text-align: center;
 }
 
 /* Filtros de período */

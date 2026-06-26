@@ -405,7 +405,7 @@ export default function AdminPage() {
             ) : !metrics ? (
               <div className="adm-empty">Clique em atualizar para carregar as métricas</div>
             ) : (
-              <>
+              <div className="adm-metrics-body">
                 {/* ── Consultor.IA ── */}
                 <div className="adm-metrics-section">
                   <div className="adm-metrics-title">
@@ -423,8 +423,10 @@ export default function AdminPage() {
                       { label: 'Usuários no chat',value: metrics.consultor.chat.totals.chat_users },
                     ].map(c => (
                       <div key={c.label} className="adm-metric-card">
-                        <span className="adm-metric-value">{Number(c.value || 0).toLocaleString('pt-BR')}</span>
-                        <span className="adm-metric-label">{c.label}</span>
+                        <div className="adm-metric-card-inner">
+                          <span className="adm-metric-value">{Number(c.value || 0).toLocaleString('pt-BR')}</span>
+                          <span className="adm-metric-label">{c.label}</span>
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -533,7 +535,7 @@ export default function AdminPage() {
                     </>
                   )}
                 </div>
-              </>
+              </div>
             )}
           </div>
         )}
