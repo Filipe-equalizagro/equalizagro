@@ -100,8 +100,21 @@ export async function GET(request: NextRequest) {
     // ── conversations / messages ──────────────────────────────────
     let chatTotals = { total_conversas: 0, total_mensagens: 0, chat_users: 0 };
     let chatPerUser: any[] = [];
+    let debug = { total_conversas_sem_filtro: 0, total_mensagens_sem_filtro: 0 };
 
     try {
+      // Query de diagnóstico: total sem filtro de data
+      const rd = await query(`
+        SELECT
+          COUNT(DISTINCT c.id)                       AS total_conversas,
+          COUNT(m.id) FILTER (WHERE m.role = 'user') AS total_mensagens
+        FROM equalizagro.conversations c
+        LEFT JOIN equalizagro.messages m ON m.conversation_id = c.id
+        WHERE (c.is_deleted IS NOT TRUE)
+      `, []);
+      if (rd.rows[0]) debug = { total_conversas_sem_filtro: Number(rd.rows[0].total_conversas), total_mensagens_sem_filtro: Number(rd.rows[0].total_mensagens) };
+      console.log('[metrics] debug totais sem filtro:', debug);
+
       const r3 = await query(`
         SELECT
           COUNT(DISTINCT c.id)                                    AS total_conversas,
@@ -169,6 +182,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({
       success: true,
       period: { year: year || null, month: month || null },
+      debug,
       consultor: {
         ai:   { totals: aiTotals,   perUser: aiPerUser },
         chat: { totals: chatTotals, perUser: chatPerUser },
