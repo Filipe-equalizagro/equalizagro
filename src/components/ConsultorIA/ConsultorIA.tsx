@@ -255,20 +255,30 @@ export default function ConsultorIA() {
   const pendingMessagesRef = useRef<Message[]>([]);
   const messagesRef = useRef<Message[]>([]);
   const isSendingRef = useRef<boolean>(false);
+  const currentConversationIdRef = useRef<string | null>(null);
+  const userIdRef = useRef<string | null>(null);
   const TYPING_DELAY = 10000; // 10 segundos de espera
-  
+
   // Manter refs atualizados
   useEffect(() => {
     pendingMessagesRef.current = pendingMessages;
   }, [pendingMessages]);
-  
+
   useEffect(() => {
     messagesRef.current = messages;
   }, [messages]);
-  
+
   useEffect(() => {
     isSendingRef.current = isSending;
   }, [isSending]);
+
+  useEffect(() => {
+    currentConversationIdRef.current = currentConversationId;
+  }, [currentConversationId]);
+
+  useEffect(() => {
+    userIdRef.current = userId;
+  }, [userId]);
 
   // Foco automático no input ao terminar de carregar (apenas desktop)
   useEffect(() => {
@@ -730,7 +740,8 @@ export default function ConsultorIA() {
     success: boolean;
     messages?: { id: string; role: string; content: string; created_at: string }[];
   } | null> => {
-    if (!userId || messagesToSave.length === 0) {
+    const uid = userIdRef.current;
+    if (!uid || messagesToSave.length === 0) {
       console.log('[ConsultorIA] saveMessages: userId ou mensagens inválidos');
       return null;
     }
@@ -748,7 +759,7 @@ export default function ConsultorIA() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           conversationId,
-          userId,
+          userId: uid,
           gptmakerContextId: contextId,
           messages: messagesToSave.map(msg => ({
             role: msg.role,
@@ -810,39 +821,41 @@ export default function ConsultorIA() {
   
   // Enviar mensagens pendentes para a IA
   const sendPendingMessages = async () => {
-    // Usar refs para obter valores atualizados
+    // Usar refs para obter valores atualizados (evita closure stale)
     const currentPendingMessages = pendingMessagesRef.current;
     const currentMessages = [...messagesRef.current];
-    
-    console.log('[ConsultorIA] sendPendingMessages chamado, pendentes:', currentPendingMessages.length);
-    
+    const convId = currentConversationIdRef.current;
+    const uid    = userIdRef.current;
+
+    console.log('[ConsultorIA] sendPendingMessages chamado, pendentes:', currentPendingMessages.length, 'convId:', convId);
+
     if (currentPendingMessages.length === 0) {
       console.log('[ConsultorIA] Nenhuma mensagem pendente');
       return;
     }
-    
+
     if (isSendingRef.current) {
       console.log('[ConsultorIA] Já está enviando');
       return;
     }
-    
+
     // Limpar timer
     if (typingTimeout) {
       clearTimeout(typingTimeout);
       setTypingTimeout(null);
     }
     setTimeUntilSend(0);
-    
+
     // Combinar todas as mensagens pendentes em uma única mensagem
     const combinedMessage = currentPendingMessages.map(m => m.content).join('\n\n');
     console.log('[ConsultorIA] Enviando mensagem combinada:', combinedMessage.substring(0, 100));
-    
+
     setPendingMessages([]);
     setIsSending(true);
-    
+
     // Salvar no localStorage imediatamente (backup)
-    if (currentConversationId) {
-      saveToLocalStorage(currentConversationId, currentMessages);
+    if (convId) {
+      saveToLocalStorage(convId, currentMessages);
     }
 
     try {
@@ -876,12 +889,12 @@ export default function ConsultorIA() {
         const finalMessages = [...currentMessages, aiMessage];
 
         let messagesForUi = finalMessages;
-        if (currentConversationId) {
+        if (convId && uid) {
           const userMsgsToSave = currentMessages
             .filter(m => m.role === 'user')
             .slice(-currentPendingMessages.length || -1);
           const saveResult = await saveMessages(
-            currentConversationId,
+            convId,
             [...userMsgsToSave, aiMessage],
             data.contextId
           );
@@ -904,10 +917,10 @@ export default function ConsultorIA() {
 
         setMessages(messagesForUi);
 
-        if (currentConversationId) {
-          saveToLocalStorage(currentConversationId, messagesForUi);
+        if (convId) {
+          saveToLocalStorage(convId, messagesForUi);
 
-          const currentConv = conversations.find(c => c.id === currentConversationId);
+          const currentConv = conversations.find(c => c.id === convId);
           if (currentConv && currentConv.title === 'Nova Conversa') {
             const firstUserMsg = currentMessages.find(m => m.role === 'user');
             if (firstUserMsg) {
@@ -916,7 +929,7 @@ export default function ConsultorIA() {
                 (firstUserMsg.content.length > 50 ? '...' : '');
               const updatedConv = { ...currentConv, title: newTitle };
               setConversations(prev =>
-                prev.map(c => (c.id === currentConversationId ? updatedConv : c))
+                prev.map(c => (c.id === convId ? updatedConv : c))
               );
               saveConversationToLocalStorage(updatedConv, messagesForUi);
             }
@@ -931,11 +944,7 @@ export default function ConsultorIA() {
         };
         const finalMessages = [...currentMessages, errorMessage];
         setMessages(finalMessages);
-        
-        // Salvar no localStorage mesmo com erro
-        if (currentConversationId) {
-          saveToLocalStorage(currentConversationId, finalMessages);
-        }
+        if (convId) saveToLocalStorage(convId, finalMessages);
       }
     } catch (error) {
       console.error('Erro ao enviar mensagem:', error);
@@ -947,11 +956,7 @@ export default function ConsultorIA() {
       };
       const finalMessages = [...currentMessages, errorMessage];
       setMessages(finalMessages);
-      
-      // Salvar no localStorage mesmo com erro de conexão
-      if (currentConversationId) {
-        saveToLocalStorage(currentConversationId, finalMessages);
-      }
+      if (convId) saveToLocalStorage(convId, finalMessages);
     } finally {
       setIsSending(false);
     }
