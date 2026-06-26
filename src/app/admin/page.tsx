@@ -379,7 +379,7 @@ export default function AdminPage() {
               <h2 className="adm-metrics-heading">Métricas de uso</h2>
               <div className="adm-metrics-filters">
                 <span className="adm-period-label">Filtrar por:</span>
-                <select className="adm-period-select" value={metricYear} onChange={e => { setMetricYear(e.target.value); setMetricMonth(''); }}>
+                <select className="adm-period-select" value={metricYear} onChange={e => { const y = e.target.value; setMetricYear(y); setMetricMonth(''); loadMetrics(y, ''); }}>
                   <option value="">Todos os anos</option>
                   {Array.from(
                     { length: new Date().getFullYear() - 2025 },
@@ -388,7 +388,7 @@ export default function AdminPage() {
                     <option key={y} value={String(y)}>{y}</option>
                   ))}
                 </select>
-                <select className="adm-period-select" value={metricMonth} onChange={e => setMetricMonth(e.target.value)} disabled={!metricYear}>
+                <select className="adm-period-select" value={metricMonth} onChange={e => { const m = e.target.value; setMetricMonth(m); loadMetrics(metricYear, m); }} disabled={!metricYear}>
                   <option value="">Todos os meses</option>
                   {['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'].map((m, i) => (
                     <option key={i+1} value={String(i+1)}>{m}</option>
