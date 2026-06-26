@@ -322,23 +322,26 @@
 
 .adm-metrics-title {
   display: flex; align-items: center; gap: 0.5rem;
-  font-size: 0.9rem; font-weight: 700; color: #1f2937;
+  font-size: 0.85rem; font-weight: 700; color: #1f2937;
   margin-bottom: 0.9rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1.5px solid #e5e7eb;
 }
+.adm-metrics-title img { max-height: 16px; width: auto; }
 
 .adm-metrics-cards {
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem;
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.6rem;
 }
 
 .adm-metric-card {
   background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10px;
-  padding: 1rem 1.25rem; display: flex; flex-direction: column; gap: 0.2rem;
+  padding: 0.85rem 1rem; display: flex; flex-direction: column; gap: 0.15rem;
 }
 .adm-metric-value {
-  font-size: 1.6rem; font-weight: 800; color: #1a5f3a; line-height: 1;
+  font-size: 1.4rem; font-weight: 800; color: #1a5f3a; line-height: 1;
 }
 .adm-metric-label {
-  font-size: 0.78rem; color: #6b7280; font-weight: 500;
+  font-size: 0.73rem; color: #6b7280; font-weight: 500;
 }
 
 .adm-metrics-bars { display: flex; flex-direction: column; gap: 0.5rem; }

@@ -392,9 +392,12 @@ export default function AdminPage() {
 
                   <div className="adm-metrics-cards">
                     {[
-                      { label: 'Conversas',      value: metrics.consultor.totals.total_conversations },
-                      { label: 'Mensagens',       value: metrics.consultor.totals.total_messages },
-                      { label: 'Usuários ativos', value: metrics.consultor.totals.active_users },
+                      { label: 'Consultas (IA)',  value: metrics.consultor.ai.totals.total_consultas },
+                      { label: 'Créditos usados', value: metrics.consultor.ai.totals.credits_consumed },
+                      { label: 'Usuários ativos', value: metrics.consultor.ai.totals.active_users },
+                      { label: 'Conversas (chat)',value: metrics.consultor.chat.totals.total_conversas },
+                      { label: 'Mensagens (chat)',value: metrics.consultor.chat.totals.total_mensagens },
+                      { label: 'Usuários no chat',value: metrics.consultor.chat.totals.chat_users },
                     ].map(c => (
                       <div key={c.label} className="adm-metric-card">
                         <span className="adm-metric-value">{Number(c.value || 0).toLocaleString('pt-BR')}</span>
@@ -403,8 +406,35 @@ export default function AdminPage() {
                     ))}
                   </div>
 
-                  {metrics.consultor.perUser.length > 0 && (
+                  {metrics.consultor.ai.perUser.length > 0 && (
                     <div className="adm-table-wrap" style={{ marginTop: '1rem' }}>
+                      <p style={{ fontSize: '0.78rem', color: '#6b7280', marginBottom: '0.5rem', fontWeight: 600 }}>Consultas por usuário</p>
+                      <table className="adm-table">
+                        <thead><tr>
+                          <th>Usuário</th>
+                          <th>Email</th>
+                          <th>Consultas</th>
+                          <th>Créditos</th>
+                          <th>Último uso</th>
+                        </tr></thead>
+                        <tbody>
+                          {metrics.consultor.ai.perUser.map((u: any) => (
+                            <tr key={u.email}>
+                              <td><div className="adm-user-cell"><div className="adm-avatar">{u.full_name.charAt(0).toUpperCase()}</div><span>{u.full_name}</span></div></td>
+                              <td className="adm-email">{u.email}</td>
+                              <td className="adm-small">{u.consultas}</td>
+                              <td className="adm-small">{u.credits_used}</td>
+                              <td className="adm-small">{u.last_active ? new Date(u.last_active).toLocaleDateString('pt-BR') : '—'}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+
+                  {metrics.consultor.chat.perUser.length > 0 && (
+                    <div className="adm-table-wrap" style={{ marginTop: '1rem' }}>
+                      <p style={{ fontSize: '0.78rem', color: '#6b7280', marginBottom: '0.5rem', fontWeight: 600 }}>Conversas por usuário</p>
                       <table className="adm-table">
                         <thead><tr>
                           <th>Usuário</th>
@@ -414,12 +444,12 @@ export default function AdminPage() {
                           <th>Último uso</th>
                         </tr></thead>
                         <tbody>
-                          {metrics.consultor.perUser.map((u: any) => (
+                          {metrics.consultor.chat.perUser.map((u: any) => (
                             <tr key={u.email}>
                               <td><div className="adm-user-cell"><div className="adm-avatar">{u.full_name.charAt(0).toUpperCase()}</div><span>{u.full_name}</span></div></td>
                               <td className="adm-email">{u.email}</td>
-                              <td className="adm-small">{u.conversations}</td>
-                              <td className="adm-small">{u.messages}</td>
+                              <td className="adm-small">{u.conversas}</td>
+                              <td className="adm-small">{u.mensagens}</td>
                               <td className="adm-small">{u.last_active ? new Date(u.last_active).toLocaleDateString('pt-BR') : '—'}</td>
                             </tr>
                           ))}

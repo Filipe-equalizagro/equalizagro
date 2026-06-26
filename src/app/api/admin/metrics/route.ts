@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { query } from '@/lib/database';
 import bcrypt from 'bcryptjs';
-import { ensureCalculatorUsageTable } from '@/lib/db-init';
+import { ensureCalculatorUsageTable, ensureConversationTables } from '@/lib/db-init';
 
 async function verifyAdminToken(request: NextRequest): Promise<boolean> {
   const authHeader = request.headers.get('authorization');
@@ -31,16 +31,41 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    await ensureCalculatorUsageTable();
+    await Promise.all([ensureCalculatorUsageTable(), ensureConversationTables()]);
 
-    // ── Consultor.IA ──────────────────────────────────────────────
-
-    const [consultorTotals, consultorPerUser, consultorDaily] = await Promise.all([
+    // ── Consultor.IA — ai_consultations (fonte principal) ────────
+    const [aiTotals, aiPerUser] = await Promise.all([
       query(`
         SELECT
-          COUNT(DISTINCT c.id)                                          AS total_conversations,
-          COUNT(m.id) FILTER (WHERE m.role = 'user')                    AS total_messages,
-          COUNT(DISTINCT c.user_id)                                      AS active_users
+          COUNT(*)                    AS total_consultas,
+          COUNT(DISTINCT user_id)     AS active_users,
+          SUM(credits_used)           AS credits_consumed
+        FROM equalizagro.ai_consultations
+      `, []),
+
+      query(`
+        SELECT
+          u.full_name,
+          u.email,
+          COUNT(ac.id)            AS consultas,
+          SUM(ac.credits_used)    AS credits_used,
+          MAX(ac.created_at)      AS last_active
+        FROM equalizagro.users u
+        JOIN equalizagro.ai_consultations ac ON ac.user_id = u.id
+        WHERE u.deleted_at IS NULL
+        GROUP BY u.id, u.full_name, u.email
+        ORDER BY consultas DESC
+        LIMIT 50
+      `, []),
+    ]);
+
+    // ── Consultor.IA — conversations/messages (chat direto) ──────
+    const [chatTotals, chatPerUser] = await Promise.all([
+      query(`
+        SELECT
+          COUNT(DISTINCT c.id)                                   AS total_conversas,
+          COUNT(m.id) FILTER (WHERE m.role = 'user')             AS total_mensagens,
+          COUNT(DISTINCT c.user_id)                              AS chat_users
         FROM equalizagro.conversations c
         LEFT JOIN equalizagro.messages m ON m.conversation_id = c.id
         WHERE c.is_deleted = false
@@ -50,32 +75,21 @@ export async function GET(request: NextRequest) {
         SELECT
           u.full_name,
           u.email,
-          COUNT(DISTINCT c.id)                              AS conversations,
-          COUNT(m.id) FILTER (WHERE m.role = 'user')        AS messages,
-          MAX(c.last_message_at)                            AS last_active
+          COUNT(DISTINCT c.id)                          AS conversas,
+          COUNT(m.id) FILTER (WHERE m.role = 'user')    AS mensagens,
+          MAX(c.last_message_at)                        AS last_active
         FROM equalizagro.users u
         JOIN equalizagro.conversations c ON c.user_id = u.id AND c.is_deleted = false
         LEFT JOIN equalizagro.messages m ON m.conversation_id = c.id
         WHERE u.deleted_at IS NULL
         GROUP BY u.id, u.full_name, u.email
-        ORDER BY messages DESC
+        ORDER BY mensagens DESC
         LIMIT 50
-      `, []),
-
-      query(`
-        SELECT
-          DATE_TRUNC('day', m.created_at AT TIME ZONE 'America/Sao_Paulo')::date AS day,
-          COUNT(*) FILTER (WHERE m.role = 'user') AS messages
-        FROM equalizagro.messages m
-        WHERE m.created_at >= NOW() - INTERVAL '30 days'
-        GROUP BY 1
-        ORDER BY 1
       `, []),
     ]);
 
     // ── Calculadora ───────────────────────────────────────────────
-
-    const [calcByTab, calcByUser, calcDaily] = await Promise.all([
+    const [calcByTab, calcByUser] = await Promise.all([
       query(`
         SELECT tab_id, tab_label, COUNT(*) AS total
         FROM equalizagro.calculator_usage
@@ -87,37 +101,31 @@ export async function GET(request: NextRequest) {
         SELECT
           u.full_name,
           u.email,
-          COUNT(cu.id)           AS total_uses,
-          MAX(cu.created_at)     AS last_use
+          COUNT(cu.id)       AS total_uses,
+          MAX(cu.created_at) AS last_use
         FROM equalizagro.calculator_usage cu
         JOIN equalizagro.users u ON u.id = cu.user_id
         GROUP BY u.id, u.full_name, u.email
         ORDER BY total_uses DESC
         LIMIT 50
       `, []),
-
-      query(`
-        SELECT
-          DATE_TRUNC('day', created_at AT TIME ZONE 'America/Sao_Paulo')::date AS day,
-          COUNT(*) AS uses
-        FROM equalizagro.calculator_usage
-        WHERE created_at >= NOW() - INTERVAL '30 days'
-        GROUP BY 1
-        ORDER BY 1
-      `, []),
     ]);
 
     return NextResponse.json({
       success: true,
       consultor: {
-        totals:  consultorTotals.rows[0],
-        perUser: consultorPerUser.rows,
-        daily:   consultorDaily.rows,
+        ai: {
+          totals:  aiTotals.rows[0],
+          perUser: aiPerUser.rows,
+        },
+        chat: {
+          totals:  chatTotals.rows[0],
+          perUser: chatPerUser.rows,
+        },
       },
       calculator: {
-        byTab:   calcByTab.rows,
-        byUser:  calcByUser.rows,
-        daily:   calcDaily.rows,
+        byTab:  calcByTab.rows,
+        byUser: calcByUser.rows,
       },
     });
   } catch (err) {
