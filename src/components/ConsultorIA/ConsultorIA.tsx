@@ -854,6 +854,8 @@ export default function ConsultorIA() {
         body: JSON.stringify({
           message: combinedMessage,
           contextId: gptContextId,
+          conversationId: currentConversationIdRef.current,
+          token: getAuthToken(),
           userName: planData?.fullName || 'Usuário',
         }),
       });
@@ -864,6 +866,16 @@ export default function ConsultorIA() {
         // Salvar contextId para manter o histórico da conversa no n8n
         if (data.contextId) {
           setGptContextId(data.contextId);
+        }
+
+        // Se o route criou uma conversa nova no banco (ex: convId era local_XXXX),
+        // sincronizar o ID real para que as próximas mensagens usem a mesma conversa
+        if (data.savedConversationId && data.savedConversationId !== currentConversationIdRef.current) {
+          const newDbId = data.savedConversationId as string;
+          setCurrentConversationId(newDbId);
+          setConversations(prev =>
+            prev.map(c => c.id === currentConversationIdRef.current ? { ...c, id: newDbId } : c)
+          );
         }
 
         const aiMessage: Message = {
