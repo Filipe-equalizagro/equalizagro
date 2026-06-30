@@ -347,6 +347,7 @@ export default function DashboardPage() {
         </div>
 
         <footer className="db-footer">
+          <img src="/images/EQUALIZAGRO ok.png" alt="Equalizagro" className="db-footer__logo" />
           <p>© Equalizagro 2026</p>
         </footer>
       </div>

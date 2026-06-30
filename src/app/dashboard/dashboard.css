@@ -687,6 +687,15 @@
   text-align: center;
 }
 
+.db-footer__logo {
+  display: block;
+  height: 20px;
+  width: auto;
+  margin: 0 auto 0.5rem;
+  opacity: 0.35;
+  filter: brightness(0);
+}
+
 /* ====================================================
    RESPONSIVE BREAKPOINTS
    ==================================================== */

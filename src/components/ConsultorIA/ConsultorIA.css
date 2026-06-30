@@ -496,6 +496,19 @@
   box-shadow: 0 0 0 2px rgba(26, 95, 58, 0.2);
 }
 
+.consultor__sidebar-brand {
+  display: flex;
+  justify-content: center;
+  padding-bottom: 0.5rem;
+}
+
+.consultor__sidebar-brand-logo {
+  height: 18px;
+  width: auto;
+  opacity: 0.4;
+  filter: brightness(0) invert(1);
+}
+
 .consultor__sidebar-footer {
   padding: 1rem;
   border-top: 1px solid #e5e7eb;

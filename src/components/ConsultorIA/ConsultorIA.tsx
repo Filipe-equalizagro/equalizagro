@@ -1475,8 +1475,11 @@ export default function ConsultorIA() {
           </div>
         </div>
 
-        {/* Rodapé: Voltar ao Dashboard */}
+        {/* Rodapé: Logo Equalizagro + Voltar ao Dashboard */}
         <div className="consultor__sidebar-footer">
+          <div className="consultor__sidebar-brand">
+            <img src="/images/EQUALIZAGRO ok.png" alt="Equalizagro" className="consultor__sidebar-brand-logo" />
+          </div>
           <a href="/dashboard" className="consultor__sidebar-button consultor__sidebar-button--danger">
             <LogOut size={18} />
             <span>Voltar ao Dashboard</span>
