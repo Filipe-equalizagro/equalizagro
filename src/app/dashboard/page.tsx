@@ -181,8 +181,8 @@ export default function DashboardPage() {
       >
         <div className="db-sidebar__logo">
           <Link href="/" onClick={() => setSidebarOpen(false)}>
-            <img src="/images/EQUALIZAGRO ok.png" alt="Equalizagro" className="db-sidebar__logo-full" />
-            <img src="/images/Equalizagro-gota-logo.png" alt="Equalizagro" className="db-sidebar__logo-gota" />
+            <img src="/images/go2apply-logo-branco.png" alt="go2apply" className="db-sidebar__logo-full" />
+            <img src="/images/go2apply-logo-branco.png" alt="go2apply" className="db-sidebar__logo-gota" />
           </Link>
           <button
             className="db-sidebar__close"
@@ -268,7 +268,7 @@ export default function DashboardPage() {
             <Menu size={22} />
           </button>
           <div className="db-topbar__logo">
-            <img src="/images/EQUALIZAGRO ok.png" alt="Equalizagro" />
+            <img src="/images/go2apply-logo-branco.png" alt="go2apply" />
           </div>
           <button
             className="db-topbar__avatar"

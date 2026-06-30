@@ -1302,10 +1302,10 @@ export default function ConsultorIA() {
         {/* Topo: Logo + Fechar */}
         <div className="consultor__sidebar-header">
           <a href="/dashboard" className="consultor__logo">
-            <img 
-              src="/images/EQUALIZAGRO ok.png" 
-              alt="Equalizagro Logo" 
-              className="header__logo-image" 
+            <img
+              src="/images/go2apply-logo-branco.png"
+              alt="go2apply"
+              className="header__logo-image"
             />
           </a>
           <button
