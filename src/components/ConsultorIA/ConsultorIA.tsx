@@ -256,6 +256,7 @@ export default function ConsultorIA() {
   const isSendingRef = useRef<boolean>(false);
   const currentConversationIdRef = useRef<string | null>(null);
   const userIdRef = useRef<string | null>(null);
+  const isLoadingConversationsRef = useRef<boolean>(false);
   const TYPING_DELAY = 10000; // 10 segundos de espera
 
   // Manter refs atualizados
@@ -500,11 +501,12 @@ export default function ConsultorIA() {
 
   // Carregar conversas salvas do banco de dados
   const loadConversations = async () => {
-    if (!userId) {
-      console.log('[ConsultorIA] loadConversations: userId não disponível');
+    if (!userId || isLoadingConversationsRef.current) {
+      console.log('[ConsultorIA] loadConversations: userId não disponível ou já carregando');
       return;
     }
 
+    isLoadingConversationsRef.current = true;
     console.log('[ConsultorIA] Carregando conversas para userId:', userId);
     setIsLoadingConversations(true);
     try {
@@ -557,11 +559,11 @@ export default function ConsultorIA() {
       }
     } catch (error) {
       console.error('[ConsultorIA] Erro ao carregar conversas:', error);
-      // Em caso de erro de rede, tentar criar conversa no banco
       await createNewConversation();
     } finally {
       setIsLoadingConversations(false);
       setIsLoading(false);
+      isLoadingConversationsRef.current = false;
     }
   };
 
@@ -870,11 +872,13 @@ export default function ConsultorIA() {
 
         // Se o route criou uma conversa nova no banco (ex: convId era local_XXXX),
         // sincronizar o ID real para que as próximas mensagens usem a mesma conversa
-        if (data.savedConversationId && data.savedConversationId !== currentConversationIdRef.current) {
+        const savedByRoute = Boolean(data.savedConversationId);
+        if (savedByRoute && data.savedConversationId !== currentConversationIdRef.current) {
           const newDbId = data.savedConversationId as string;
+          const oldId = currentConversationIdRef.current; // capturar ANTES de atualizar o state
           setCurrentConversationId(newDbId);
           setConversations(prev =>
-            prev.map(c => c.id === currentConversationIdRef.current ? { ...c, id: newDbId } : c)
+            prev.map(c => c.id === oldId ? { ...c, id: newDbId } : c)
           );
         }
 
@@ -888,7 +892,8 @@ export default function ConsultorIA() {
         const finalMessages = [...currentMessages, aiMessage];
 
         let messagesForUi = finalMessages;
-        if (convId && uid) {
+        // Pular saveMessages se o route já salvou (evita erro de UUID inválido no Postgres)
+        if (convId && uid && !savedByRoute) {
           const userMsgsToSave = currentMessages
             .filter(m => m.role === 'user')
             .slice(-currentPendingMessages.length || -1);

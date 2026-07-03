@@ -417,7 +417,7 @@ export default function AdminPage() {
                     {[
                       { label: 'Conversas',       value: metrics.consultor.chat.totals.total_conversas },
                       { label: 'Mensagens',        value: metrics.consultor.chat.totals.total_mensagens },
-                      { label: 'Usuários ativos',  value: metrics.consultor.chat.totals.chat_users },
+                      { label: 'Usuários ativos',  v00000000000000alue: metrics.consultor.chat.totals.chat_users },
                     ].map(c => (
                       <div key={c.label} className="adm-metric-card">
                         <div className="adm-metric-card-inner">
