@@ -606,6 +606,44 @@
   flex: 1;
 }
 
+/* ── Ações abaixo das mensagens (copy, thumbs down) ── */
+.consultor__message-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-top: 0.4rem;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+.consultor__message:hover .consultor__message-actions {
+  opacity: 1;
+}
+.consultor__msg-action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  background: none;
+  border: none;
+  border-radius: 6px;
+  color: #9ca3af;
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s;
+  padding: 0;
+}
+.consultor__msg-action-btn:hover {
+  background: rgba(0, 0, 0, 0.06);
+  color: #374151;
+}
+.consultor__msg-action-btn--disliked {
+  color: #ef4444;
+}
+.consultor__msg-action-btn--disliked:hover {
+  background: rgba(239, 68, 68, 0.08);
+  color: #dc2626;
+}
+
 .consultor__export-button {
   display: flex;
   align-items: center;

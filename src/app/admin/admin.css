@@ -143,6 +143,7 @@
 .adm-action--danger { color: #dc2626; } .adm-action--danger:hover { background: rgba(220,38,38,0.1); }
 .adm-action--delete { color: #9ca3af; } .adm-action--delete:hover { background: rgba(220,38,38,0.08); color: #dc2626; }
 .adm-action--key    { color: #9ca3af; } .adm-action--key:hover    { background: rgba(26,95,58,0.1);  color: #1a5f3a; }
+.adm-action--usage  { color: #9ca3af; } .adm-action--usage:hover  { background: rgba(26,95,58,0.1);  color: #1a5f3a; }
 
 /* ── Modal ── */
 .adm-modal-overlay {
@@ -416,4 +417,83 @@
   .adm-table td:nth-child(3),
   .adm-table th:nth-child(7),
   .adm-table td:nth-child(7) { display: none; }
+}
+
+/* ── Top 10 usuários ── */
+.adm-top10-section {
+  margin-top: 1.5rem;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+}
+.adm-top10-header {
+  display: flex; align-items: center; gap: 0.5rem;
+  font-size: 0.82rem; font-weight: 700; color: #374151;
+  margin-bottom: 0.75rem;
+}
+.adm-top10-list { display: flex; flex-direction: column; gap: 0.5rem; }
+.adm-top10-row {
+  display: grid;
+  grid-template-columns: 32px 1fr 100px 90px;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.4rem 0.25rem;
+  border-radius: 8px;
+  transition: background 0.12s;
+}
+.adm-top10-row:hover { background: #f0f7f3; }
+.adm-top10-rank {
+  font-size: 0.78rem; font-weight: 700; color: #9ca3af; text-align: center;
+}
+.adm-top10-rank--gold { color: #c9a420; }
+.adm-top10-user { display: flex; align-items: center; gap: 0.5rem; min-width: 0; }
+.adm-avatar--sm { width: 26px; height: 26px; font-size: 0.72rem; flex-shrink: 0; }
+.adm-top10-info { display: flex; flex-direction: column; min-width: 0; }
+.adm-top10-name { font-size: 0.82rem; font-weight: 600; color: #1f2937; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.adm-top10-email { font-size: 0.72rem; color: #9ca3af; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.adm-top10-bar-wrap { height: 6px; background: #e5e7eb; border-radius: 99px; overflow: hidden; }
+.adm-top10-bar { height: 100%; background: linear-gradient(90deg, #1a5f3a, #2d9e62); border-radius: 99px; min-width: 3px; transition: width 0.4s ease; }
+.adm-top10-stats { display: flex; flex-direction: column; align-items: flex-end; font-size: 0.75rem; }
+.adm-top10-stats span { color: #374151; font-weight: 600; }
+.adm-top10-convs { color: #9ca3af !important; font-weight: 400 !important; }
+
+/* ── Modal de uso (maior que o padrão) ── */
+.adm-modal--usage {
+  max-width: 520px;
+  text-align: left;
+}
+.adm-modal--usage h3 { text-align: center; }
+.adm-usage-body { display: flex; flex-direction: column; gap: 1rem; }
+.adm-usage-cards {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem;
+}
+.adm-usage-card {
+  background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10px;
+  padding: 0.6rem 0.5rem; text-align: center;
+}
+.adm-usage-card-value { display: block; font-size: 1.2rem; font-weight: 700; color: #1a5f3a; }
+.adm-usage-card-label { display: block; font-size: 0.72rem; color: #6b7280; margin-top: 0.15rem; }
+.adm-usage-section { }
+.adm-usage-section-title {
+  font-size: 0.75rem; font-weight: 700; color: #6b7280; text-transform: uppercase;
+  letter-spacing: 0.04em; margin: 0 0 0.4rem;
+}
+.adm-usage-conv-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 0.35rem 0; border-bottom: 1px solid #f3f4f6;
+}
+.adm-usage-conv-row:last-child { border-bottom: none; }
+.adm-usage-conv-title { font-size: 0.82rem; color: #374151; font-weight: 500; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding-right: 0.5rem; }
+.adm-usage-conv-meta { font-size: 0.75rem; color: #9ca3af; white-space: nowrap; flex-shrink: 0; }
+.adm-usage-dates {
+  display: flex; flex-wrap: wrap; gap: 0.75rem;
+  font-size: 0.76rem; color: #6b7280;
+  padding-top: 0.5rem; border-top: 1px solid #f3f4f6;
+}
+
+@media (max-width: 520px) {
+  .adm-usage-cards { grid-template-columns: repeat(2, 1fr); }
+  .adm-top10-row { grid-template-columns: 28px 1fr 70px; }
+  .adm-top10-stats { display: none; }
 }

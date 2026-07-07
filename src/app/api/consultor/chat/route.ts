@@ -26,7 +26,7 @@ async function getUserIdFromToken(token: string): Promise<string | null> {
   return null;
 }
 
-async function upsertConversation(userId: string, conversationId: string | null): Promise<string> {
+async function upsertConversation(userId: string, conversationId: string | null, firstMessage?: string): Promise<string> {
   // Só usa conversationId se for UUID válido
   if (conversationId && UUID_RE.test(conversationId)) {
     const check = await query(
@@ -35,13 +35,16 @@ async function upsertConversation(userId: string, conversationId: string | null)
     );
     if (check.rows.length > 0) return conversationId;
   }
-  // Cria nova conversa
+  // Gerar título a partir da primeira mensagem do usuário
+  const title = firstMessage
+    ? firstMessage.substring(0, 60) + (firstMessage.length > 60 ? '…' : '')
+    : 'Nova Conversa';
   const result = await query(
     `INSERT INTO equalizagro.conversations
        (user_id, title, message_count, is_archived, is_deleted, created_at, updated_at)
-     VALUES ($1, 'Nova Conversa', 0, false, false, NOW(), NOW())
+     VALUES ($1, $2, 0, false, false, NOW(), NOW())
      RETURNING id`,
-    [userId]
+    [userId, title]
   );
   return result.rows[0].id;
 }
@@ -112,7 +115,7 @@ export async function POST(request: NextRequest) {
         if (!tablesReady) { await ensureConversationTables(); tablesReady = true; }
         const userId = await getUserIdFromToken(authToken);
         if (userId) {
-          const convId = await upsertConversation(userId, null);
+          const convId = await upsertConversation(userId, null, message);
           await saveMessages(userId, convId, message, responseText);
           savedConversationId = convId;
           console.log('[Chat] Salvo (fallback) — userId:', userId, 'convId:', convId);

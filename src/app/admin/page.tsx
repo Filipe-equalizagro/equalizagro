@@ -5,6 +5,7 @@ import {
   Users, UserPlus, LogOut, RefreshCw, Search,
   CheckCircle, XCircle, ShieldCheck, ChevronDown,
   AlertCircle, Eye, EyeOff, Trash2, KeyRound, BarChart2,
+  Activity,
 } from 'lucide-react';
 import { verifySession, logout, getAuthToken } from '@/lib/auth';
 import './admin.css';
@@ -41,6 +42,9 @@ export default function AdminPage() {
   const [saving, setSaving]       = useState<string | null>(null);
   const [confirmDelete, setConfirmDelete] = useState<User | null>(null);
   const [resetPassUser, setResetPassUser] = useState<User | null>(null);
+  const [viewUsageUser, setViewUsageUser] = useState<User | null>(null);
+  const [userUsage, setUserUsage]         = useState<any>(null);
+  const [userUsageLoading, setUserUsageLoading] = useState(false);
   const [newPassword, setNewPassword]     = useState('');
   const [showNewPass, setShowNewPass]     = useState(false);
   const [resetPassError, setResetPassError] = useState('');
@@ -96,6 +100,20 @@ export default function AdminPage() {
     } catch { /* ignorar */ }
     finally { setLoadingUsers(false); }
   }, []);
+
+  const loadUserUsage = async (user: User) => {
+    setViewUsageUser(user);
+    setUserUsage(null);
+    setUserUsageLoading(true);
+    try {
+      const r = await fetch(`/api/admin/user-usage?userId=${user.id}`, {
+        headers: { Authorization: `Bearer ${getAuthToken()}` },
+      });
+      const d = await r.json();
+      if (d.success) setUserUsage(d);
+    } catch { /* ignorar */ }
+    finally { setUserUsageLoading(false); }
+  };
 
   const updateUser = async (userId: string, patch: Record<string, string>) => {
     setSaving(userId);
@@ -351,6 +369,10 @@ export default function AdminPage() {
                                         <XCircle size={15} />
                                       </button>
                                   }
+                                  <button className="adm-action adm-action--usage" title="Ver uso"
+                                    onClick={() => loadUserUsage(u)}>
+                                    <Activity size={15} />
+                                  </button>
                                   <button className="adm-action adm-action--key" title="Alterar senha"
                                     onClick={() => { setResetPassUser(u); setNewPassword(''); setResetPassError(''); setShowNewPass(false); }}>
                                     <KeyRound size={15} />
@@ -428,29 +450,38 @@ export default function AdminPage() {
                     ))}
                   </div>
 
+                  {/* ── Top 10 usuários ── */}
                   {metrics.consultor.chat.perUser.length > 0 && (
-                    <div className="adm-table-wrap" style={{ marginTop: '1rem' }}>
-                      <p style={{ fontSize: '0.78rem', color: '#6b7280', marginBottom: '0.5rem', fontWeight: 600 }}>Conversas por usuário</p>
-                      <table className="adm-table">
-                        <thead><tr>
-                          <th>Usuário</th>
-                          <th>Email</th>
-                          <th>Conversas</th>
-                          <th>Mensagens</th>
-                          <th>Último uso</th>
-                        </tr></thead>
-                        <tbody>
-                          {metrics.consultor.chat.perUser.map((u: any) => (
-                            <tr key={u.email}>
-                              <td><div className="adm-user-cell"><div className="adm-avatar">{u.full_name.charAt(0).toUpperCase()}</div><span>{u.full_name}</span></div></td>
-                              <td className="adm-email">{u.email}</td>
-                              <td className="adm-small">{u.conversas}</td>
-                              <td className="adm-small">{u.mensagens}</td>
-                              <td className="adm-small">{u.last_active ? new Date(u.last_active).toLocaleDateString('pt-BR') : '—'}</td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
+                    <div className="adm-top10-section">
+                      <div className="adm-top10-header">
+                        <Activity size={16} />
+                        <span>Top 10 — Usuários mais ativos</span>
+                      </div>
+                      <div className="adm-top10-list">
+                        {metrics.consultor.chat.perUser.slice(0, 10).map((u: any, idx: number) => {
+                          const maxMsg = Number(metrics.consultor.chat.perUser[0]?.mensagens || 1);
+                          const pct = Math.round((Number(u.mensagens) / maxMsg) * 100);
+                          return (
+                            <div key={u.email} className="adm-top10-row">
+                              <span className={`adm-top10-rank${idx < 3 ? ' adm-top10-rank--gold' : ''}`}>#{idx + 1}</span>
+                              <div className="adm-top10-user">
+                                <div className="adm-avatar adm-avatar--sm">{u.full_name.charAt(0).toUpperCase()}</div>
+                                <div className="adm-top10-info">
+                                  <span className="adm-top10-name">{u.full_name}</span>
+                                  <span className="adm-top10-email">{u.email}</span>
+                                </div>
+                              </div>
+                              <div className="adm-top10-bar-wrap">
+                                <div className="adm-top10-bar" style={{ width: `${pct}%` }} />
+                              </div>
+                              <div className="adm-top10-stats">
+                                <span title="Mensagens">{Number(u.mensagens).toLocaleString('pt-BR')} msg</span>
+                                <span title="Conversas" className="adm-top10-convs">{Number(u.conversas)} conv</span>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
                     </div>
                   )}
                 </div>
@@ -588,6 +619,87 @@ export default function AdminPage() {
           </div>
         )}
       </div>
+
+      {/* ── Modal de uso por usuário ── */}
+      {viewUsageUser && (
+        <div className="adm-modal-overlay" onClick={() => { setViewUsageUser(null); setUserUsage(null); }}>
+          <div className="adm-modal adm-modal--usage" onClick={e => e.stopPropagation()}>
+            <div className="adm-modal-icon" style={{ color: '#1a5f3a' }}><Activity size={26} /></div>
+            <h3>Uso: {viewUsageUser.full_name}</h3>
+            <p style={{ fontSize: '0.82rem', color: '#6b7280', margin: '0 0 1rem' }}>{viewUsageUser.email}</p>
+
+            {userUsageLoading ? (
+              <div className="adm-loading" style={{ minHeight: 80 }}><div className="adm-spinner" /></div>
+            ) : !userUsage ? (
+              <p style={{ color: '#ef4444', fontSize: '0.85rem' }}>Erro ao carregar dados.</p>
+            ) : (
+              <div className="adm-usage-body">
+                {/* Cards resumo */}
+                <div className="adm-usage-cards">
+                  {[
+                    { label: 'Conversas', value: userUsage.chat.totalConversas },
+                    { label: 'Mensagens', value: userUsage.chat.totalMensagens },
+                    { label: 'Usos calc.', value: userUsage.calculator.totalUses },
+                    { label: 'Créditos', value: userUsage.user.creditsBalance },
+                  ].map(c => (
+                    <div key={c.label} className="adm-usage-card">
+                      <span className="adm-usage-card-value">{Number(c.value || 0).toLocaleString('pt-BR')}</span>
+                      <span className="adm-usage-card-label">{c.label}</span>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Últimas conversas */}
+                {userUsage.chat.recentConversations.length > 0 && (
+                  <div className="adm-usage-section">
+                    <p className="adm-usage-section-title">Conversas recentes</p>
+                    {userUsage.chat.recentConversations.map((c: any) => (
+                      <div key={c.id} className="adm-usage-conv-row">
+                        <span className="adm-usage-conv-title">{c.title}</span>
+                        <span className="adm-usage-conv-meta">
+                          {c.messageCount} msg
+                          {c.lastMessageAt && ` · ${new Date(c.lastMessageAt).toLocaleDateString('pt-BR')}`}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Uso da calculadora por ferramenta */}
+                {userUsage.calculator.byTool.length > 0 && (
+                  <div className="adm-usage-section">
+                    <p className="adm-usage-section-title">Calculadora por ferramenta</p>
+                    {userUsage.calculator.byTool.map((t: any) => (
+                      <div key={t.tab_label} className="adm-usage-conv-row">
+                        <span className="adm-usage-conv-title">{t.tab_label}</span>
+                        <span className="adm-usage-conv-meta">{t.total} acessos</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Datas */}
+                <div className="adm-usage-dates">
+                  <span>Cadastro: {new Date(userUsage.user.createdAt).toLocaleDateString('pt-BR')}</span>
+                  {userUsage.user.lastLogin && (
+                    <span>Último login: {new Date(userUsage.user.lastLogin).toLocaleDateString('pt-BR')}</span>
+                  )}
+                  {userUsage.chat.lastActive && (
+                    <span>Último uso IA: {new Date(userUsage.chat.lastActive).toLocaleDateString('pt-BR')}</span>
+                  )}
+                </div>
+              </div>
+            )}
+
+            <div className="adm-modal-actions" style={{ marginTop: '1rem' }}>
+              <button className="adm-modal-cancel" style={{ width: '100%' }}
+                onClick={() => { setViewUsageUser(null); setUserUsage(null); }}>
+                Fechar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ── Modal de alteração de senha ── */}
       {resetPassUser && (

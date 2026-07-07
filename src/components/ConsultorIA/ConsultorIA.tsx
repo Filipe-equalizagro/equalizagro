@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useMemo } from 'react';
-import { Send, Plus, Menu, X, LogOut, Settings, Trash2, Archive, Search, User, Pencil, Leaf, FileDown } from 'lucide-react';
+import { Send, Plus, Menu, X, LogOut, Trash2, Archive, Search, User, Pencil, Leaf, FileDown, ThumbsDown, Copy, Check } from 'lucide-react';
 import { getAuthToken, getUserId, logout, verifySession } from '@/lib/auth';
 import './ConsultorIA.css';
 
@@ -224,7 +224,6 @@ export default function ConsultorIA() {
   const isMobileDevice = () => /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
   const [sessionError, setSessionError] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [showSettings, setShowSettings] = useState(false);
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [currentConversationId, setCurrentConversationId] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -234,7 +233,6 @@ export default function ConsultorIA() {
     try { return localStorage.getItem('userName') || ''; } catch { return ''; }
   });
   const [planData, setPlanData] = useState<PlanData | null>(null);
-  const [planLoading, setPlanLoading] = useState(false);
   const [contextMenuId, setContextMenuId] = useState<string | null>(null);
   const [editingConversationId, setEditingConversationId] = useState<string | null>(null);
   const [editingTitle, setEditingTitle] = useState('');
@@ -249,6 +247,8 @@ export default function ConsultorIA() {
   const [pendingMessages, setPendingMessages] = useState<Message[]>([]);
   const [typingTimeout, setTypingTimeout] = useState<NodeJS.Timeout | null>(null);
   const [timeUntilSend, setTimeUntilSend] = useState<number>(0);
+  const [copiedMessageId, setCopiedMessageId] = useState<string | null>(null);
+  const [dislikedMessageIds, setDislikedMessageIds] = useState<Set<string>>(new Set());
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const pendingMessagesRef = useRef<Message[]>([]);
@@ -1181,17 +1181,6 @@ export default function ConsultorIA() {
     }
   };
 
-  const getPlanData = () => {
-    // Mock data - será integrado com backend
-    return {
-      planName: 'Profissional',
-      creditsAvailable: 15000,
-      creditsUsed: 3450,
-      renewalDate: new Date(2026, 1, 28), // 28 de fevereiro de 2026
-      monthlyLimit: 20000,
-    };
-  };
-
   // Extrair userId do token JWT
   const extractUserIdFromToken = (token: string): string | null => {
     try {
@@ -1206,7 +1195,6 @@ export default function ConsultorIA() {
 
   const fetchPlanData = async () => {
     try {
-      setPlanLoading(true);
       const token = getAuthToken();
       const storedUserId = getUserId(); // Usar userId do localStorage
       
@@ -1252,18 +1240,38 @@ export default function ConsultorIA() {
       }
     } catch (error) {
       console.error('[ConsultorIA] Erro ao carregar dados do plano:', error);
-      // Tentar usar userId do token como fallback
       const token = getAuthToken();
       if (token) {
         const fallbackUserId = extractUserIdFromToken(token);
-        if (fallbackUserId) {
-          console.log('[ConsultorIA] Usando userId do token como fallback:', fallbackUserId);
-          setUserId(fallbackUserId);
-        }
+        if (fallbackUserId) setUserId(fallbackUserId);
       }
-    } finally {
-      setPlanLoading(false);
     }
+  };
+
+  const handleCopyMessage = (messageId: string, content: string) => {
+    navigator.clipboard.writeText(content).then(() => {
+      setCopiedMessageId(messageId);
+      setTimeout(() => setCopiedMessageId(null), 2000);
+    }).catch(() => {
+      // fallback para browsers sem clipboard API
+      const ta = document.createElement('textarea');
+      ta.value = content;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      setCopiedMessageId(messageId);
+      setTimeout(() => setCopiedMessageId(null), 2000);
+    });
+  };
+
+  const handleDislikeMessage = (messageId: string) => {
+    setDislikedMessageIds(prev => {
+      const next = new Set(prev);
+      if (next.has(messageId)) next.delete(messageId);
+      else next.add(messageId);
+      return next;
+    });
   };
 
   const handleExportPDF = () => {
@@ -1617,6 +1625,26 @@ export default function ConsultorIA() {
                         minute: '2-digit',
                       })}
                     </span>
+                    {message.role === 'assistant' && message.id !== '1' && (
+                      <div className="consultor__message-actions">
+                        <button
+                          className="consultor__msg-action-btn"
+                          onClick={() => handleCopyMessage(message.id, message.content)}
+                          title="Copiar resposta"
+                          aria-label="Copiar resposta"
+                        >
+                          {copiedMessageId === message.id ? <Check size={14} /> : <Copy size={14} />}
+                        </button>
+                        <button
+                          className={`consultor__msg-action-btn${dislikedMessageIds.has(message.id) ? ' consultor__msg-action-btn--disliked' : ''}`}
+                          onClick={() => handleDislikeMessage(message.id)}
+                          title="Resposta ruim"
+                          aria-label="Marcar resposta como ruim"
+                        >
+                          <ThumbsDown size={14} />
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </div>
               ))
@@ -1685,135 +1713,6 @@ export default function ConsultorIA() {
         </div>
       </div>
 
-      {/* Settings Modal */}
-      {showSettings && (
-        <div className="consultor__modal-overlay" onClick={() => setShowSettings(false)}>
-          <div className="consultor__modal" onClick={e => e.stopPropagation()}>
-            <div className="consultor__modal-header">
-              <h2 className="consultor__modal-title">Configurações da Conta</h2>
-              <button 
-                onClick={() => setShowSettings(false)}
-                className="consultor__modal-close"
-                aria-label="Fechar"
-              >
-                <X size={24} />
-              </button>
-            </div>
-
-            <div className="consultor__modal-content">
-              {/* Plan Info Card */}
-              <div className="consultor__settings-card">
-                <div className="consultor__plan-header">
-                  <h3 className="consultor__plan-name">
-                    Plano {planData?.planName || 'Carregando...'}
-                  </h3>
-                  <span className="consultor__plan-badge">
-                    {planData?.planName || 'Carregando...'}
-                  </span>
-                </div>
-
-                {/* Credits Section */}
-                <div className="consultor__settings-section">
-                  <h4 className="consultor__settings-title">Créditos Disponíveis</h4>
-                  <div className="consultor__credits-container">
-                    <div className="consultor__credits-info">
-                      <span className="consultor__credits-label">Créditos disponíveis:</span>
-                      <span className="consultor__credits-value">
-                        {planData 
-                          ? planData.creditsAvailable.toLocaleString('pt-BR')
-                          : '0'
-                        }
-                      </span>
-                    </div>
-                    <div className="consultor__progress-bar">
-                      <div 
-                        className={`consultor__progress-fill ${
-                          planData && ((planData.creditsUsed / planData.monthlyLimit) * 100) > 70
-                            ? 'progress-high'
-                            : planData && ((planData.creditsUsed / planData.monthlyLimit) * 100) > 50
-                            ? 'progress-medium'
-                            : ''
-                        }`}
-                        style={{
-                          width: planData 
-                            ? `${((planData.creditsUsed / planData.monthlyLimit) * 100)}%`
-                            : '0%'
-                        }}
-                      />
-                    </div>
-                    <div className="consultor__credits-details">
-                      <span className="consultor__credits-used">
-                        Usados: {planData 
-                          ? planData.creditsUsed.toLocaleString('pt-BR')
-                          : '0'
-                        }
-                      </span>
-                      <span className="consultor__credits-limit">
-                        Limite: {planData 
-                          ? planData.monthlyLimit.toLocaleString('pt-BR')
-                          : '0'
-                        }
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Renewal Section */}
-                <div className="consultor__settings-section">
-                  <h4 className="consultor__settings-title">Renovação do Plano</h4>
-                  <div className="consultor__renewal-info">
-                    <span className="consultor__renewal-label">Próxima renovação:</span>
-                    <span className="consultor__renewal-date">
-                      {planData
-                        ? planData.renewalDate.toLocaleDateString('pt-BR', {
-                            day: '2-digit',
-                            month: 'long',
-                            year: 'numeric'
-                          })
-                        : 'Carregando...'
-                      }
-                    </span>
-                    <p className="consultor__renewal-description">
-                      Seu plano se renova automaticamente todos os meses
-                    </p>
-                  </div>
-                </div>
-
-                {/* Upgrade Section */}
-                <div className="consultor__settings-section">
-                  <button className="consultor__upgrade-button">
-                    <span>Evoluir para Plano Premium</span>
-                  </button>
-                  <p className="consultor__upgrade-description">
-                    Desbloqueie créditos ilimitados, prioridade de atendimento e recursos exclusivos
-                  </p>
-                </div>
-
-                {/* Add Credits Section */}
-                <div className="consultor__settings-section">
-                  <h4 className="consultor__settings-title">Adicionar Créditos</h4>
-                  <div className="consultor__add-credits-container">
-                    <div className="consultor__credit-packages">
-                      <button className="consultor__credit-package">
-                        <span className="consultor__package-amount">5.000</span>
-                        <span className="consultor__package-price">R$ 49,90</span>
-                      </button>
-                      <button className="consultor__credit-package">
-                        <span className="consultor__package-amount">15.000</span>
-                        <span className="consultor__package-price">R$ 129,90</span>
-                      </button>
-                      <button className="consultor__credit-package">
-                        <span className="consultor__package-amount">30.000</span>
-                        <span className="consultor__package-price">R$ 249,90</span>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
