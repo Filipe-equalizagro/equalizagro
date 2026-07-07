@@ -606,6 +606,29 @@
   flex: 1;
 }
 
+.consultor__export-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: none;
+  border: none;
+  border-radius: 8px;
+  color: #6b7280;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  flex-shrink: 0;
+}
+.consultor__export-button:hover:not(:disabled) {
+  background: rgba(26, 95, 58, 0.08);
+  color: #1a5f3a;
+}
+.consultor__export-button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
 /* Messages Container */
 .consultor__messages-container {
   flex: 1;

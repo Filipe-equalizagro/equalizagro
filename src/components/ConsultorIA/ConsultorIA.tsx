@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useMemo } from 'react';
-import { Send, Plus, Menu, X, LogOut, Settings, Trash2, Archive, Search, User, Pencil, Leaf } from 'lucide-react';
+import { Send, Plus, Menu, X, LogOut, Settings, Trash2, Archive, Search, User, Pencil, Leaf, FileDown } from 'lucide-react';
 import { getAuthToken, getUserId, logout, verifySession } from '@/lib/auth';
 import './ConsultorIA.css';
 
@@ -257,6 +257,9 @@ export default function ConsultorIA() {
   const currentConversationIdRef = useRef<string | null>(null);
   const userIdRef = useRef<string | null>(null);
   const isLoadingConversationsRef = useRef<boolean>(false);
+  // Previne que loadConversations seja re-executada quando userId muda mais de uma vez
+  // (checkSession + fetchPlanData disparam setUserId múltiplas vezes)
+  const conversationsLoadedOnceRef = useRef<boolean>(false);
   const TYPING_DELAY = 10000; // 10 segundos de espera
 
   // Manter refs atualizados
@@ -501,11 +504,12 @@ export default function ConsultorIA() {
 
   // Carregar conversas salvas do banco de dados
   const loadConversations = async () => {
-    if (!userId || isLoadingConversationsRef.current) {
-      console.log('[ConsultorIA] loadConversations: userId não disponível ou já carregando');
+    if (!userId || isLoadingConversationsRef.current || conversationsLoadedOnceRef.current) {
+      console.log('[ConsultorIA] loadConversations: ignorando chamada duplicada (userId:', userId, 'loading:', isLoadingConversationsRef.current, 'loaded:', conversationsLoadedOnceRef.current, ')');
       return;
     }
 
+    conversationsLoadedOnceRef.current = true;
     isLoadingConversationsRef.current = true;
     console.log('[ConsultorIA] Carregando conversas para userId:', userId);
     setIsLoadingConversations(true);
@@ -1208,13 +1212,8 @@ export default function ConsultorIA() {
       
       console.log('[ConsultorIA] Buscando dados do plano...');
       console.log('[ConsultorIA] userId do localStorage:', storedUserId);
-      
-      // Se temos userId no localStorage, usar imediatamente
-      if (storedUserId && !userId) {
-        setUserId(storedUserId);
-      }
 
-      // Construir URL com userId do localStorage como fallback
+      // Construir URL com userId do localStorage como fallback (não seta state aqui — evita trigger duplo em loadConversations)
       let url = '/api/consultor/user-plan';
       if (storedUserId) {
         url += `?userId=${storedUserId}`;
@@ -1228,20 +1227,18 @@ export default function ConsultorIA() {
       
       if (!response.ok) {
         console.error('[ConsultorIA] Erro ao buscar dados do plano:', response.status);
-        // Mesmo com erro, usar userId do localStorage se disponível
-        if (storedUserId) {
-          setUserId(storedUserId);
-        }
         return;
       }
       const result = await response.json();
       console.log('[ConsultorIA] Resposta user-plan:', result);
       
       if (result.success && result.data) {
-        // Salvar userId para uso nas operações de histórico
-        console.log('[ConsultorIA] Definindo userId:', result.data.userId);
-        setUserId(result.data.userId);
-        
+        console.log('[ConsultorIA] Definindo userId via user-plan:', result.data.userId);
+        // Só define userId se ainda não foi definido pelo checkSession (evita trigger duplo)
+        if (!userIdRef.current) {
+          setUserId(result.data.userId);
+        }
+
         setPlanData({
           planName: result.data.planName,
           creditsAvailable: result.data.creditsAvailable,
@@ -1252,9 +1249,6 @@ export default function ConsultorIA() {
           email: result.data.email,
           userId: result.data.userId,
         });
-      } else if (storedUserId) {
-        // Se a API não retornou dados mas temos userId do localStorage, usar como fallback
-        setUserId(storedUserId);
       }
     } catch (error) {
       console.error('[ConsultorIA] Erro ao carregar dados do plano:', error);
@@ -1270,6 +1264,63 @@ export default function ConsultorIA() {
     } finally {
       setPlanLoading(false);
     }
+  };
+
+  const handleExportPDF = () => {
+    const currentConv = conversations.find(c => c.id === currentConversationId);
+    const title = currentConv?.title || 'Conversa';
+    const date = new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    const userName_ = planData?.fullName || userName || 'Usuário';
+
+    const rows = messages
+      .filter(m => m.id !== '1') // remove welcome message
+      .map(m => {
+        const who = m.role === 'user' ? userName_ : 'Consultor.IA';
+        const time = m.timestamp.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+        const content = m.content
+          .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+          .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+          .replace(/\*([^*]+)\*/g, '<em>$1</em>')
+          .replace(/\n/g, '<br>');
+        return `
+          <div class="msg msg--${m.role}">
+            <div class="msg-header"><strong>${who}</strong><span class="time">${time}</span></div>
+            <div class="msg-body">${content}</div>
+          </div>`;
+      }).join('');
+
+    const html = `<!DOCTYPE html><html lang="pt-BR"><head>
+      <meta charset="UTF-8">
+      <title>${title} — Consultor.IA Equalizagro</title>
+      <style>
+        body { font-family: Arial, sans-serif; font-size: 13px; color: #1a1a1a; margin: 0; padding: 24px 32px; }
+        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #1a5f3a; padding-bottom: 12px; margin-bottom: 24px; }
+        .header h1 { margin: 0; font-size: 18px; color: #1a5f3a; }
+        .header .meta { font-size: 11px; color: #666; text-align: right; }
+        .msg { margin-bottom: 18px; padding: 12px 14px; border-radius: 8px; page-break-inside: avoid; }
+        .msg--user { background: #f0f7f3; border-left: 3px solid #1a5f3a; }
+        .msg--assistant { background: #fafafa; border-left: 3px solid #c9a420; }
+        .msg-header { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 11px; color: #555; }
+        .msg-body { line-height: 1.6; }
+        .time { font-style: italic; }
+        .footer { margin-top: 32px; border-top: 1px solid #ddd; padding-top: 10px; font-size: 10px; color: #999; text-align: center; }
+        @media print { body { padding: 0; } }
+      </style>
+    </head><body>
+      <div class="header">
+        <h1>${title}</h1>
+        <div class="meta">Consultor.IA Equalizagro<br>${date}<br>${userName_}</div>
+      </div>
+      ${rows || '<p style="color:#999">Nenhuma mensagem nesta conversa.</p>'}
+      <div class="footer">Gerado pelo Consultor.IA Equalizagro — go2apply.com.br</div>
+    </body></html>`;
+
+    const win = window.open('', '_blank');
+    if (!win) { alert('Permita pop-ups para exportar o PDF.'); return; }
+    win.document.write(html);
+    win.document.close();
+    win.focus();
+    setTimeout(() => win.print(), 400);
   };
 
   const handleLogout = () => {
@@ -1512,7 +1563,15 @@ export default function ConsultorIA() {
             <Menu size={20} />
           </button>
           <h1 className="consultor__title">Consultor.IA</h1>
-          <div className="consultor__header-spacer" style={{ width: '36px' }}></div>
+          <button
+            onClick={handleExportPDF}
+            className="consultor__export-button"
+            aria-label="Exportar conversa como PDF"
+            title="Exportar conversa como PDF"
+            disabled={messages.length === 0}
+          >
+            <FileDown size={18} />
+          </button>
         </div>
 
         <div className="consultor__messages-container">

@@ -63,6 +63,14 @@ async function saveMessages(userId: string, convId: string, userMsg: string, aiM
      WHERE id = $1`,
     [convId]
   );
+  // Decrementar 1 crédito por troca de mensagem (user + assistant = 1 uso)
+  await query(
+    `UPDATE equalizagro.users
+     SET credits_balance = GREATEST(credits_balance - 1, 0),
+         updated_at = NOW()
+     WHERE id = $1`,
+    [userId]
+  );
 }
 
 export async function POST(request: NextRequest) {

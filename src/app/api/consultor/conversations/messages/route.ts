@@ -167,6 +167,18 @@ export async function POST(request: NextRequest) {
       updateValues
     );
 
+    // Decrementar 1 crédito por troca de mensagem (apenas quando há pelo menos 1 msg de assistente)
+    const hasAssistantMsg = messages.some(m => m.role === 'assistant');
+    if (hasAssistantMsg && insertedMessages.length > 0) {
+      await query(
+        `UPDATE equalizagro.users
+         SET credits_balance = GREATEST(credits_balance - 1, 0),
+             updated_at = CURRENT_TIMESTAMP
+         WHERE id = $1`,
+        [userId]
+      );
+    }
+
     return apiResponse({
       success: true,
       savedMessages: insertedMessages.length,
