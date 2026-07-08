@@ -770,7 +770,6 @@ export default function ConsultorIA() {
     const currentPendingMessages = pendingMessagesRef.current;
     const currentMessages = [...messagesRef.current];
     const convId = currentConversationIdRef.current;
-    const uid    = userIdRef.current;
 
     console.log('[ConsultorIA] sendPendingMessages chamado, pendentes:', currentPendingMessages.length, 'convId:', convId);
 
@@ -852,7 +851,7 @@ export default function ConsultorIA() {
         setMessages(finalMessages);
 
         if (convId) {
-          saveToLocalStorage(convId, messagesForUi);
+          saveToLocalStorage(convId, finalMessages);
 
           const currentConv = conversations.find(c => c.id === convId);
           if (currentConv && currentConv.title === 'Nova Conversa') {
@@ -865,7 +864,7 @@ export default function ConsultorIA() {
               setConversations(prev =>
                 prev.map(c => (c.id === convId ? updatedConv : c))
               );
-              saveConversationToLocalStorage(updatedConv, messagesForUi);
+              saveConversationToLocalStorage(updatedConv, finalMessages);
             }
           }
         }

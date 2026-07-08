@@ -3183,6 +3183,12 @@
     const EQUIP_KEY    = 'eq_equipments';
     const MAX_HISTORY  = 60;
 
+    // O histórico é atrelado ao login e persistido no servidor (sincroniza
+    // entre dispositivos). O localStorage funciona apenas como cache local.
+    function getAuthTokenCalc() {
+        try { return localStorage.getItem('authToken'); } catch (e) { return null; }
+    }
+
     function getHistory() {
         try { return JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]'); }
         catch { return []; }
@@ -3191,6 +3197,37 @@
     function saveHistory(arr) {
         localStorage.setItem(HISTORY_KEY, JSON.stringify(arr));
         updateHistoryBadge();
+    }
+
+    // Carrega o histórico do servidor e substitui o cache local.
+    function syncHistoryFromServer() {
+        var token = getAuthTokenCalc();
+        if (!token) return;
+        fetch('/api/tools/calculator-history', {
+            method: 'GET',
+            headers: { 'Authorization': 'Bearer ' + token }
+        })
+        .then(function(r) { return r.ok ? r.json() : null; })
+        .then(function(res) {
+            if (!res || !res.success || !Array.isArray(res.entries)) return;
+            // Servidor é a fonte da verdade: substitui o cache local
+            localStorage.setItem(HISTORY_KEY, JSON.stringify(res.entries));
+            updateHistoryBadge();
+            var panel = document.getElementById('history-panel');
+            if (panel && !panel.classList.contains('hidden')) renderHistory();
+        })
+        .catch(function(){});
+    }
+
+    // Envia um cálculo ao servidor (roda no browser — a aba mantém o fetch vivo).
+    function pushHistoryToServer(entry) {
+        var token = getAuthTokenCalc();
+        if (!token) return;
+        fetch('/api/tools/calculator-history', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token: token, entry: entry })
+        }).catch(function(){});
     }
 
     function updateHistoryBadge() {
@@ -3207,10 +3244,13 @@
 
     function addHistoryEntry(type, tabId, tabLabel, summary, data) {
         const h = getHistory();
-        h.unshift({ id: Date.now(), type, tabId, tabLabel, summary, data,
-                    time: new Date().toISOString() });
+        const entry = { id: Date.now(), type, tabId, tabLabel, summary, data,
+                        time: new Date().toISOString() };
+        h.unshift(entry);
         if (h.length > MAX_HISTORY) h.splice(MAX_HISTORY);
         saveHistory(h);
+        // Persistir no servidor (atrelado ao login, cross-device)
+        pushHistoryToServer(entry);
     }
 
     function showHistory() {
@@ -3228,6 +3268,14 @@
         localStorage.removeItem(HISTORY_KEY);
         updateHistoryBadge();
         renderHistory();
+        // Apagar também no servidor
+        var token = getAuthTokenCalc();
+        if (token) {
+            fetch('/api/tools/calculator-history', {
+                method: 'DELETE',
+                headers: { 'Authorization': 'Bearer ' + token }
+            }).catch(function(){});
+        }
     }
 
     function renderHistory() {
@@ -3425,6 +3473,8 @@
     window.addEventListener('load', function() {
         initDatalist();
         updateHistoryBadge();
+        // Carregar histórico do servidor (atrelado ao login, cross-device)
+        syncHistoryFromServer();
         // Render all Lucide icons (sidebar, topbar, history button)
         if (window.lucide) lucide.createIcons();
     });

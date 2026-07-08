@@ -27,18 +27,30 @@ async function getUserIdFromToken(token: string): Promise<string | null> {
 }
 
 async function upsertConversation(userId: string, conversationId: string | null, firstMessage?: string): Promise<string> {
-  // Só usa conversationId se for UUID válido
-  if (conversationId && UUID_RE.test(conversationId)) {
-    const check = await query(
-      `SELECT id FROM equalizagro.conversations WHERE id = $1 AND user_id = $2 AND is_deleted = false`,
-      [conversationId, userId]
-    );
-    if (check.rows.length > 0) return conversationId;
-  }
-  // Gerar título a partir da primeira mensagem do usuário
+  // Título derivado da primeira mensagem do usuário
   const title = firstMessage
     ? firstMessage.substring(0, 60) + (firstMessage.length > 60 ? '…' : '')
     : 'Nova Conversa';
+
+  // Só usa conversationId se for UUID válido do próprio usuário
+  if (conversationId && UUID_RE.test(conversationId)) {
+    const check = await query(
+      `SELECT id, title, message_count FROM equalizagro.conversations WHERE id = $1 AND user_id = $2 AND is_deleted = false`,
+      [conversationId, userId]
+    );
+    if (check.rows.length > 0) {
+      // Se a conversa ainda está com o título padrão, atualizar com a 1ª mensagem
+      // (garante que o título correto apareça em outros dispositivos)
+      const row = check.rows[0];
+      if (firstMessage && (row.title === 'Nova Conversa' || Number(row.message_count) === 0)) {
+        await query(
+          `UPDATE equalizagro.conversations SET title = $1, updated_at = NOW() WHERE id = $2`,
+          [title, conversationId]
+        );
+      }
+      return conversationId;
+    }
+  }
   const result = await query(
     `INSERT INTO equalizagro.conversations
        (user_id, title, message_count, is_archived, is_deleted, created_at, updated_at)

@@ -28,6 +28,31 @@ export async function ensureCalculatorUsageTable(): Promise<void> {
   `, []);
 }
 
+/**
+ * Histórico de cálculos da calculadora de pulverização — atrelado ao login,
+ * persistido no servidor para sincronizar entre dispositivos.
+ * `entry` guarda o objeto completo do cálculo (tab, resumo, campos) em JSONB.
+ */
+export async function ensureCalculatorHistoryTable(): Promise<void> {
+  await query(`
+    CREATE TABLE IF NOT EXISTS equalizagro.calculator_history (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      user_id UUID NOT NULL,
+      client_id BIGINT,
+      entry JSONB NOT NULL,
+      created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+    )
+  `, []);
+  await query(`
+    CREATE INDEX IF NOT EXISTS idx_calculator_history_user_id
+    ON equalizagro.calculator_history(user_id)
+  `, []);
+  await query(`
+    CREATE INDEX IF NOT EXISTS idx_calculator_history_created_at
+    ON equalizagro.calculator_history(created_at)
+  `, []);
+}
+
 export async function ensureConversationTables(): Promise<void> {
   await query(`
     ALTER TABLE IF EXISTS equalizagro.conversations
