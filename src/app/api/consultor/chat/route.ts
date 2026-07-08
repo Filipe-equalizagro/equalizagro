@@ -103,24 +103,25 @@ export async function POST(request: NextRequest) {
     const data = await n8nRes.json();
     const responseText = data.output || data.response || 'Sem resposta do assistente.';
 
-    // ── Salvar no banco quando o frontend não consegue (ID inválido/local) ─
-    // Quando conversationId é UUID válido, o componente salva via /conversations/messages.
-    // Quando é local_XXXX, numérico, ou ausente, o componente falha — então o route salva.
+    // ── Sempre salvar no banco (o route é a fonte da verdade) ──────────
+    // O componente NÃO salva mais — apenas exibe. Isso garante que toda
+    // interação com o n8n seja registrada independente do estado do frontend.
     let savedConversationId: string | null = null;
     const authToken = token || request.headers.get('authorization')?.replace('Bearer ', '');
-    const hasValidConvId = Boolean(conversationId && UUID_RE.test(conversationId));
 
-    if (authToken && !hasValidConvId) {
+    if (authToken) {
       try {
         if (!tablesReady) { await ensureConversationTables(); tablesReady = true; }
         const userId = await getUserIdFromToken(authToken);
         if (userId) {
-          const convId = await upsertConversation(userId, null, message);
+          // upsertConversation: se conversationId for UUID válido do usuário, usa ele;
+          // caso contrário cria nova conversa com o título da primeira mensagem.
+          const convId = await upsertConversation(userId, conversationId, message);
           await saveMessages(userId, convId, message, responseText);
           savedConversationId = convId;
-          console.log('[Chat] Salvo (fallback) — userId:', userId, 'convId:', convId);
+          console.log('[Chat] Salvo — userId:', userId, 'convId:', convId);
         } else {
-          console.warn('[Chat] Token inválido ou expirado, mensagem não salva no banco');
+          console.warn('[Chat] Token inválido ou expirado — mensagem não salva');
         }
       } catch (e) {
         console.error('[Chat] Erro ao salvar no banco:', e);
@@ -131,7 +132,7 @@ export async function POST(request: NextRequest) {
       success: true,
       response: responseText,
       contextId: sessionId,
-      // Retornar ID real quando o route criou a conversa (para o frontend sincronizar)
+      // Sempre retorna o ID real para o frontend sincronizar seu estado local
       ...(savedConversationId ? { savedConversationId } : {}),
     });
   } catch (err) {

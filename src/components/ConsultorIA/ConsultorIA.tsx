@@ -727,54 +727,6 @@ export default function ConsultorIA() {
     return null;
   };
 
-  // Salvar mensagens no banco de dados
-  const saveMessages = async (
-    conversationId: string,
-    messagesToSave: Message[]
-  ): Promise<{
-    success: boolean;
-    messages?: { id: string; role: string; content: string; created_at: string }[];
-  } | null> => {
-    const uid = userIdRef.current;
-    if (!uid || messagesToSave.length === 0) {
-      console.log('[ConsultorIA] saveMessages: userId ou mensagens inválidos');
-      return null;
-    }
-
-    console.log('[ConsultorIA] Salvando mensagens:', {
-      conversationId,
-      userId,
-      messagesCount: messagesToSave.length,
-    });
-
-    try {
-      const response = await fetch('/api/consultor/conversations/messages', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          conversationId,
-          userId: uid,
-          messages: messagesToSave.map(msg => ({
-            role: msg.role,
-            content: msg.content,
-          })),
-        }),
-      });
-
-      const result = await response.json();
-      console.log('[ConsultorIA] Resultado do salvamento:', result);
-
-      if (!result.success) {
-        console.error('[ConsultorIA] Erro ao salvar mensagens:', result);
-        return null;
-      }
-      return result;
-    } catch (error) {
-      console.error('[ConsultorIA] Erro ao salvar mensagens:', error);
-      return null;
-    }
-  };
-
   // Adicionar mensagem do usuário e reiniciar timer
   const addUserMessage = () => {
     if (!inputValue.trim()) return;
@@ -895,34 +847,9 @@ export default function ConsultorIA() {
 
         const finalMessages = [...currentMessages, aiMessage];
 
-        let messagesForUi = finalMessages;
-        // Pular saveMessages se o route já salvou (evita erro de UUID inválido no Postgres)
-        if (convId && uid && !savedByRoute) {
-          const userMsgsToSave = currentMessages
-            .filter(m => m.role === 'user')
-            .slice(-currentPendingMessages.length || -1);
-          const saveResult = await saveMessages(
-            convId,
-            [...userMsgsToSave, aiMessage]
-          );
-          if (saveResult?.messages?.length) {
-            const k = saveResult.messages.length;
-            messagesForUi = finalMessages.map((m, i) => {
-              const rel = i - (finalMessages.length - k);
-              if (rel >= 0 && rel < k) {
-                const row = saveResult.messages![rel];
-                return {
-                  ...m,
-                  id: row.id,
-                  timestamp: new Date(row.created_at),
-                };
-              }
-              return m;
-            });
-          }
-        }
-
-        setMessages(messagesForUi);
+        // O route sempre salva (chat/route.ts é a fonte da verdade).
+        // Aqui apenas exibimos as mensagens no estado local.
+        setMessages(finalMessages);
 
         if (convId) {
           saveToLocalStorage(convId, messagesForUi);

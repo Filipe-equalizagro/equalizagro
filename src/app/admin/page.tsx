@@ -437,9 +437,9 @@ export default function AdminPage() {
 
                   <div className="adm-metrics-cards">
                     {[
-                      { label: 'Conversas',       value: metrics.consultor.chat.totals.total_conversas },
-                      { label: 'Mensagens',        value: metrics.consultor.chat.totals.total_mensagens },
-                      { label: 'Usuários ativos',  value: metrics.consultor.chat.totals.chat_users },
+                      { label: 'Interações n8n',  value: metrics.consultor.totals.total_interacoes },
+                      { label: 'Conversas',        value: metrics.consultor.totals.total_conversas },
+                      { label: 'Usuários ativos',  value: metrics.consultor.totals.usuarios_ativos },
                     ].map(c => (
                       <div key={c.label} className="adm-metric-card">
                         <div className="adm-metric-card-inner">
@@ -451,16 +451,16 @@ export default function AdminPage() {
                   </div>
 
                   {/* ── Top 10 usuários ── */}
-                  {metrics.consultor.chat.perUser.length > 0 && (
+                  {metrics.consultor.perUser.length > 0 && (
                     <div className="adm-top10-section">
                       <div className="adm-top10-header">
                         <Activity size={16} />
                         <span>Top 10 — Usuários mais ativos</span>
                       </div>
                       <div className="adm-top10-list">
-                        {metrics.consultor.chat.perUser.slice(0, 10).map((u: any, idx: number) => {
-                          const maxMsg = Number(metrics.consultor.chat.perUser[0]?.mensagens || 1);
-                          const pct = Math.round((Number(u.mensagens) / maxMsg) * 100);
+                        {metrics.consultor.perUser.slice(0, 10).map((u: any, idx: number) => {
+                          const maxMsg = Number(metrics.consultor.perUser[0]?.interacoes || 1);
+                          const pct = Math.round((Number(u.interacoes) / maxMsg) * 100);
                           return (
                             <div key={u.email} className="adm-top10-row">
                               <span className={`adm-top10-rank${idx < 3 ? ' adm-top10-rank--gold' : ''}`}>#{idx + 1}</span>
@@ -475,7 +475,7 @@ export default function AdminPage() {
                                 <div className="adm-top10-bar" style={{ width: `${pct}%` }} />
                               </div>
                               <div className="adm-top10-stats">
-                                <span title="Mensagens">{Number(u.mensagens).toLocaleString('pt-BR')} msg</span>
+                                <span title="Interações n8n">{Number(u.interacoes).toLocaleString('pt-BR')} msg</span>
                                 <span title="Conversas" className="adm-top10-convs">{Number(u.conversas)} conv</span>
                               </div>
                             </div>
