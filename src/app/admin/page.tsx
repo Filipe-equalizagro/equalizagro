@@ -45,6 +45,7 @@ export default function AdminPage() {
   const [viewUsageUser, setViewUsageUser] = useState<User | null>(null);
   const [userUsage, setUserUsage]         = useState<any>(null);
   const [userUsageLoading, setUserUsageLoading] = useState(false);
+  const [usageMonth, setUsageMonth]       = useState<string>(''); // '' = todos os meses
   const [newPassword, setNewPassword]     = useState('');
   const [showNewPass, setShowNewPass]     = useState(false);
   const [resetPassError, setResetPassError] = useState('');
@@ -104,6 +105,7 @@ export default function AdminPage() {
   const loadUserUsage = async (user: User) => {
     setViewUsageUser(user);
     setUserUsage(null);
+    setUsageMonth(''); // sempre começa em "todos os meses"
     setUserUsageLoading(true);
     try {
       const r = await fetch(`/api/admin/user-usage?userId=${user.id}`, {
@@ -634,62 +636,50 @@ export default function AdminPage() {
               <p style={{ color: '#ef4444', fontSize: '0.85rem' }}>Erro ao carregar dados.</p>
             ) : (
               <div className="adm-usage-body">
-                {/* Cards resumo */}
-                <div className="adm-usage-cards">
-                  {[
-                    { label: 'Conversas', value: userUsage.chat.totalConversas },
-                    { label: 'Mensagens', value: userUsage.chat.totalMensagens },
-                    { label: 'Usos calc.', value: userUsage.calculator.totalUses },
-                    { label: 'Créditos', value: userUsage.user.creditsBalance },
-                  ].map(c => (
-                    <div key={c.label} className="adm-usage-card">
-                      <span className="adm-usage-card-value">{Number(c.value || 0).toLocaleString('pt-BR')}</span>
-                      <span className="adm-usage-card-label">{c.label}</span>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Uso por mês/ano */}
+                {/* Filtro de mês */}
                 {userUsage.byMonth && userUsage.byMonth.length > 0 && (
-                  <div className="adm-usage-section">
-                    <p className="adm-usage-section-title">Uso por mês</p>
-                    <div className="adm-usage-month-head">
-                      <span>Mês</span>
-                      <span>Mensagens</span>
-                      <span>Conversas</span>
-                      <span>Calc.</span>
-                    </div>
-                    {userUsage.byMonth.map((m: any) => {
-                      const [y, mo] = m.ym.split('-');
-                      const label = new Date(Number(y), Number(mo) - 1, 1)
-                        .toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' });
-                      return (
-                        <div key={m.ym} className="adm-usage-month-row">
-                          <span className="adm-usage-month-label">{label}</span>
-                          <span>{Number(m.mensagens).toLocaleString('pt-BR')}</span>
-                          <span>{Number(m.conversas).toLocaleString('pt-BR')}</span>
-                          <span>{Number(m.calculos).toLocaleString('pt-BR')}</span>
-                        </div>
-                      );
-                    })}
+                  <div className="adm-usage-filter">
+                    <label htmlFor="usage-month">Período</label>
+                    <select
+                      id="usage-month"
+                      value={usageMonth}
+                      onChange={e => setUsageMonth(e.target.value)}
+                    >
+                      <option value="">Todos os meses</option>
+                      {userUsage.byMonth.map((m: any) => {
+                        const [y, mo] = m.ym.split('-');
+                        const label = new Date(Number(y), Number(mo) - 1, 1)
+                          .toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+                        return <option key={m.ym} value={m.ym}>{label}</option>;
+                      })}
+                    </select>
                   </div>
                 )}
 
-                {/* Últimas conversas */}
-                {userUsage.chat.recentConversations.length > 0 && (
-                  <div className="adm-usage-section">
-                    <p className="adm-usage-section-title">Conversas recentes</p>
-                    {userUsage.chat.recentConversations.map((c: any) => (
-                      <div key={c.id} className="adm-usage-conv-row">
-                        <span className="adm-usage-conv-title">{c.title}</span>
-                        <span className="adm-usage-conv-meta">
-                          {c.messageCount} msg
-                          {c.lastMessageAt && ` · ${new Date(c.lastMessageAt).toLocaleDateString('pt-BR')}`}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                )}
+                {/* Cards resumo — respondem ao filtro de mês selecionado */}
+                {(() => {
+                  const sel = usageMonth
+                    ? (userUsage.byMonth || []).find((m: any) => m.ym === usageMonth)
+                    : null;
+                  const conversas = sel ? sel.conversas : userUsage.chat.totalConversas;
+                  const mensagens = sel ? sel.mensagens : userUsage.chat.totalMensagens;
+                  const calc      = sel ? sel.calculos : userUsage.calculator.totalUses;
+                  return (
+                    <div className="adm-usage-cards">
+                      {[
+                        { label: 'Conversas', value: conversas },
+                        { label: 'Mensagens', value: mensagens },
+                        { label: 'Usos calc.', value: calc },
+                        { label: 'Créditos', value: userUsage.user.creditsBalance },
+                      ].map(c => (
+                        <div key={c.label} className="adm-usage-card">
+                          <span className="adm-usage-card-value">{Number(c.value || 0).toLocaleString('pt-BR')}</span>
+                          <span className="adm-usage-card-label">{c.label}</span>
+                        </div>
+                      ))}
+                    </div>
+                  );
+                })()}
 
                 {/* Uso da calculadora por ferramenta */}
                 {userUsage.calculator.byTool.length > 0 && (
