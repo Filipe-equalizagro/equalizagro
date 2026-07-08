@@ -492,6 +492,28 @@
   padding-top: 0.5rem; border-top: 1px solid #f3f4f6;
 }
 
+/* Tabela de uso por mês/ano */
+.adm-usage-month-head,
+.adm-usage-month-row {
+  display: grid;
+  grid-template-columns: 1fr 80px 80px 60px;
+  align-items: center;
+  gap: 0.25rem;
+}
+.adm-usage-month-head {
+  font-size: 0.68rem; font-weight: 700; color: #9ca3af;
+  text-transform: uppercase; letter-spacing: 0.03em;
+  padding-bottom: 0.35rem; border-bottom: 1px solid #e5e7eb; margin-bottom: 0.2rem;
+}
+.adm-usage-month-head span:not(:first-child),
+.adm-usage-month-row span:not(:first-child) { text-align: right; }
+.adm-usage-month-row {
+  padding: 0.35rem 0; border-bottom: 1px solid #f3f4f6;
+  font-size: 0.82rem; color: #374151;
+}
+.adm-usage-month-row:last-child { border-bottom: none; }
+.adm-usage-month-label { font-weight: 600; text-transform: capitalize; }
+
 @media (max-width: 520px) {
   .adm-usage-cards { grid-template-columns: repeat(2, 1fr); }
   .adm-top10-row { grid-template-columns: 28px 1fr 70px; }

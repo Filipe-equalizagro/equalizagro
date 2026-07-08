@@ -78,6 +78,44 @@ export async function GET(request: NextRequest) {
       [userId]
     );
 
+    // ── Uso por mês/ano (mensagens do ConsultorIA + usos da calculadora) ──
+    // Cada linha role='user' = 1 interação com o n8n. Agrupado por AAAA-MM.
+    const monthMap: Record<string, { ym: string; mensagens: number; conversas: number; calculos: number }> = {};
+    const getMonth = (ym: string) => (monthMap[ym] ||= { ym, mensagens: 0, conversas: 0, calculos: 0 });
+
+    try {
+      const msgByMonth = await query(
+        `SELECT to_char(created_at, 'YYYY-MM') AS ym,
+                COUNT(*) FILTER (WHERE role = 'user')    AS mensagens,
+                COUNT(DISTINCT conversation_id)           AS conversas
+         FROM equalizagro.messages
+         WHERE user_id = $1
+         GROUP BY ym`,
+        [userId]
+      );
+      for (const r of msgByMonth.rows) {
+        const m = getMonth(r.ym);
+        m.mensagens = Number(r.mensagens || 0);
+        m.conversas = Number(r.conversas || 0);
+      }
+    } catch { /* tabela pode não existir */ }
+
+    try {
+      const calcByMonth = await query(
+        `SELECT to_char(created_at, 'YYYY-MM') AS ym, COUNT(*) AS calculos
+         FROM equalizagro.calculator_usage
+         WHERE user_id = $1
+         GROUP BY ym`,
+        [userId]
+      );
+      for (const r of calcByMonth.rows) {
+        getMonth(r.ym).calculos = Number(r.calculos || 0);
+      }
+    } catch { /* tabela pode não existir */ }
+
+    // Ordena do mês mais recente para o mais antigo
+    const byMonth = Object.values(monthMap).sort((a, b) => b.ym.localeCompare(a.ym));
+
     // Uso da calculadora
     let calcTotal = 0;
     let calcLastUse: string | null = null;
@@ -125,6 +163,7 @@ export async function GET(request: NextRequest) {
           createdAt: r.created_at,
         })),
       },
+      byMonth,
       calculator: {
         totalUses: calcTotal,
         lastUse: calcLastUse,

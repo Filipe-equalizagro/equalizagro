@@ -667,6 +667,75 @@
   cursor: not-allowed;
 }
 
+/* ── Barra de seleção de mensagens (exportação) ── */
+.consultor__select-count {
+  flex: 1;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #1a5f3a;
+}
+.consultor__select-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+.consultor__select-export {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.8rem;
+  background: #1a5f3a;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, opacity 0.15s;
+}
+.consultor__select-export:hover:not(:disabled) { background: #164d30; }
+.consultor__select-export:disabled { opacity: 0.4; cursor: not-allowed; }
+.consultor__select-cancel {
+  padding: 0.4rem 0.7rem;
+  background: none;
+  color: #6b7280;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.consultor__select-cancel:hover { background: #f3f4f6; color: #374151; }
+
+/* Mensagem selecionável */
+.consultor__message--selectable {
+  cursor: pointer;
+  border-radius: 10px;
+  transition: background 0.12s;
+}
+.consultor__message--selectable:hover { background: rgba(26, 95, 58, 0.05); }
+.consultor__message--selected { background: rgba(26, 95, 58, 0.1); }
+.consultor__message-checkbox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  min-width: 22px;
+  align-self: center;
+  border: 2px solid #c7cdd4;
+  border-radius: 6px;
+  color: #fff;
+  background: #fff;
+  transition: background 0.12s, border-color 0.12s;
+}
+.consultor__message-checkbox--checked {
+  background: #1a5f3a;
+  border-color: #1a5f3a;
+}
+
 /* Messages Container */
 .consultor__messages-container {
   flex: 1;

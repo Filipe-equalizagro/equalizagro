@@ -649,6 +649,32 @@ export default function AdminPage() {
                   ))}
                 </div>
 
+                {/* Uso por mês/ano */}
+                {userUsage.byMonth && userUsage.byMonth.length > 0 && (
+                  <div className="adm-usage-section">
+                    <p className="adm-usage-section-title">Uso por mês</p>
+                    <div className="adm-usage-month-head">
+                      <span>Mês</span>
+                      <span>Mensagens</span>
+                      <span>Conversas</span>
+                      <span>Calc.</span>
+                    </div>
+                    {userUsage.byMonth.map((m: any) => {
+                      const [y, mo] = m.ym.split('-');
+                      const label = new Date(Number(y), Number(mo) - 1, 1)
+                        .toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' });
+                      return (
+                        <div key={m.ym} className="adm-usage-month-row">
+                          <span className="adm-usage-month-label">{label}</span>
+                          <span>{Number(m.mensagens).toLocaleString('pt-BR')}</span>
+                          <span>{Number(m.conversas).toLocaleString('pt-BR')}</span>
+                          <span>{Number(m.calculos).toLocaleString('pt-BR')}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+
                 {/* Últimas conversas */}
                 {userUsage.chat.recentConversations.length > 0 && (
                   <div className="adm-usage-section">

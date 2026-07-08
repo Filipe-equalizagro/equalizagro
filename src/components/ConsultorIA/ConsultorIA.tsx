@@ -249,6 +249,9 @@ export default function ConsultorIA() {
   const [timeUntilSend, setTimeUntilSend] = useState<number>(0);
   const [copiedMessageId, setCopiedMessageId] = useState<string | null>(null);
   const [dislikedMessageIds, setDislikedMessageIds] = useState<Set<string>>(new Set());
+  // Modo de seleção de mensagens para exportar apenas as escolhidas
+  const [selectionMode, setSelectionMode] = useState<boolean>(false);
+  const [selectedMessageIds, setSelectedMessageIds] = useState<Set<string>>(new Set());
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const pendingMessagesRef = useRef<Message[]>([]);
@@ -1200,14 +1203,48 @@ export default function ConsultorIA() {
     });
   };
 
-  const handleExportPDF = () => {
+  // ── Seleção de mensagens para exportação ──────────────────────────
+  const enterSelectionMode = () => {
+    setSelectionMode(true);
+    setSelectedMessageIds(new Set());
+  };
+
+  const exitSelectionMode = () => {
+    setSelectionMode(false);
+    setSelectedMessageIds(new Set());
+  };
+
+  const toggleMessageSelection = (messageId: string) => {
+    setSelectedMessageIds(prev => {
+      const next = new Set(prev);
+      if (next.has(messageId)) next.delete(messageId); else next.add(messageId);
+      return next;
+    });
+  };
+
+  const handleExportSelected = () => {
+    const selected = messages.filter(m => selectedMessageIds.has(m.id));
+    if (selected.length === 0) {
+      alert('Selecione ao menos uma mensagem para exportar.');
+      return;
+    }
+    handleExportPDF(selected);
+    exitSelectionMode();
+  };
+
+  const handleExportPDF = (msgsToExport?: Message[]) => {
     const currentConv = conversations.find(c => c.id === currentConversationId);
     const title = currentConv?.title || 'Conversa';
     const date = new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
     const userName_ = planData?.fullName || userName || 'Usuário';
 
-    const rows = messages
-      .filter(m => m.id !== '1') // remove welcome message
+    // Se recebeu uma lista (seleção), usa ela; senão, todas menos a de boas-vindas
+    const source = msgsToExport && msgsToExport.length > 0
+      ? msgsToExport
+      : messages.filter(m => m.id !== '1');
+
+    const rows = source
+      .filter(m => m.id !== '1') // nunca exportar a mensagem de boas-vindas
       .map(m => {
         const who = m.role === 'user' ? userName_ : 'Consultor.IA';
         const time = m.timestamp.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
@@ -1496,16 +1533,43 @@ export default function ConsultorIA() {
           >
             <Menu size={20} />
           </button>
-          <h1 className="consultor__title">Consultor.IA</h1>
-          <button
-            onClick={handleExportPDF}
-            className="consultor__export-button"
-            aria-label="Exportar conversa como PDF"
-            title="Exportar conversa como PDF"
-            disabled={messages.length === 0}
-          >
-            <FileDown size={18} />
-          </button>
+          {selectionMode ? (
+            <>
+              <span className="consultor__select-count">
+                {selectedMessageIds.size} selecionada{selectedMessageIds.size === 1 ? '' : 's'}
+              </span>
+              <div className="consultor__select-actions">
+                <button
+                  onClick={handleExportSelected}
+                  className="consultor__select-export"
+                  disabled={selectedMessageIds.size === 0}
+                  title="Baixar mensagens selecionadas"
+                >
+                  <FileDown size={16} /> Baixar
+                </button>
+                <button
+                  onClick={exitSelectionMode}
+                  className="consultor__select-cancel"
+                  title="Cancelar seleção"
+                >
+                  Cancelar
+                </button>
+              </div>
+            </>
+          ) : (
+            <>
+              <h1 className="consultor__title">Consultor.IA</h1>
+              <button
+                onClick={enterSelectionMode}
+                className="consultor__export-button"
+                aria-label="Selecionar mensagens para exportar"
+                title="Selecionar mensagens para exportar"
+                disabled={messages.filter(m => m.id !== '1').length === 0}
+              >
+                <FileDown size={18} />
+              </button>
+            </>
+          )}
         </div>
 
         <div className="consultor__messages-container">
@@ -1531,11 +1595,20 @@ export default function ConsultorIA() {
                 </p>
               </div>
             ) : (
-              messages.map(message => (
+              messages.map(message => {
+                const selectable = selectionMode && message.id !== '1';
+                const isSelected = selectedMessageIds.has(message.id);
+                return (
                 <div
                   key={message.id}
-                  className={`consultor__message consultor__message--${message.role}`}
+                  className={`consultor__message consultor__message--${message.role}${selectable ? ' consultor__message--selectable' : ''}${isSelected ? ' consultor__message--selected' : ''}`}
+                  onClick={selectable ? () => toggleMessageSelection(message.id) : undefined}
                 >
+                  {selectable && (
+                    <div className={`consultor__message-checkbox${isSelected ? ' consultor__message-checkbox--checked' : ''}`}>
+                      {isSelected && <Check size={14} />}
+                    </div>
+                  )}
                   <div className="consultor__message-avatar">
                     {message.role === 'user' ? (
                       <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#fff' }}>{(userName || planData?.fullName || '?')[0].toUpperCase()}</span>
@@ -1551,7 +1624,7 @@ export default function ConsultorIA() {
                         minute: '2-digit',
                       })}
                     </span>
-                    {message.role === 'assistant' && message.id !== '1' && (
+                    {!selectionMode && message.role === 'assistant' && message.id !== '1' && (
                       <div className="consultor__message-actions">
                         <button
                           className="consultor__msg-action-btn"
@@ -1573,7 +1646,8 @@ export default function ConsultorIA() {
                     )}
                   </div>
                 </div>
-              ))
+                );
+              })
             )}
             {isSending && (
               <div className="consultor__message consultor__message--assistant">
