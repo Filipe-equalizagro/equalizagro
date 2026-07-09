@@ -58,7 +58,7 @@ function formatMessageContent(content: string): string {
         // Detectar linhas que parecem itens numerados como "| 1 |" ou "|| 2 |"
         const numberedMatch = line.match(/^\|?\|?\s*(\d+)\s*\|\s*(.+)$/);
         if (numberedMatch) {
-          result.push(`<div class="consultor__formatted-item"><span class="consultor__item-number">${numberedMatch[1]}</span><span class="consultor__item-content">${numberedMatch[2]}</span></div>`);
+          result.push(`<div class="consultor__formatted-item consultor__formatted-item--option" data-option="${numberedMatch[1]}" role="button" tabindex="0"><span class="consultor__item-number">${numberedMatch[1]}</span><span class="consultor__item-content">${numberedMatch[2]}</span></div>`);
         } else {
           result.push(`<p class="consultor__formatted-paragraph">${line}</p>`);
         }
@@ -132,21 +132,36 @@ function convertTableToHtml(tableLines: string[]): string {
 }
 
 // Componente para mensagem formatada
-function FormattedMessage({ content, role }: { content: string; role: 'user' | 'assistant' }) {
+function FormattedMessage({ content, role, onOptionClick }: { content: string; role: 'user' | 'assistant'; onOptionClick?: (value: string) => void }) {
   const formattedHtml = useMemo(() => {
     if (role === 'user') {
       return content;
     }
     return formatMessageContent(content);
   }, [content, role]);
-  
+
   if (role === 'user') {
     return <p className="consultor__message-text">{content}</p>;
   }
-  
+
+  // Delegação de clique: quando o usuário clica numa opção numerada
+  // (1, 2, 9, 0…), envia esse número como resposta automaticamente.
+  const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!onOptionClick) return;
+    const el = (e.target as HTMLElement).closest('[data-option]');
+    if (el) {
+      const value = el.getAttribute('data-option');
+      if (value) {
+        e.stopPropagation();
+        onOptionClick(value);
+      }
+    }
+  };
+
   return (
-    <div 
+    <div
       className="consultor__message-text consultor__message-formatted"
+      onClick={handleClick}
       dangerouslySetInnerHTML={{ __html: formattedHtml }}
     />
   );
@@ -756,7 +771,25 @@ export default function ConsultorIA() {
     // Enviar imediatamente
     setTimeout(() => sendPendingMessages(), 0);
   };
-  
+
+  // Resposta rápida: clicar numa opção numerada (1, 2, 9, 0…) envia direto
+  const sendQuickReply = (value: string) => {
+    if (isSendingRef.current) return;
+
+    const userMessage: Message = {
+      id: Date.now().toString(),
+      role: 'user',
+      content: value,
+      timestamp: new Date(),
+    };
+
+    setPendingMessages(prev => [...prev, userMessage]);
+    setMessages(prev => [...prev, userMessage]);
+
+    // Enviar imediatamente
+    setTimeout(() => sendPendingMessages(), 0);
+  };
+
   // Countdown do timer
   useEffect(() => {
     if (timeUntilSend > 0 && pendingMessages.length > 0) {
@@ -1617,7 +1650,11 @@ export default function ConsultorIA() {
                     )}
                   </div>
                   <div className="consultor__message-content">
-                    <FormattedMessage content={message.content} role={message.role} />
+                    <FormattedMessage
+                      content={message.content}
+                      role={message.role}
+                      onOptionClick={selectionMode ? undefined : sendQuickReply}
+                    />
                     <span className="consultor__message-time">
                       {message.timestamp.toLocaleTimeString('pt-BR', {
                         hour: '2-digit',

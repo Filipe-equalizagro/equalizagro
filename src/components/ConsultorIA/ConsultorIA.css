@@ -979,6 +979,23 @@
   padding-top: 1px;
 }
 
+/* Opções numeradas clicáveis (resposta rápida) */
+.consultor__formatted-item--option {
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s, transform 0.06s;
+  user-select: none;
+}
+.consultor__formatted-item--option:hover {
+  background: #eef8f1;
+  border-left-color: #2d7a4f;
+}
+.consultor__formatted-item--option:active {
+  transform: scale(0.99);
+}
+.consultor__formatted-item--option:hover .consultor__item-number {
+  box-shadow: 0 0 0 3px rgba(26, 95, 58, 0.15);
+}
+
 .consultor__item-content strong {
   font-weight: 600;
   color: #1a5f3a;
