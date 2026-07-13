@@ -37,8 +37,21 @@ function formatMessageContent(content: string): string {
   
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i].trim();
-    
-    // Verificar se é uma linha de tabela
+
+    // 1) Opção de menu (prioridade sobre tabela) — número isolado + texto.
+    //    Cobre "| 1 | Sim", "| 1 | Sim |", "1 | Sim", "1) Sim", "1. Sim"…
+    const option = parseMenuOption(line);
+    if (option) {
+      if (inTable && tableLines.length > 0) {
+        result.push(convertTableToHtml(tableLines));
+        inTable = false;
+        tableLines = [];
+      }
+      result.push(menuOptionHtml(option.num, option.text));
+      continue;
+    }
+
+    // 2) Linha de tabela (markdown com múltiplas colunas de texto)
     if (line.startsWith('|') && line.endsWith('|')) {
       if (!inTable) {
         inTable = true;
@@ -52,16 +65,10 @@ function formatMessageContent(content: string): string {
         inTable = false;
         tableLines = [];
       }
-      
+
       // Processar linha normal
       if (line) {
-        // Detectar linhas que parecem itens numerados como "| 1 |" ou "|| 2 |"
-        const numberedMatch = line.match(/^\|?\|?\s*(\d+)\s*\|\s*(.+)$/);
-        if (numberedMatch) {
-          result.push(`<div class="consultor__formatted-item consultor__formatted-item--option" data-option="${numberedMatch[1]}" role="button" tabindex="0"><span class="consultor__item-number">${numberedMatch[1]}</span><span class="consultor__item-content">${numberedMatch[2]}</span></div>`);
-        } else {
-          result.push(`<p class="consultor__formatted-paragraph">${line}</p>`);
-        }
+        result.push(`<p class="consultor__formatted-paragraph">${line}</p>`);
       } else {
         result.push('<br/>');
       }
@@ -82,6 +89,26 @@ function formatMessageContent(content: string): string {
   });
 
   return output;
+}
+
+/**
+ * Detecta uma linha de opção de menu (1, 2, 9, 0…) em vários formatos:
+ *   "| 1 | Sim"   "| 1 | Sim |"   "1 | Sim"   "1) Sim"   "1. Sim"   "1 - Sim"
+ * Retorna { num, text } ou null. NÃO captura linhas de tabela normais
+ * (cuja primeira célula não é um número isolado) nem doses tipo "1,0 L/ha".
+ */
+function parseMenuOption(line: string): { num: string; text: string } | null {
+  // Forma com pipe — primeira célula é só um número
+  let m = line.match(/^\|{0,2}\s*(\d{1,2})\s*\|\s*(.+?)\s*\|?\s*$/);
+  if (m) return { num: m[1], text: m[2].replace(/\|/g, ' ').replace(/\s+/g, ' ').trim() };
+  // Forma com pontuação — "1) Sim", "1. Sim", "1 - Sim", "1 – Sim"
+  m = line.match(/^(\d{1,2})\s*[).\-–]\s+(.+)$/);
+  if (m) return { num: m[1], text: m[2].trim() };
+  return null;
+}
+
+function menuOptionHtml(num: string, text: string): string {
+  return `<div class="consultor__formatted-item consultor__formatted-item--option" data-option="${num}" role="button" tabindex="0"><span class="consultor__item-number">${num}</span><span class="consultor__item-content">${text}</span></div>`;
 }
 
 function convertTableToHtml(tableLines: string[]): string {
