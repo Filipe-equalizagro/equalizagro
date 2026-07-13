@@ -182,7 +182,7 @@ export default function DashboardPage() {
         <div className="db-sidebar__logo">
           <Link href="/" onClick={() => setSidebarOpen(false)}>
             <img src="/images/go2apply-logo-branco.png" alt="go2apply" className="db-sidebar__logo-full" />
-            <img src="/images/go2apply-logo-branco.png" alt="go2apply" className="db-sidebar__logo-gota" />
+            <img src="/images/logo-gota-go2apply.jpg" alt="go2apply" className="db-sidebar__logo-gota" />
           </Link>
           <button
             className="db-sidebar__close"
@@ -300,13 +300,6 @@ export default function DashboardPage() {
             </span>
           </div>
 
-          {/* Section header */}
-          <div className="db-section-header">
-            <h2 className="db-section-title">
-              <img src="/images/go2apply-logo-branco.png" alt="go2apply" style={{ height: '22px', width: 'auto', display: 'block', filter: 'invert(1) brightness(0)' }} />
-            </h2>
-          </div>
-
           {/* Tool cards */}
           <div className="db-cards">
             {tools.map((tool) => (
@@ -344,7 +337,6 @@ export default function DashboardPage() {
         </div>
 
         <footer className="db-footer">
-          <img src="/images/EQUALIZAGRO ok.png" alt="Equalizagro" className="db-footer__logo" />
           <p>© Equalizagro 2026</p>
         </footer>
       </div>
