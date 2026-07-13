@@ -290,9 +290,6 @@ export default function DashboardPage() {
               <h1 className="db-welcome__greeting">
                 {getGreeting()}, {userName || 'seja bem-vindo'}!
               </h1>
-              <p className="db-welcome__subtitle">
-                Ferramentas de pulverização disponíveis para teste, bom proveito!
-              </p>
               <div className="db-welcome__status">
                 <span className="db-welcome__status-dot"></span>
                 Todos os serviços online

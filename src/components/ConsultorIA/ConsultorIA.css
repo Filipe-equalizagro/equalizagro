@@ -979,21 +979,35 @@
   padding-top: 1px;
 }
 
-/* Opções numeradas clicáveis (resposta rápida) */
+/* Opções clicáveis (resposta rápida) — estilo de botão */
 .consultor__formatted-item--option {
   cursor: pointer;
-  transition: background 0.12s, border-color 0.12s, transform 0.06s;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.7rem 0.85rem;
+  margin: 0.4rem 0;
+  background: #ffffff;
+  border: 1.5px solid #d7e3db;
+  border-left: 1.5px solid #d7e3db;
+  border-radius: 10px;
+  transition: background 0.12s, border-color 0.12s, box-shadow 0.12s, transform 0.06s;
   user-select: none;
 }
 .consultor__formatted-item--option:hover {
-  background: #eef8f1;
-  border-left-color: #2d7a4f;
+  background: #f0f9f3;
+  border-color: #1a5f3a;
+  box-shadow: 0 2px 8px rgba(26, 95, 58, 0.12);
 }
 .consultor__formatted-item--option:active {
   transform: scale(0.99);
 }
+.consultor__formatted-item--option .consultor__item-content {
+  font-weight: 600;
+  color: #1a3f2a;
+  font-size: 0.9rem;
+}
 .consultor__formatted-item--option:hover .consultor__item-number {
-  box-shadow: 0 0 0 3px rgba(26, 95, 58, 0.15);
+  box-shadow: 0 0 0 3px rgba(26, 95, 58, 0.18);
 }
 
 .consultor__item-content strong {
