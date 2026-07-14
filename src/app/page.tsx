@@ -14,7 +14,6 @@ export default function Home() {
       <Hero />
       <Services />
       <About />
-      <ConditionalIASection />
       <Contact />
       <Footer />
     </main>
