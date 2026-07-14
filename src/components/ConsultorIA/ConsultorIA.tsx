@@ -1340,7 +1340,7 @@ export default function ConsultorIA() {
     </head><body>
       <div class="header">
         <h1>${title}</h1>
-        <div class="meta">Consultor.IA Equalizagro<br>${date}<br>${userName_}</div>
+        <div class="meta">Consultor.IA - goa2pply <br>${date}<br>${userName_}</div>
       </div>
       ${rows || '<p style="color:#999">Nenhuma mensagem nesta conversa.</p>'}
       <div class="footer">Gerado pelo Consultor.IA — go2apply</div>
