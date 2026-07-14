@@ -44,7 +44,7 @@ export default function CalculadoraBicosPage() {
       <iframe
         src="/ferramentas/calculadora-bicos.html"
         className={`bicos-iframe${iframeReady ? ' bicos-iframe--ready' : ''}`}
-        title="Calculadora de Bicos Equalizagro"
+        title="© Equalizagro 2026"
         onLoad={() => setIframeReady(true)}
         sandbox="allow-scripts allow-same-origin allow-popups allow-forms allow-downloads allow-top-navigation-by-user-activation"
       />

@@ -51,10 +51,6 @@ export default function CalculoPhPage() {
         <p className="ph-page__desc">
           Calcule e ajuste o pH da calda de pulverização para máxima eficiência na aplicação de defensivos.
         </p>
-        <div className="ph-page__coming-soon">
-          <span>Em breve</span>
-          <p>Esta ferramenta está em desenvolvimento e estará disponível em breve.</p>
-        </div>
       </section>
     </main>
   );

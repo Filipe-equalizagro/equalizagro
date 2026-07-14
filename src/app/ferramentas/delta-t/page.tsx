@@ -51,10 +51,6 @@ export default function CalculoDeltaTPage() {
         <p className="delta-t-page__desc">
           Determine o intervalo de temperatura ideal (diferença entre temperatura de bulbo seco e bulbo úmido) para aplicação de defensivos agrícolas.
         </p>
-        <div className="delta-t-page__coming-soon">
-          <span>Em breve</span>
-          <p>Esta ferramenta está em desenvolvimento e estará disponível em breve.</p>
-        </div>
       </section>
     </main>
   );
