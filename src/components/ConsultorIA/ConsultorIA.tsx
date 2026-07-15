@@ -227,7 +227,7 @@ function createWelcomeAssistantMessages(): Message[] {
     {
       id: '1',
       role: 'assistant',
-      content: `Olá! Sou o **Consultor.IA Equalizagro**, estou aqui para ajudar a converter nosso banco de dados em caldas de qualidade.
+      content: `Olá! Sou o **Consultor.IA**, estou aqui para ajudar a converter nosso banco de dados em caldas de qualidade.
 
 ℹ️ **Dicas de uso:**
 
