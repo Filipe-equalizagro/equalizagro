@@ -1226,12 +1226,26 @@
         <div class="card">
             <h2>Referência do Bico</h2>
             <div class="field-group">
-                <label>Pressão de referência (bar)</label>
-                <input type="number" id="aer-pref" placeholder="Ex: 2.758" step="0.001" oninput="calcAerea()">
+                <label>Pressão de referência</label>
+                <div class="input-row">
+                    <input type="number" id="aer-pref" placeholder="Ex: 2.758" step="0.001" oninput="calcAerea()">
+                    <select id="aer-pref-unit" onchange="calcAerea()">
+                        <option value="bar">bar</option>
+                        <option value="psi" selected>PSI</option>
+                        <option value="kgf">kgf/cm²</option>
+                        <option value="kpa">kPa</option>
+                    </select>
+                </div>
             </div>
             <div class="field-group">
-                <label>Vazão de referência por bico (L/min)</label>
-                <input type="number" id="aer-vref" placeholder="Ex: 12.32" step="0.01" oninput="calcAerea()">
+                <label>Vazão de referência por bico</label>
+                <div class="input-row">
+                    <input type="number" id="aer-vref" placeholder="Ex: 12.32" step="0.01" oninput="calcAerea()">
+                    <select id="aer-vref-unit" onchange="calcAerea()">
+                        <option value="lmin" selected>L/min</option>
+                        <option value="gpm">GPM</option>
+                    </select>
+                </div>
             </div>
         </div>
 
@@ -1770,6 +1784,12 @@
         return v;
     }
 
+    // Conversão de vazão para L/min (1 galão americano = 3.785411784 L)
+    function toLmin(v, unit) {
+        if (unit === 'gpm') return v * 3.785411784;
+        return v;
+    }
+
     function pressaoHTML(bar, boxClass, label) {
         label = label || 'Pressão calculada';
         return `
@@ -1873,8 +1893,12 @@
 
     // ── ABA 3: Aérea ──────────────────────────────────────────────
     function calcAerea() {
-        const pRef  = parseFloat(document.getElementById('aer-pref').value);
-        const vRef  = parseFloat(document.getElementById('aer-vref').value);
+        const pRefRaw  = parseFloat(document.getElementById('aer-pref').value);
+        const pRefUnit = document.getElementById('aer-pref-unit').value;
+        const pRef  = toBar(pRefRaw, pRefUnit);
+        const vRefRaw  = parseFloat(document.getElementById('aer-vref').value);
+        const vRefUnit = document.getElementById('aer-vref-unit').value;
+        const vRef  = toLmin(vRefRaw, vRefUnit);
         const vel   = parseFloat(document.getElementById('aer-vel').value);
         const faixa = parseFloat(document.getElementById('aer-faixa').value);
         const nb    = parseFloat(document.getElementById('aer-nbicos').value);
@@ -2100,8 +2124,7 @@
             ? html.replace(/src="\/images\/go2apply-logo-colorido\.png"/g, 'src="' + logo + '"')
             : html;
         _downloadPDF(
-            '<div style="font-family:Arial,Helvetica,sans-serif;padding:8px 4px;">' + htmlFinal + '</div>' +
-            '<div style="text-align:center;font-size:10px;color:#9ca3af;padding:10px;border-top:1px solid #e5e7eb;margin-top:16px;">Uso exclusivo de consultores e técnicos agrícolas</div>',
+            '<div style="font-family:Arial,Helvetica,sans-serif;padding:8px 4px;">' + htmlFinal + '</div>',
             filename || 'relatorio-equalizagro.pdf'
         );
     }
@@ -2194,8 +2217,14 @@
 
     // ── Relatório Aérea ───────────────────────────────────────────
     async function emitirRelatorioAerea() {
-        const pRef  = parseFloat(document.getElementById('aer-pref').value);
-        const vRef  = parseFloat(document.getElementById('aer-vref').value);
+        const pRefRaw  = parseFloat(document.getElementById('aer-pref').value);
+        const pRefUnit = document.getElementById('aer-pref-unit').value;
+        const pRefUnitLabel = { bar: 'bar', psi: 'PSI', kgf: 'kgf/cm²', kpa: 'kPa' }[pRefUnit] || 'bar';
+        const pRef  = toBar(pRefRaw, pRefUnit);
+        const vRefRaw  = parseFloat(document.getElementById('aer-vref').value);
+        const vRefUnit = document.getElementById('aer-vref-unit').value;
+        const vRefUnitLabel = vRefUnit === 'gpm' ? 'GPM' : 'L/min';
+        const vRef  = toLmin(vRefRaw, vRefUnit);
         const vel   = parseFloat(document.getElementById('aer-vel').value);
         const faixa = parseFloat(document.getElementById('aer-faixa').value);
         const nb    = parseFloat(document.getElementById('aer-nbicos').value);
@@ -2208,8 +2237,8 @@
         const pBar  = ok ? pRef * Math.pow(vBico / vRef, 2) : 0;
 
         const inputRows = [
-            _row('Pressão de referência',          isNaN(pRef)  ? '—' : pRef + ' bar', false),
-            _row('Vazão de referência por bico',   isNaN(vRef)  ? '—' : vRef + ' L/min', true),
+            _row('Pressão de referência',          isNaN(pRefRaw)  ? '—' : pRefRaw + ' ' + pRefUnitLabel, false),
+            _row('Vazão de referência por bico',   isNaN(vRefRaw)  ? '—' : vRefRaw + ' ' + vRefUnitLabel, true),
             _row('Velocidade',                     isNaN(vel)   ? '—' : vel + ' km/h', false),
             _row('Faixa efetiva',                  isNaN(faixa) ? '—' : faixa + ' m', true),
             _row('Número de bicos',                isNaN(nb)    ? '—' : nb, false),
@@ -2288,7 +2317,6 @@
         const dens = parseFloat(document.getElementById('esp-dens').value) || 0;
         const taxa = parseFloat(document.getElementById('esp-taxa').value) || 0;
         const ar   = parseFloat(document.getElementById('esp-ar').value)   || 1.0;
-        const curvaNome = espCurva === '1' ? 'Convencional (terrestres)' : 'Oleosa (>5% óleo)';
         const modeNome  = espMode === 'dmv' ? 'Calcular DMV' : espMode === 'densidade' ? 'Calcular Densidade' : 'Calcular Taxa';
 
         const fAR = espFAR(ar);
@@ -2304,12 +2332,11 @@
         const divisor  = espCurva === '1' ? 8000 : 3600;
         const dtLim    = Math.min((dmvFinal * dmvFinal) / divisor, 8.0);
 
-        let inputRows = _row('Curva de evaporação', curvaNome, false) +
-                        _row('Modo de cálculo', modeNome, true) +
-                        _row('AR — Amplitude Relativa', ar.toString(), false);
-        if (dmv  > 0) inputRows += _row('DMV (µm)', dmv.toString(), true);
-        if (dens > 0) inputRows += _row('Densidade (gotas/cm²)', dens.toString(), false);
-        if (taxa > 0) inputRows += _row('Taxa de Aplicação (L/ha)', taxa.toString(), true);
+        let inputRows = _row('Modo de cálculo', modeNome, false) +
+                        _row('AR — Amplitude Relativa', ar.toString(), true);
+        if (dmv  > 0) inputRows += _row('DMV (µm)', dmv.toString(), false);
+        if (dens > 0) inputRows += _row('Densidade (gotas/cm²)', dens.toString(), true);
+        if (taxa > 0) inputRows += _row('Taxa de Aplicação (L/ha)', taxa.toString(), false);
 
         let resRows = '';
         if (espMode === 'dmv'       && res.dmv  > 0) resRows += _resRow('DMV calculado (µm)',              res.dmv.toFixed(1),  true);

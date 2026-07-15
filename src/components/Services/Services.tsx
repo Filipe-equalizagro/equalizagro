@@ -45,7 +45,7 @@ export default function Services() {
       features: [
         { text: 'Consultor.IA especializado em caldas', icon: CheckCircle },
         { text: 'Calculadora de bicos e calibração', icon: CheckCircle },
-        { text: 'Recomendações baseadas em banco de dados', icon: CheckCircle },
+        { text: 'Informações baseadas em banco de dados', icon: CheckCircle },
       ],
       backgroundImage: 'services__item-bg--consultoria',
       ctaButton: { href: '/login', imageSrc: '/images/go2apply-logo-branco.png', imageAlt: 'go2apply' }
