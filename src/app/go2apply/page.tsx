@@ -33,7 +33,7 @@ const ALL_TOOLS = [
     shortTitle: 'Pulverização',
     description: 'Ferramentas de calibração, aferição, dimensionamento e avaliação de espectro de gotas.',
     icon: Calculator,
-    href: '/pulverizacao/go2apply',
+    href: '/pulverizacao',
     accent: '#c9a420',
     accentBg: 'rgba(212, 175, 55, 0.12)',
     tag: 'Pulverização',

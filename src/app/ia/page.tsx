@@ -19,7 +19,7 @@ export default function IAPage() {
         if (token) {
           const result = await verifySession();
           if (result.valid) {
-            window.location.href = '/dashboard';
+            window.location.href = '/go2apply';
             return;
           }
         }

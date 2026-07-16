@@ -1388,7 +1388,7 @@ export default function ConsultorIA() {
       <div className={`consultor__sidebar consultor__sidebar--vertical ${sidebarOpen ? 'consultor__sidebar--open' : ''}`}>
         {/* Topo: Logo + Fechar */}
         <div className="consultor__sidebar-header">
-          <a href="/dashboard" className="consultor__logo">
+          <a href="/go2apply" className="consultor__logo">
             <img
               src="/images/LOGO-CONSULTOR-IA-BRANCO.png"
               alt="Consultor.IA"
@@ -1567,7 +1567,7 @@ export default function ConsultorIA() {
           <div className="consultor__sidebar-brand">
             <img src="/images/EQUALIZAGRO ok.png" alt="Equalizagro" className="consultor__sidebar-brand-logo" />
           </div>
-          <a href="/dashboard" className="consultor__sidebar-button consultor__sidebar-button--danger">
+          <a href="/go2apply" className="consultor__sidebar-button consultor__sidebar-button--danger">
             <LogOut size={18} />
             <span>Voltar ao Dashboard</span>
           </a>

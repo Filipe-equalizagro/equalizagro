@@ -167,7 +167,7 @@ export default function UserPanel() {
       });
 
       if (response.success) {
-        window.location.href = '/dashboard';
+        window.location.href = '/go2apply';
       } else {
         setErrors({ submit: response.message });
       }

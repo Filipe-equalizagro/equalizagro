@@ -101,7 +101,7 @@ export default function EquipePage() {
       }
       if (!result.isAdmin) {
         // Autenticado mas não é admin → volta ao painel silenciosamente
-        window.location.href = '/dashboard';
+        window.location.href = '/go2apply';
         return;
       }
       setIsAuthenticated(true);
@@ -227,7 +227,7 @@ export default function EquipePage() {
     );
   }
 
-  const backHref = isAuthenticated ? '/dashboard' : '/';
+  const backHref = isAuthenticated ? '/go2apply' : '/';
   const backLabel = isAuthenticated ? 'Voltar ao painel' : 'Voltar ao site';
 
   /* ── Verify step ── */

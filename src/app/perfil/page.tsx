@@ -100,7 +100,7 @@ export default function PerfilPage() {
     <div className="pf-root">
       <div className="pf-card">
 
-        <a href="/dashboard" className="pf-back">
+        <a href="/go2apply" className="pf-back">
           <ArrowLeft size={15} /> Voltar ao dashboard
         </a>
 

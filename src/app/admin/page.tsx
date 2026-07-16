@@ -227,7 +227,7 @@ export default function AdminPage() {
     <div className="adm-root">
       {/* Topbar */}
       <header className="adm-topbar">
-        <a href="/dashboard" className="adm-logo">
+        <a href="/go2apply" className="adm-logo">
           <img src="/images/EQUALIZAGRO ok.png" alt="Equalizagro" />
         </a>
         <div className="adm-topbar-center">

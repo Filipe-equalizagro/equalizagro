@@ -15,7 +15,7 @@ export default function LoginPage() {
 
   useEffect(() => {
     verifySession().then(r => {
-      if (r.valid) window.location.href = '/dashboard';
+      if (r.valid) window.location.href = '/go2apply';
       else setChecking(false);
     });
   }, []);
@@ -32,7 +32,7 @@ export default function LoginPage() {
     setIsLoading(true);
     try {
       const r = await loginWithCredentials({ email, password });
-      if (r.success) window.location.href = '/dashboard';
+      if (r.success) window.location.href = '/go2apply';
       else setErrors({ submit: r.message });
     } catch {
       setErrors({ submit: 'Erro ao fazer login. Tente novamente.' });

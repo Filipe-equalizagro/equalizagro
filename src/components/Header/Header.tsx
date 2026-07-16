@@ -81,7 +81,7 @@ export default function Header() {
           <div className="header__user-avatar" title={session.fullName}>
             <span>{session.initial}</span>
           </div>
-          <a href="/dashboard" className="header__dashboard-btn">
+          <a href="/go2apply" className="header__dashboard-btn">
             <LayoutDashboard size={15} />
             <span>Dashboard</span>
           </a>

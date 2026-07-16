@@ -43,7 +43,7 @@ export default function CadastroPage() {
 
   useEffect(() => {
     verifySession().then(r => {
-      if (r.valid) window.location.href = '/dashboard';
+      if (r.valid) window.location.href = '/go2apply';
       else setChecking(false);
     });
   }, []);

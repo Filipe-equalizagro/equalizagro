@@ -28,7 +28,7 @@ export default function ConsultorIAPage() {
       padding: '2rem',
       fontFamily: 'Arial, Helvetica, sans-serif',
     }}>
-      <a href="/dashboard" style={{ marginBottom: '2.5rem', display: 'block' }}>
+      <a href="/go2apply" style={{ marginBottom: '2.5rem', display: 'block' }}>
         <img src="/images/EQUALIZAGRO ok.png" alt="Equalizagro" style={{ height: '48px', width: 'auto' }} />
       </a>
 
@@ -72,7 +72,7 @@ export default function ConsultorIAPage() {
           </span>
         </div>
 
-        <a href="/dashboard" style={{
+        <a href="/go2apply" style={{
           display: 'block', width: '100%', padding: '0.875rem',
           background: 'linear-gradient(135deg, #1a5f3a 0%, #2d8a54 100%)',
           color: '#fff', borderRadius: '10px', fontSize: '0.95rem', fontWeight: 700,

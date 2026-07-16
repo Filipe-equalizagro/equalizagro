@@ -37,7 +37,7 @@ export default function CalculoDeltaTPage() {
   return (
     <main className="delta-t-page">
       <header className="delta-t-page__header">
-        <Link href="/dashboard" className="delta-t-page__back">
+        <Link href="/go2apply" className="delta-t-page__back">
           <ArrowLeft size={20} />
           <span>Voltar ao painel</span>
         </Link>

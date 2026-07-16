@@ -37,7 +37,7 @@ export default function CalculoPhPage() {
   return (
     <main className="ph-page">
       <header className="ph-page__header">
-        <Link href="/dashboard" className="ph-page__back">
+        <Link href="/go2apply" className="ph-page__back">
           <ArrowLeft size={20} />
           <span>Voltar ao painel</span>
         </Link>
