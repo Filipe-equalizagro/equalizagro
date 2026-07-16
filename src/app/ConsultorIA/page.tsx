@@ -29,7 +29,7 @@ export default function ConsultorIAPage() {
       fontFamily: 'Arial, Helvetica, sans-serif',
     }}>
       <a href="/go2apply" style={{ marginBottom: '2.5rem', display: 'block' }}>
-        <img src="/images/EQUALIZAGRO ok.png" alt="Equalizagro" style={{ height: '48px', width: 'auto' }} />
+        <img src="/images/go2apply-logo-branco.png" alt="Equalizagro" style={{ height: '48px', width: 'auto' }} />
       </a>
 
       <div style={{
