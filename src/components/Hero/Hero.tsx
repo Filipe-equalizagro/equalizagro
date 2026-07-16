@@ -32,7 +32,7 @@ export default function Hero() {
             </h1>
 
             <p className="hero__description">
-              Convertemos pulverizações em aplicações através de Pesquisa, Consultoria e Treinamentos.
+              Convertemos operações agrícolas em aplicações, através de Pesquisa, Consultoria, Treinamentos e Ferramentas Digitais.
             </p>
 
             <div className="hero__cta-group">

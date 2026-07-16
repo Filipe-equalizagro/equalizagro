@@ -24,16 +24,15 @@ export default function Services() {
       icon: Droplet,
       iconClass: 'services__item-icon--gold',
       title: 'Consultoria',
-      description: 'Suporte técnico completo para pulverizações e herbologia aplicada',
+      description: 'Suporte técnico completo para tecnologia de aplicação e herbologia aplicada',
       features: [
         { text: 'Suporte em tempo integral', icon: CheckCircle },
-        { text: 'Calibração e configuração periódica dos equipamentos', icon: CheckCircle },
+        { text: 'Calibração e configuração periódica de pulverizadores e distribuidores de sólidos', icon: CheckCircle },
         { text: 'Aferição da qualidade das aplicações', icon: CheckCircle },
+        { text: 'Treinamento constante da equipe', icon: CheckCircle },
         { text: 'Herbologia Aplicada — manejo de plantas daninhas', icon: CheckCircle },
         { text: 'Posicionamento baseado em pesquisa', icon: CheckCircle },
-        { text: 'Foco na rentabilidade', icon: CheckCircle },
-        { text: 'Distribuição de Sólidos — calibração e perfil de distribuição', icon: CheckCircle },
-        { text: 'Regulagem conforme produto e dose', icon: CheckCircle },
+        { text: 'Foco na rentabilidade — calibração e perfil de distribuição', icon: CheckCircle },
       ],
       backgroundImage: 'services__item-bg--consultoria'
     },
@@ -43,9 +42,14 @@ export default function Services() {
       title: 'Ferramentas Digitais',
       description: 'Plataformas digitais para apoiar decisões técnicas no campo, com inteligência artificial e dados em tempo real',
       features: [
-        { text: 'Consultor.IA especializado em caldas', icon: CheckCircle },
-        { text: 'Calculadora de bicos e calibração', icon: CheckCircle },
-        { text: 'Informações baseadas em banco de dados', icon: CheckCircle },
+        { text: 'Formação de caldas, com ordem e metodologia', icon: CheckCircle },
+        { text: 'Alertas de incompatibilidade', icon: CheckCircle },
+        { text: 'Dimensionamento de espectro de gotas e condições ambientais', icon: CheckCircle },
+        { text: 'Cálculos avançados de pressão e vazão', icon: CheckCircle },
+        { text: 'Calibração de fluxômetros', icon: CheckCircle },
+        { text: 'Calibração de aeronaves em solo', icon: CheckCircle },
+        { text: 'Avaliações de uniformidade/desgaste', icon: CheckCircle },
+        { text: 'Geração de relatórios em todas as ferramentas', icon: CheckCircle },
       ],
       backgroundImage: 'services__item-bg--consultoria',
       ctaButton: { href: '/login', imageSrc: '/images/go2apply-logo-branco.png', imageAlt: 'go2apply' }
@@ -54,13 +58,13 @@ export default function Services() {
       icon: BarChart3,
       iconClass: 'services__item-icon--blue',
       title: 'Pesquisa Agrícola',
-      description: 'Além de ser nosso pilar de sustentação, a pesquisa também é uma forma de serviço, atendendo quem deseja avaliar performance de produtos e manejos',
+      description: 'A pesquisa nos guia para construir e ajustar posicionamentos, avaliando:',
       features: [
         { text: 'Adjuvantes', icon: CheckCircle },
         { text: 'Herbicidas', icon: CheckCircle },
         { text: 'Compatibilidade na eficácia', icon: CheckCircle },
         { text: 'Compatibilidade em bancada', icon: CheckCircle },
-        { text: 'Ajustes de posicionamento', icon: CheckCircle }
+        { text: 'Equipamentos', icon: CheckCircle }
       ],
       backgroundImage: 'services__item-bg--pesquisa'
     },
@@ -70,10 +74,11 @@ export default function Services() {
       title: 'Treinamentos',
       description: 'Palestras e treinamentos pautados em resultados e muita prática',
       features: [
-        { text: 'Manejo de Plantas Daninhas', icon: CheckCircle },
-        { text: 'Tecnologia de Aplicação', icon: CheckCircle },
+        { text: 'Pulverização agrícola', icon: CheckCircle },
         { text: 'Formulações e adjuvantes', icon: CheckCircle },
-        { text: 'E muito mais!', icon: CheckCircle },
+        { text: 'Distribuição de sólidos', icon: CheckCircle },
+        { text: 'Manejo de Plantas Daninhas', icon: CheckCircle },
+        { text: 'Pulverização em taxa variável', icon: CheckCircle },
       ],
       backgroundImage: 'services__item-bg--monitoramento'
     },
@@ -84,9 +89,10 @@ export default function Services() {
       description: 'Aplicação inteligente com modulação de dose em tempo real, reduzindo custos e melhorando a eficiência dos insumos',
       features: [
         { text: 'Mapas de prescrição por zona', icon: CheckCircle },
-        { text: 'Integração com GPS e controladores', icon: CheckCircle },
+        { text: 'Integração com diferentes controladoras', icon: CheckCircle },
         { text: 'Redução do desperdício de insumos', icon: CheckCircle },
-        { text: 'Relatórios de aplicação por seção', icon: CheckCircle },
+        { text: 'Redistribuição e otimização de doses', icon: CheckCircle },
+        { text: 'Prescrição, recomendação e suporte', icon: CheckCircle },
       ],
       backgroundImage: 'services__item-bg--pesquisa'
     },
