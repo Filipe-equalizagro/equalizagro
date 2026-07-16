@@ -13,8 +13,7 @@ import {
   Clock,
   TrendingUp,
   Info,
-  Crosshair,
-  Monitor
+  Crosshair
 } from 'lucide-react';
 import './Services.css';
 
@@ -37,10 +36,10 @@ export default function Services() {
       backgroundImage: 'services__item-bg--consultoria'
     },
     {
-      icon: Monitor,
+      iconImage: '/images/logo-gota-go2apply-TRANSPARENTE.png',
       iconClass: 'services__item-icon--green',
       title: 'Ferramentas Digitais',
-      description: 'Plataformas digitais para apoiar decisões técnicas no campo, com inteligência artificial e dados em tempo real',
+      description: 'Plataforma com ferramentas digitais que potencializam o trabalho e as decisões técnicas no campo',
       features: [
         { text: 'Formação de caldas, com ordem e metodologia', icon: CheckCircle },
         { text: 'Alertas de incompatibilidade', icon: CheckCircle },
@@ -143,7 +142,11 @@ export default function Services() {
             <div key={index} className={`services__item ${service.backgroundImage}`}>
               <div className="services__item-background"></div>
               <div className={`services__item-icon ${service.iconClass}`}>
-                <service.icon size={32} />
+                {'iconImage' in service && service.iconImage ? (
+                  <img src={service.iconImage} alt={service.title} className="services__item-icon-image" />
+                ) : (
+                  'icon' in service && service.icon && <service.icon size={32} />
+                )}
               </div>
               <h3 className="services__item-title">{service.title}</h3>
               <p className="services__item-description">{service.description}</p>
