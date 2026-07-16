@@ -47,7 +47,7 @@ export default function LoginPage() {
       {/* ── Painel esquerdo — imagem ── */}
       <div className="lp-image-panel">
         <div className="lp-image-inner">
-          <img src="/images/campo-consultoria.jpeg" alt="Campo agrícola Equalizagro" />
+          <img src="/images/printgo2apply.png" alt="Campo agrícola Equalizagro" />
         </div>
       </div>
 
@@ -56,12 +56,11 @@ export default function LoginPage() {
         <div className="lp-card">
 
           <a href="/" className="lp-logo">
-            <img src="/images/EQUALIZAGRO ok.png" alt="Equalizagro" />
+            <img src="/images/go2apply-logo-colorido.png" alt="Equalizagro" />
           </a>
 
           <div className="lp-header">
             <h1 className="lp-title">Entrar na plataforma</h1>
-            <p className="lp-sub">Acesse seu painel go2apply</p>
           </div>
 
           <form onSubmit={handleSubmit} className="lp-form">

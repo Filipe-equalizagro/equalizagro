@@ -34,7 +34,7 @@
   position: relative;
   overflow: hidden;
   min-height: 100vh;
-  padding: 1.75rem;           /* respiro ao redor da imagem */
+  padding: 1.1rem;           /* respiro ao redor da imagem */
   background: #f0f7f2;
   display: flex;
   align-items: stretch;
@@ -43,16 +43,20 @@
 /* Container interno com bordas arredondadas */
 .lp-image-inner {
   position: relative;
-  width: 100%;
-  border-radius: 20px;
+  width: 90%;
+  border-radius: 10px;
   overflow: hidden;
   flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f0f7f2;
 }
 
 .lp-image-panel img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   object-position: center;
   display: block;
 }
@@ -62,12 +66,6 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    to bottom,
-    rgba(0, 0, 0, 0.08) 0%,
-    rgba(0, 0, 0, 0.15) 50%,
-    rgba(19, 74, 46, 0.80) 100%
-  );
 }
 
 
