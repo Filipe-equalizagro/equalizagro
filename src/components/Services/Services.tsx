@@ -50,8 +50,6 @@ export default function Services() {
         { text: 'Avaliações de uniformidade/desgaste', icon: CheckCircle },
         { text: 'Geração de relatórios em todas as ferramentas', icon: CheckCircle },
       ],
-      backgroundImage: 'services__item-bg--consultoria',
-      ctaButton: { href: '/login', imageSrc: '/images/go2apply-logo-branco.png', imageAlt: 'go2apply' }
     },
     {
       icon: BarChart3,
@@ -158,11 +156,6 @@ export default function Services() {
                   </li>
                 ))}
               </ul>
-              {'ctaButton' in service && service.ctaButton && (
-                <a href={service.ctaButton.href} className="services__go2apply-btn">
-                  <img src={service.ctaButton.imageSrc} alt={service.ctaButton.imageAlt} className="services__go2apply-logo" />
-                </a>
-              )}
             </div>
           ))}
         </div>
