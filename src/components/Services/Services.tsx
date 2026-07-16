@@ -38,7 +38,7 @@ export default function Services() {
     {
       iconImage: '/images/logo-gota-go2apply-TRANSPARENTE.png',
       iconClass: 'services__item-icon--green',
-      title: 'Ferramentas Digitais',
+      title: 'go2apply',
       description: 'Plataforma com ferramentas digitais que potencializam o trabalho e as decisões técnicas no campo',
       features: [
         { text: 'Formação de caldas, com ordem e metodologia', icon: CheckCircle },
