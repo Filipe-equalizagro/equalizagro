@@ -1390,7 +1390,7 @@ export default function ConsultorIA() {
         <div className="consultor__sidebar-header">
           <a href="/go2apply" className="consultor__logo">
             <img
-              src="/images/LOGO-CONSULTOR-IA-BRANCO.png"
+              src="/images/go2apply-logo-branco.png"
               alt="Consultor.IA"
               className="header__logo-image"
             />
