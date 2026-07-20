@@ -1384,7 +1384,7 @@ export default function ConsultorIA() {
 
   return (
     <div className="consultor">
-      {/* Sidebar - Layout vertical estilo Gemini (de cima para baixo) */}
+      {/* Sidebar - Layout vertical (de cima para baixo) */}
       <div className={`consultor__sidebar consultor__sidebar--vertical ${sidebarOpen ? 'consultor__sidebar--open' : ''}`}>
         {/* Topo: Logo + Fechar */}
         <div className="consultor__sidebar-header">

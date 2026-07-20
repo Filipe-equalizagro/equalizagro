@@ -100,9 +100,17 @@ export async function POST(request: NextRequest) {
     const sessionId = contextId || `eq_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
     // ── Chamar n8n ──────────────────────────────────────────────────
+    // X-Aton-Key: token secreto de servidor para o n8n autenticar a origem
+    // da chamada. Só é enviado se ATON_KEY estiver configurada (var de
+    // ambiente no servidor — nunca chega ao navegador do cliente).
+    const n8nHeaders: Record<string, string> = { 'Content-Type': 'application/json' };
+    if (process.env.ATON_KEY) {
+      n8nHeaders['X-Aton-Key'] = process.env.ATON_KEY;
+    }
+
     const n8nRes = await fetch(N8N_WEBHOOK, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: n8nHeaders,
       body: JSON.stringify({ chatInput: message, sessionId }),
       signal: AbortSignal.timeout(120000),
     });
