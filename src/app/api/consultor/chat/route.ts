@@ -107,6 +107,8 @@ export async function POST(request: NextRequest) {
     if (process.env.ATON_KEY) {
       n8nHeaders['X-Aton-Key'] = process.env.ATON_KEY;
     }
+    // Log apenas se o header foi incluído (nunca loga o valor do token)
+    console.log('[Chat] X-Aton-Key enviado:', Boolean(process.env.ATON_KEY));
 
     const n8nRes = await fetch(N8N_WEBHOOK, {
       method: 'POST',
