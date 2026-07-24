@@ -2,7 +2,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { X, Check, Sparkles } from 'lucide-react';
+import { X, Check } from 'lucide-react';
 import './SubscriptionModal.css';
 
 interface SubscriptionPlan {
@@ -27,10 +27,14 @@ export default function SubscriptionModal({ isOpen, onClose, userId }: Subscript
   const [loading, setLoading] = useState(true);
   const [subscribing, setSubscribing] = useState(false);
   const [error, setError] = useState('');
+  const [promoCode, setPromoCode] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState<'card' | 'boleto'>('card');
 
   useEffect(() => {
     if (isOpen) {
       setError('');
+      setPromoCode('');
+      setPaymentMethod('card');
       fetchPlans();
     }
   }, [isOpen]);
@@ -43,7 +47,7 @@ export default function SubscriptionModal({ isOpen, onClose, userId }: Subscript
       if (data.success) {
         setPlans(data.plans);
         // Pré-seleciona o Anual (melhor custo-benefício) se existir
-        const anual = data.plans.find((p: SubscriptionPlan) => p.billing_interval === 'year');
+        const anual = data.plans.find((p: SubscriptionPlan) => p.name === 'Anual');
         setSelectedPlan(anual?.id || data.plans[0]?.id || null);
       }
     } catch (err) {
@@ -61,7 +65,7 @@ export default function SubscriptionModal({ isOpen, onClose, userId }: Subscript
       const response = await fetch('/api/subscriptions/create-checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId, planId: selectedPlan }),
+        body: JSON.stringify({ userId, planId: selectedPlan, promoCode: promoCode.trim() || undefined, paymentMethod }),
       });
       const data = await response.json();
       if (data.success && data.checkoutUrl) {
@@ -78,9 +82,8 @@ export default function SubscriptionModal({ isOpen, onClose, userId }: Subscript
 
   if (!isOpen) return null;
 
-  // Preço mensal equivalente, para o plano anual (ex.: 1920/12 = 160/mês)
-  const monthlyEquivalent = (plan: SubscriptionPlan) =>
-    plan.billing_interval === 'year' ? (Number(plan.price) / 12).toFixed(2) : null;
+  const selectedPlanData = plans.find(p => p.id === selectedPlan) || null;
+  const isAnualSelected = selectedPlanData?.name === 'Anual';
 
   return (
     <div className="sub-modal-overlay" onClick={onClose}>
@@ -90,8 +93,7 @@ export default function SubscriptionModal({ isOpen, onClose, userId }: Subscript
         </button>
 
         <div className="sub-modal__badge">
-          <Sparkles size={14} />
-          <span>7 dias grátis em qualquer plano</span>
+          <span>{paymentMethod === 'card' ? '7 dias grátis em qualquer plano' : 'Pagamento à vista via boleto'}</span>
         </div>
 
         <h2 className="sub-modal__title">Assine e tenha acesso ilimitado</h2>
@@ -105,38 +107,75 @@ export default function SubscriptionModal({ isOpen, onClose, userId }: Subscript
           <>
             <div className="sub-plans">
               {plans.map(plan => {
-                const isYear = plan.billing_interval === 'year';
-                const monthlyEq = monthlyEquivalent(plan);
+                const isAnual = plan.name === 'Anual';
                 return (
                   <div
                     key={plan.id}
-                    className={`sub-plan${selectedPlan === plan.id ? ' sub-plan--selected' : ''}${isYear ? ' sub-plan--highlight' : ''}`}
+                    className={`sub-plan${selectedPlan === plan.id ? ' sub-plan--selected' : ''}${isAnual ? ' sub-plan--highlight' : ''}`}
                     onClick={() => setSelectedPlan(plan.id)}
                   >
-                    {isYear && <span className="sub-plan__tag">Melhor custo-benefício</span>}
+                    {isAnual && <span className="sub-plan__tag">Melhor custo-benefício</span>}
                     {selectedPlan === plan.id && (
                       <span className="sub-plan__check"><Check size={14} /></span>
                     )}
                     <span className="sub-plan__name">{plan.name}</span>
                     <div className="sub-plan__price">
                       <span className="sub-plan__currency">R$</span>
-                      <span className="sub-plan__value">
-                        {isYear && monthlyEq ? monthlyEq : Number(plan.price).toFixed(2)}
-                      </span>
+                      <span className="sub-plan__value">{Number(plan.price).toFixed(2)}</span>
                       <span className="sub-plan__period">/mês</span>
                     </div>
-                    {isYear ? (
+                    {isAnual ? (
                       <span className="sub-plan__total">
-                        R$ {Number(plan.price).toFixed(2)} cobrado uma vez por ano
+                        Compromisso de 12x — R$ {(Number(plan.price) * 12).toFixed(2)} ao ano
                       </span>
                     ) : (
                       <span className="sub-plan__total">Cobrado mensalmente</span>
                     )}
-                    <span className="sub-plan__trial">{plan.trial_days} dias grátis, cancele quando quiser</span>
+                    <span className="sub-plan__trial">
+                      {paymentMethod === 'card' ? `${plan.trial_days} dias grátis, cancele quando quiser` : 'Cancele quando quiser'}
+                    </span>
                   </div>
                 );
               })}
             </div>
+
+            <div className="sub-modal__payment-method">
+              <label>Forma de pagamento</label>
+              <div className="sub-modal__payment-options">
+                <button
+                  type="button"
+                  className={`sub-modal__payment-option${paymentMethod === 'card' ? ' sub-modal__payment-option--selected' : ''}`}
+                  onClick={() => setPaymentMethod('card')}
+                >
+                  Cartão de crédito
+                </button>
+                <button
+                  type="button"
+                  className={`sub-modal__payment-option${paymentMethod === 'boleto' ? ' sub-modal__payment-option--selected' : ''}`}
+                  onClick={() => setPaymentMethod('boleto')}
+                >
+                  Boleto
+                </button>
+              </div>
+              {paymentMethod === 'boleto' && (
+                <p className="sub-modal__payment-note">
+                  No boleto não há período grátis — o valor do plano é cobrado na primeira fatura.
+                </p>
+              )}
+            </div>
+
+            {isAnualSelected && (
+              <div className="sub-modal__promo">
+                <label htmlFor="sub-promo-code">Código promocional (opcional)</label>
+                <input
+                  id="sub-promo-code"
+                  type="text"
+                  value={promoCode}
+                  onChange={(e) => setPromoCode(e.target.value)}
+                  placeholder="Digite seu código"
+                />
+              </div>
+            )}
 
             {error && <p className="sub-modal__error">{error}</p>}
 
@@ -145,10 +184,16 @@ export default function SubscriptionModal({ isOpen, onClose, userId }: Subscript
               onClick={handleSubscribe}
               disabled={!selectedPlan || subscribing}
             >
-              {subscribing ? 'Redirecionando...' : 'Começar meus 7 dias grátis'}
+              {subscribing
+                ? 'Redirecionando...'
+                : paymentMethod === 'card'
+                ? 'Começar meus 7 dias grátis'
+                : 'Assinar com boleto'}
             </button>
             <p className="sub-modal__fineprint">
-              Cartão solicitado agora, cobrança só após o período grátis. Cancele quando quiser.
+              {paymentMethod === 'card'
+                ? 'Cartão solicitado agora, cobrança só após o período grátis. Cancele quando quiser.'
+                : 'Você receberá o boleto para pagamento à vista da primeira fatura. Cancele quando quiser.'}
             </p>
           </>
         )}

@@ -612,19 +612,7 @@
   border: 1px solid rgba(26, 95, 58, 0.2);
   color: #16281f;
 }
-.db-sub-card--active .db-sub-card__icon { background: rgba(26, 95, 58, 0.1); color: #1a5f3a; }
 .db-sub-card--active .db-sub-card__text p { color: #6b7280; }
-
-.db-sub-card__icon {
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
-  background: rgba(255,255,255,0.15);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
 
 .db-sub-card__text {
   flex: 1;

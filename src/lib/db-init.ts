@@ -109,18 +109,35 @@ export async function ensureSubscriptionTables(): Promise<void> {
     await query(
       `INSERT INTO equalizagro.subscription_plans
          (name, billing_interval, interval_count, price, currency, trial_days, display_order)
-       VALUES ('Mensal', 'month', 1, 230.00, 'BRL', 7, 1)`,
+       VALUES ('Mensal', 'month', 1, 222.00, 'BRL', 7, 1)`,
       []
     );
   }
   if (!existingNames.has('Anual')) {
+    // "Anual" = compromisso de 12 meses cobrado mensalmente (12x), não mais
+    // uma cobrança única anual — por isso billing_interval = 'month'.
     await query(
       `INSERT INTO equalizagro.subscription_plans
          (name, billing_interval, interval_count, price, currency, trial_days, display_order)
-       VALUES ('Anual', 'year', 1, 1920.00, 'BRL', 7, 2)`,
+       VALUES ('Anual', 'month', 1, 157.00, 'BRL', 7, 2)`,
       []
     );
   }
+
+  // Mantém os preços/condições vigentes sincronizados mesmo em planos já
+  // existentes — os valores acima são a fonte da verdade atual dos planos.
+  await query(
+    `UPDATE equalizagro.subscription_plans
+     SET billing_interval = 'month', interval_count = 1, price = 222.00
+     WHERE name = 'Mensal' AND (billing_interval <> 'month' OR price <> 222.00)`,
+    []
+  );
+  await query(
+    `UPDATE equalizagro.subscription_plans
+     SET billing_interval = 'month', interval_count = 1, price = 157.00
+     WHERE name = 'Anual' AND (billing_interval <> 'month' OR price <> 157.00)`,
+    []
+  );
 }
 
 /**

@@ -2,7 +2,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Brain, Zap, ShieldCheck, Target, Check, Sparkles } from 'lucide-react';
+import { Brain, Zap, ShieldCheck, Target, Check } from 'lucide-react';
 import './PlanosSection.css';
 
 interface SubscriptionPlan {
@@ -20,35 +20,14 @@ interface PlanosSectionProps {
   onSkip?: () => void;
 }
 
-const FEATURES = [
-  {
-    icon: Brain,
-    title: 'Consultoria Inteligente',
-    description: 'IA treinada com vasto conhecimento em tecnologia de aplicação e manejo agrícola.',
-  },
-  {
-    icon: Zap,
-    title: 'Respostas Instantâneas',
-    description: 'Orientações precisas em segundos sobre suas dúvidas agronômicas.',
-  },
-  {
-    icon: ShieldCheck,
-    title: 'Dados Confidenciais',
-    description: 'Informações protegidas com criptografia e segurança de nível empresarial.',
-  },
-  {
-    icon: Target,
-    title: 'Recomendações Validadas',
-    description: 'Baseado em pesquisa científica e experiência comprovada de especialistas.',
-  },
-];
-
 export default function PlanosSection({ userId, onSkip }: PlanosSectionProps) {
   const [plans, setPlans] = useState<SubscriptionPlan[]>([]);
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [subscribing, setSubscribing] = useState(false);
   const [error, setError] = useState('');
+  const [promoCode, setPromoCode] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState<'card' | 'boleto'>('card');
 
   useEffect(() => {
     fetchPlans();
@@ -60,7 +39,8 @@ export default function PlanosSection({ userId, onSkip }: PlanosSectionProps) {
       const data = await response.json();
       if (data.success) {
         setPlans(data.plans);
-        const anual = data.plans.find((p: SubscriptionPlan) => p.billing_interval === 'year');
+        // Pré-seleciona o Anual (melhor custo-benefício) se existir
+        const anual = data.plans.find((p: SubscriptionPlan) => p.name === 'Anual');
         setSelectedPlan(anual?.id || data.plans[0]?.id || null);
       }
     } catch (err) {
@@ -78,7 +58,7 @@ export default function PlanosSection({ userId, onSkip }: PlanosSectionProps) {
       const response = await fetch('/api/subscriptions/create-checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId, planId: selectedPlan }),
+        body: JSON.stringify({ userId, planId: selectedPlan, promoCode: promoCode.trim() || undefined, paymentMethod }),
       });
       const data = await response.json();
       if (data.success && data.checkoutUrl) {
@@ -93,8 +73,8 @@ export default function PlanosSection({ userId, onSkip }: PlanosSectionProps) {
     }
   };
 
-  const monthlyEquivalent = (plan: SubscriptionPlan) =>
-    plan.billing_interval === 'year' ? (Number(plan.price) / 12).toFixed(2) : null;
+  const selectedPlanData = plans.find(p => p.id === selectedPlan) || null;
+  const isAnualSelected = selectedPlanData?.name === 'Anual';
 
   return (
     <div className="planos-page">
@@ -105,10 +85,6 @@ export default function PlanosSection({ userId, onSkip }: PlanosSectionProps) {
           <a href="/" className="planos-hero__logo">
             <img src="/images/go2apply-logo-colorido.png" alt="go2apply" />
           </a>
-          <span className="planos-hero__badge">
-            <Sparkles size={14} />
-            Tecnologia de Aplicação Agrícola
-          </span>
           <h1 className="planos-hero__title">
             Bem-vindo ao <span>go2apply</span>
           </h1>
@@ -118,23 +94,11 @@ export default function PlanosSection({ userId, onSkip }: PlanosSectionProps) {
           </p>
         </div>
 
-        {/* ── O que você ganha ── */}
-        <div className="planos-features">
-          {FEATURES.map((f) => (
-            <div key={f.title} className="planos-feature">
-              <div className="planos-feature__icon"><f.icon size={22} /></div>
-              <h3>{f.title}</h3>
-              <p>{f.description}</p>
-            </div>
-          ))}
-        </div>
-
         {/* ── Planos ── */}
         <div className="planos-choice">
           <div className="planos-choice__header">
             <span className="planos-choice__badge">
-              <Sparkles size={14} />
-              7 dias grátis em qualquer plano
+              {paymentMethod === 'card' ? '7 dias grátis em qualquer plano' : 'Pagamento à vista via boleto'}
             </span>
             <h2>Escolha seu plano para começar</h2>
             <p>Acesso ilimitado ao Consultor.IA e a todas as ferramentas de pulverização.</p>
@@ -146,29 +110,26 @@ export default function PlanosSection({ userId, onSkip }: PlanosSectionProps) {
             <>
               <div className="planos-cards">
                 {plans.map((plan) => {
-                  const isYear = plan.billing_interval === 'year';
-                  const monthlyEq = monthlyEquivalent(plan);
+                  const isAnual = plan.name === 'Anual';
                   return (
                     <div
                       key={plan.id}
-                      className={`planos-card${selectedPlan === plan.id ? ' planos-card--selected' : ''}${isYear ? ' planos-card--highlight' : ''}`}
+                      className={`planos-card${selectedPlan === plan.id ? ' planos-card--selected' : ''}${isAnual ? ' planos-card--highlight' : ''}`}
                       onClick={() => setSelectedPlan(plan.id)}
                     >
-                      {isYear && <span className="planos-card__tag">Melhor custo-benefício</span>}
+                      {isAnual && <span className="planos-card__tag">Melhor custo-benefício</span>}
                       {selectedPlan === plan.id && (
                         <span className="planos-card__check"><Check size={14} /></span>
                       )}
                       <span className="planos-card__name">{plan.name}</span>
                       <div className="planos-card__price">
                         <span className="planos-card__currency">R$</span>
-                        <span className="planos-card__value">
-                          {isYear && monthlyEq ? monthlyEq : Number(plan.price).toFixed(2)}
-                        </span>
+                        <span className="planos-card__value">{Number(plan.price).toFixed(2)}</span>
                         <span className="planos-card__period">/mês</span>
                       </div>
-                      {isYear ? (
+                      {isAnual ? (
                         <span className="planos-card__total">
-                          R$ {Number(plan.price).toFixed(2)} cobrado uma vez por ano
+                          Compromisso de 12x — R$ {(Number(plan.price) * 12).toFixed(2)} ao ano
                         </span>
                       ) : (
                         <span className="planos-card__total">Cobrado mensalmente</span>
@@ -176,13 +137,53 @@ export default function PlanosSection({ userId, onSkip }: PlanosSectionProps) {
                       <ul className="planos-card__list">
                         <li><Check size={14} /> Consultor.IA sem limites</li>
                         <li><Check size={14} /> Todas as ferramentas de pulverização</li>
-                        <li><Check size={14} /> {plan.trial_days} dias grátis para testar</li>
+                        {paymentMethod === 'card' && (
+                          <li><Check size={14} /> {plan.trial_days} dias grátis para testar</li>
+                        )}
                         <li><Check size={14} /> Cancele quando quiser</li>
                       </ul>
                     </div>
                   );
                 })}
               </div>
+
+              <div className="planos-choice__payment-method">
+                <label>Forma de pagamento</label>
+                <div className="planos-choice__payment-options">
+                  <button
+                    type="button"
+                    className={`planos-choice__payment-option${paymentMethod === 'card' ? ' planos-choice__payment-option--selected' : ''}`}
+                    onClick={() => setPaymentMethod('card')}
+                  >
+                    Cartão de crédito
+                  </button>
+                  <button
+                    type="button"
+                    className={`planos-choice__payment-option${paymentMethod === 'boleto' ? ' planos-choice__payment-option--selected' : ''}`}
+                    onClick={() => setPaymentMethod('boleto')}
+                  >
+                    Boleto
+                  </button>
+                </div>
+                {paymentMethod === 'boleto' && (
+                  <p className="planos-choice__payment-note">
+                    No boleto não há período grátis — o valor do plano é cobrado na primeira fatura.
+                  </p>
+                )}
+              </div>
+
+              {isAnualSelected && (
+                <div className="planos-choice__promo">
+                  <label htmlFor="promo-code">Código promocional (opcional)</label>
+                  <input
+                    id="promo-code"
+                    type="text"
+                    value={promoCode}
+                    onChange={(e) => setPromoCode(e.target.value)}
+                    placeholder="Digite seu código"
+                  />
+                </div>
+              )}
 
               {error && <p className="planos-choice__error">{error}</p>}
 
@@ -191,11 +192,16 @@ export default function PlanosSection({ userId, onSkip }: PlanosSectionProps) {
                 onClick={handleSubscribe}
                 disabled={!selectedPlan || subscribing}
               >
-                {subscribing ? 'Redirecionando...' : 'Começar meus 7 dias grátis'}
+                {subscribing
+                  ? 'Redirecionando...'
+                  : paymentMethod === 'card'
+                  ? 'Começar meus 7 dias grátis'
+                  : 'Assinar com boleto'}
               </button>
               <p className="planos-choice__fineprint">
-                Pagamento processado com segurança pela Stripe. Cartão solicitado agora,
-                cobrança só após o período grátis.
+                {paymentMethod === 'card'
+                  ? 'Pagamento processado com segurança pela Stripe. Cartão solicitado agora, cobrança só após o período grátis.'
+                  : 'Pagamento processado com segurança pela Stripe. Você receberá o boleto para pagamento à vista da primeira fatura.'}
               </p>
               {onSkip && (
                 <button className="planos-choice__skip" onClick={onSkip}>

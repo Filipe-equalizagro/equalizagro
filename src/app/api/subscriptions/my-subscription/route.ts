@@ -35,7 +35,7 @@ export async function GET(request: NextRequest) {
     );
 
     if (result.rows.length === 0) {
-      return apiResponse({ success: true, subscription: null, hasAccess: access.allowed });
+      return apiResponse({ success: true, subscription: null, hasAccess: access.allowed, isExempt: access.exempt });
     }
 
     const row = result.rows[0];
@@ -52,6 +52,7 @@ export async function GET(request: NextRequest) {
         cancelAtPeriodEnd: row.cancel_at_period_end,
       },
       hasAccess: access.allowed,
+      isExempt: access.exempt,
     });
   } catch (error) {
     return apiError(error);

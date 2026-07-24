@@ -7,7 +7,6 @@ import {
   Zap,
   CheckCircle,
   ArrowRight,
-  Sparkles,
   Shield,
   MessageSquare,
   TrendingUp,

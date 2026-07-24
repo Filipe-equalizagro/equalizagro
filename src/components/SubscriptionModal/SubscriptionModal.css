@@ -157,6 +157,67 @@
 .sub-plan__total { font-size: 0.72rem; color: #6b7280; }
 .sub-plan__trial { font-size: 0.72rem; color: #92730f; font-weight: 600; margin-top: 0.2rem; }
 
+.sub-modal__payment-method {
+  margin: 0 0 1rem;
+}
+.sub-modal__payment-method > label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #6b7280;
+  margin-bottom: 0.35rem;
+}
+.sub-modal__payment-options {
+  display: flex;
+  gap: 0.5rem;
+}
+.sub-modal__payment-option {
+  flex: 1;
+  padding: 0.55rem 0.8rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: #fff;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #374151;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+}
+.sub-modal__payment-option--selected {
+  border-color: #1a5f3a;
+  background: rgba(26, 95, 58, 0.06);
+  color: #1a5f3a;
+}
+.sub-modal__payment-note {
+  font-size: 0.75rem;
+  color: #92730f;
+  margin: 0.5rem 0 0;
+}
+
+.sub-modal__promo {
+  margin: 0 0 1rem;
+}
+.sub-modal__promo label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #6b7280;
+  margin-bottom: 0.35rem;
+}
+.sub-modal__promo input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.65rem 0.85rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  font-size: 0.88rem;
+  text-transform: uppercase;
+}
+.sub-modal__promo input:focus {
+  outline: none;
+  border-color: #1a5f3a;
+}
+
 .sub-modal__error {
   color: #dc2626;
   font-size: 0.85rem;

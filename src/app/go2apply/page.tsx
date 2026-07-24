@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import {
   Brain, Calculator, Users, ShieldCheck,
-  Home, LogOut, ChevronRight, Menu, X, MoveHorizontal, Sparkles, Settings,
+  Home, LogOut, ChevronRight, Menu, X, MoveHorizontal, Settings,
 } from 'lucide-react';
 import { verifySession, logout } from '@/lib/auth';
 import SubscriptionModal from '@/components/SubscriptionModal/SubscriptionModal';
@@ -75,6 +75,7 @@ export default function DashboardPage() {
   const [subscriptionLoading, setSubscriptionLoading] = useState(true);
   // null enquanto carrega — evita bloquear/liberar precipitadamente antes da resposta
   const [hasAccess, setHasAccess] = useState<boolean | null>(null);
+  const [isExempt, setIsExempt] = useState(false);
   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
   const [portalLoading, setPortalLoading] = useState(false);
 
@@ -122,6 +123,7 @@ export default function DashboardPage() {
         if (data.success) {
           setSubscription(data.subscription);
           setHasAccess(data.hasAccess !== false);
+          setIsExempt(data.isExempt === true);
         } else {
           setHasAccess(true);
         }
@@ -421,11 +423,10 @@ export default function DashboardPage() {
             ))}
           </div>
 
-          {/* Assinatura — CTA para quem não tem, status para quem tem */}
+          {/* Assinatura — CTA para quem não tem, status para quem tem, nada para isentos */}
           {!subscriptionLoading && (
             subscription ? (
               <div className="db-sub-card db-sub-card--active">
-                <div className="db-sub-card__icon"><Sparkles size={22} /></div>
                 <div className="db-sub-card__text">
                   <h3>
                     Assinatura {subscription.planName}
@@ -450,9 +451,15 @@ export default function DashboardPage() {
                   {portalLoading ? 'Abrindo...' : 'Gerenciar assinatura'}
                 </button>
               </div>
+            ) : isExempt ? (
+              <div className="db-sub-card db-sub-card--active">
+                <div className="db-sub-card__text">
+                  <h3>Acesso liberado — Equipe Equalizagro</h3>
+                  <p>Acesso ilimitado ao Consultor.IA e a todas as ferramentas, sem custo.</p>
+                </div>
+              </div>
             ) : (
               <div className="db-sub-card db-sub-card--cta">
-                <div className="db-sub-card__icon"><Sparkles size={22} /></div>
                 <div className="db-sub-card__text">
                   <h3>Desbloqueie acesso ilimitado</h3>
                   <p>Consultor.IA e todas as ferramentas de pulverização, sem gastar créditos. 7 dias grátis.</p>

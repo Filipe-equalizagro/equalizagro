@@ -23,6 +23,8 @@ export type AccessCheck = {
   allowed: boolean;
   /** true quando o acesso é ilimitado (isento ou assinante) — não descontar crédito */
   unlimited: boolean;
+  /** true especificamente quando o acesso vem da isenção de cobrança (equipe/admin) */
+  exempt: boolean;
 };
 
 /**
@@ -35,14 +37,14 @@ export async function checkAccess(userId: string): Promise<AccessCheck> {
     `SELECT billing_exempt, credits_balance FROM equalizagro.users WHERE id = $1`,
     [userId]
   );
-  if (result.rows.length === 0) return { allowed: false, unlimited: false };
+  if (result.rows.length === 0) return { allowed: false, unlimited: false, exempt: false };
 
   const { billing_exempt, credits_balance } = result.rows[0];
-  if (billing_exempt) return { allowed: true, unlimited: true };
+  if (billing_exempt) return { allowed: true, unlimited: true, exempt: true };
 
   const subscribed = await hasActiveSubscription(userId);
-  if (subscribed) return { allowed: true, unlimited: true };
+  if (subscribed) return { allowed: true, unlimited: true, exempt: false };
 
   const hasCredits = Number(credits_balance || 0) > 0;
-  return { allowed: hasCredits, unlimited: false };
+  return { allowed: hasCredits, unlimited: false, exempt: false };
 }
