@@ -13,6 +13,8 @@ interface SubscriptionPlan {
   price: string;
   currency: string;
   trial_days: number;
+  boleto_price: number | null;
+  boleto_is_one_time: boolean;
 }
 
 interface PlanosSectionProps {
@@ -111,6 +113,8 @@ export default function PlanosSection({ userId, onSkip }: PlanosSectionProps) {
               <div className="planos-cards">
                 {plans.map((plan) => {
                   const isAnual = plan.name === 'Anual';
+                  const isBoletoOneTime = paymentMethod === 'boleto' && plan.boleto_is_one_time;
+                  const displayPrice = paymentMethod === 'boleto' ? plan.boleto_price ?? Number(plan.price) : Number(plan.price);
                   return (
                     <div
                       key={plan.id}
@@ -124,12 +128,14 @@ export default function PlanosSection({ userId, onSkip }: PlanosSectionProps) {
                       <span className="planos-card__name">{plan.name}</span>
                       <div className="planos-card__price">
                         <span className="planos-card__currency">R$</span>
-                        <span className="planos-card__value">{Number(plan.price).toFixed(2)}</span>
-                        <span className="planos-card__period">/mês</span>
+                        <span className="planos-card__value">{displayPrice.toFixed(2)}</span>
+                        {!isBoletoOneTime && <span className="planos-card__period">/mês</span>}
                       </div>
-                      {isAnual ? (
+                      {isBoletoOneTime ? (
+                        <span className="planos-card__total">Pagamento único — 12 meses de acesso</span>
+                      ) : isAnual ? (
                         <span className="planos-card__total">
-                          Compromisso de 12x — R$ {(Number(plan.price) * 12).toFixed(2)} ao ano
+                          Compromisso de 12x — R$ {(displayPrice * 12).toFixed(2)} ao ano
                         </span>
                       ) : (
                         <span className="planos-card__total">Cobrado mensalmente</span>
@@ -140,7 +146,7 @@ export default function PlanosSection({ userId, onSkip }: PlanosSectionProps) {
                         {paymentMethod === 'card' && (
                           <li><Check size={14} /> {plan.trial_days} dias grátis para testar</li>
                         )}
-                        <li><Check size={14} /> Cancele quando quiser</li>
+                        <li><Check size={14} /> {isAnual ? 'Renovação automática após 12 meses' : 'Cancele quando quiser'}</li>
                       </ul>
                     </div>
                   );
@@ -172,7 +178,7 @@ export default function PlanosSection({ userId, onSkip }: PlanosSectionProps) {
                 )}
               </div>
 
-              {isAnualSelected && (
+              {isAnualSelected && paymentMethod === 'card' && (
                 <div className="planos-choice__promo">
                   <label htmlFor="promo-code">Código promocional (opcional)</label>
                   <input
@@ -196,12 +202,16 @@ export default function PlanosSection({ userId, onSkip }: PlanosSectionProps) {
                   ? 'Redirecionando...'
                   : paymentMethod === 'card'
                   ? 'Começar meus 7 dias grátis'
+                  : isAnualSelected
+                  ? 'Gerar boleto anual'
                   : 'Assinar com boleto'}
               </button>
               <p className="planos-choice__fineprint">
                 {paymentMethod === 'card'
                   ? 'Pagamento processado com segurança pela Stripe. Cartão solicitado agora, cobrança só após o período grátis.'
-                  : 'Pagamento processado com segurança pela Stripe. Você receberá o boleto para pagamento à vista da primeira fatura.'}
+                  : isAnualSelected
+                  ? 'Pagamento processado com segurança pela Stripe. O boleto cobre os 12 meses de acesso — pagamento único, sem recorrência mensal.'
+                  : 'Pagamento processado com segurança pela Stripe. Você receberá um novo boleto a cada mês.'}
               </p>
               {onSkip && (
                 <button className="planos-choice__skip" onClick={onSkip}>

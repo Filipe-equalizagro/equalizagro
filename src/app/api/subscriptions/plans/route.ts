@@ -3,6 +3,7 @@ import { NextRequest } from 'next/server';
 import { apiResponse, apiError } from '@/lib/api-utils';
 import { query } from '@/lib/database';
 import { ensureSubscriptionTables } from '@/lib/db-init';
+import { getBoletoPrice } from '@/lib/boleto-pricing';
 
 /**
  * GET - Buscar planos de assinatura disponíveis (Mensal, Anual)
@@ -21,7 +22,12 @@ export async function GET(request: NextRequest) {
 
     return apiResponse({
       success: true,
-      plans: result.rows,
+      plans: result.rows.map((plan: any) => ({
+        ...plan,
+        boleto_price: getBoletoPrice(plan.name) ?? null,
+        // Anual no boleto é pagamento único do ano inteiro, não recorrência mensal
+        boleto_is_one_time: plan.name === 'Anual',
+      })),
     });
   } catch (error) {
     return apiError(error);

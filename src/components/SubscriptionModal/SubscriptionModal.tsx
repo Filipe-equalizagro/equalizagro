@@ -13,6 +13,8 @@ interface SubscriptionPlan {
   price: string;
   currency: string;
   trial_days: number;
+  boleto_price: number | null;
+  boleto_is_one_time: boolean;
 }
 
 interface SubscriptionModalProps {
@@ -108,6 +110,8 @@ export default function SubscriptionModal({ isOpen, onClose, userId }: Subscript
             <div className="sub-plans">
               {plans.map(plan => {
                 const isAnual = plan.name === 'Anual';
+                const isBoletoOneTime = paymentMethod === 'boleto' && plan.boleto_is_one_time;
+                const displayPrice = paymentMethod === 'boleto' ? plan.boleto_price ?? Number(plan.price) : Number(plan.price);
                 return (
                   <div
                     key={plan.id}
@@ -121,18 +125,26 @@ export default function SubscriptionModal({ isOpen, onClose, userId }: Subscript
                     <span className="sub-plan__name">{plan.name}</span>
                     <div className="sub-plan__price">
                       <span className="sub-plan__currency">R$</span>
-                      <span className="sub-plan__value">{Number(plan.price).toFixed(2)}</span>
-                      <span className="sub-plan__period">/mês</span>
+                      <span className="sub-plan__value">{displayPrice.toFixed(2)}</span>
+                      {!isBoletoOneTime && <span className="sub-plan__period">/mês</span>}
                     </div>
-                    {isAnual ? (
+                    {isBoletoOneTime ? (
+                      <span className="sub-plan__total">Pagamento único — 12 meses de acesso</span>
+                    ) : isAnual ? (
                       <span className="sub-plan__total">
-                        Compromisso de 12x — R$ {(Number(plan.price) * 12).toFixed(2)} ao ano
+                        Compromisso de 12x — R$ {(displayPrice * 12).toFixed(2)} ao ano
                       </span>
                     ) : (
                       <span className="sub-plan__total">Cobrado mensalmente</span>
                     )}
                     <span className="sub-plan__trial">
-                      {paymentMethod === 'card' ? `${plan.trial_days} dias grátis, cancele quando quiser` : 'Cancele quando quiser'}
+                      {paymentMethod === 'card'
+                        ? isAnual
+                          ? `${plan.trial_days} dias grátis, renovação automática após 12 meses`
+                          : `${plan.trial_days} dias grátis, cancele quando quiser`
+                        : isAnual
+                        ? 'Renovação automática após 12 meses'
+                        : 'Cancele quando quiser'}
                     </span>
                   </div>
                 );
@@ -164,7 +176,7 @@ export default function SubscriptionModal({ isOpen, onClose, userId }: Subscript
               )}
             </div>
 
-            {isAnualSelected && (
+            {isAnualSelected && paymentMethod === 'card' && (
               <div className="sub-modal__promo">
                 <label htmlFor="sub-promo-code">Código promocional (opcional)</label>
                 <input
@@ -188,12 +200,18 @@ export default function SubscriptionModal({ isOpen, onClose, userId }: Subscript
                 ? 'Redirecionando...'
                 : paymentMethod === 'card'
                 ? 'Começar meus 7 dias grátis'
+                : isAnualSelected
+                ? 'Gerar boleto anual'
                 : 'Assinar com boleto'}
             </button>
             <p className="sub-modal__fineprint">
               {paymentMethod === 'card'
-                ? 'Cartão solicitado agora, cobrança só após o período grátis. Cancele quando quiser.'
-                : 'Você receberá o boleto para pagamento à vista da primeira fatura. Cancele quando quiser.'}
+                ? isAnualSelected
+                  ? 'Cartão solicitado agora, cobrança só após o período grátis. Compromisso de 12 meses, renovação automática.'
+                  : 'Cartão solicitado agora, cobrança só após o período grátis. Cancele quando quiser.'
+                : isAnualSelected
+                ? 'O boleto cobre os 12 meses de acesso — pagamento único, sem recorrência mensal.'
+                : 'Você receberá um novo boleto a cada mês.'}
             </p>
           </>
         )}

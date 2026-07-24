@@ -6,9 +6,14 @@ import { query } from './database';
  */
 export async function hasActiveSubscription(userId: string): Promise<boolean> {
   try {
+    // current_period_end > NOW() é essencial para o Anual pago via boleto:
+    // é um pagamento único (sem objeto de assinatura recorrente na Stripe),
+    // então nada mais fliparia o status automaticamente ao fim do ano — sem
+    // essa checagem, o acesso ficaria ilimitado para sempre após 1 pagamento.
     const result = await query(
       `SELECT 1 FROM equalizagro.user_subscriptions
        WHERE user_id = $1 AND status IN ('trialing', 'active')
+       AND (current_period_end IS NULL OR current_period_end > NOW())
        LIMIT 1`,
       [userId]
     );

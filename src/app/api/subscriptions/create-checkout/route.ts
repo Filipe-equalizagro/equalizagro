@@ -4,11 +4,14 @@ import { ApiError, apiResponse, apiError } from '@/lib/api-utils';
 import { query } from '@/lib/database';
 import { ensureSubscriptionTables } from '@/lib/db-init';
 import { getStripe } from '@/lib/stripe';
+import { getBoletoPrice } from '@/lib/boleto-pricing';
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://www.equalizagro.com';
 
-// Cupom de lançamento — 30% off por 12 meses, só para o plano Anual (12x).
-// Código único e compartilhado, distribuído manualmente à lista de lançamento.
+// Cupom de lançamento — 30% off por 12 meses, só para o plano Anual pago por
+// assinatura recorrente (cartão). Não se aplica ao boleto anual — este é um
+// pagamento único e o cupom usa duração "repeating" (por ciclo de fatura),
+// incompatível com um checkout de modo "payment".
 const LAUNCH_PROMO_CODE = 'GO2APPLY30OFF';
 const LAUNCH_PROMO_ELIGIBLE_PLAN = 'Anual';
 
@@ -38,11 +41,16 @@ async function getOrCreateLaunchPromotionCodeId(): Promise<string> {
 }
 
 /**
- * POST - Criar uma sessão de Checkout para assinatura recorrente
+ * POST - Criar uma sessão de Checkout
  * Body: { userId, planId, promoCode?, paymentMethod?: 'card' | 'boleto' }
  *
- * Boleto não suporta trial (a Stripe não gera boleto de R$0) — por isso só
- * o cartão tem os dias grátis; boleto cobra o valor cheio na primeira fatura.
+ * Cartão: sempre assinatura recorrente na Stripe, com trial (dias grátis).
+ * Boleto não suporta trial (a Stripe não gera boleto de R$0) nem re-cobrança
+ * automática confiável — por isso:
+ *   - Mensal + boleto: assinatura recorrente igual ao cartão, só sem trial
+ *     (cada ciclo gera um novo boleto, mês a mês).
+ *   - Anual + boleto: PAGAMENTO ÚNICO pelo valor cheio de 12 meses de acesso
+ *     (não é 12x de R$157 — é o boleto do ano inteiro).
  */
 export async function POST(request: NextRequest) {
   try {
@@ -80,66 +88,112 @@ export async function POST(request: NextRequest) {
       throw new ApiError(409, 'Usuário já possui uma assinatura em andamento');
     }
 
-    // Cupom de lançamento — só válido para o plano Anual (12x)
+    // Anual pago via boleto é um caso especial: pagamento único, sem trial,
+    // sem cupom (ver comentário no topo do arquivo).
+    const isAnnualBoletoOneTime = isBoleto && plan.name === 'Anual';
+
+    // Cupom de lançamento — só válido para o plano Anual recorrente (cartão)
     let promotionCodeId: string | null = null;
     const trimmedPromo = typeof promoCode === 'string' ? promoCode.trim().toUpperCase() : '';
     if (trimmedPromo) {
-      if (trimmedPromo !== LAUNCH_PROMO_CODE || plan.name !== LAUNCH_PROMO_ELIGIBLE_PLAN) {
-        throw new ApiError(400, 'Código promocional inválido para este plano');
+      if (trimmedPromo !== LAUNCH_PROMO_CODE || plan.name !== LAUNCH_PROMO_ELIGIBLE_PLAN || isAnnualBoletoOneTime) {
+        throw new ApiError(400, 'Código promocional inválido para este plano/forma de pagamento');
       }
       promotionCodeId = await getOrCreateLaunchPromotionCodeId();
     }
 
-    const unitAmount = Math.round(Number(plan.price) * 100);
     const stripe = getStripe();
+    const currency = (plan.currency || 'BRL').toLowerCase();
 
-    const session = await stripe.checkout.sessions.create({
-      mode: 'subscription',
-      payment_method_types: isBoleto ? ['boleto'] : ['card'],
-      ...(promotionCodeId ? { discounts: [{ promotion_code: promotionCodeId }] } : {}),
-      customer_email: user.email,
-      // Cartão: exige coletar o cartão mesmo o valor devido hoje sendo R$0 (trial).
-      // Boleto: não se aplica — não há trial, a 1ª fatura já é cobrada.
-      ...(isBoleto ? {} : { payment_method_collection: 'always' as const }),
-      line_items: [
-        {
-          price_data: {
-            currency: (plan.currency || 'BRL').toLowerCase(),
-            product_data: {
-              name: `Assinatura ${plan.name} — go2apply`,
+    let checkoutUrl: string | null;
+    let trialDaysApplied = 0;
+
+    if (isAnnualBoletoOneTime) {
+      // ── Boleto Anual: pagamento único pelo valor cheio de 12 meses ──────
+      const boletoPrice = getBoletoPrice(plan.name);
+      if (boletoPrice === undefined) {
+        throw new ApiError(400, 'Boleto não disponível para este plano');
+      }
+
+      const session = await stripe.checkout.sessions.create({
+        mode: 'payment',
+        payment_method_types: ['boleto'],
+        customer_email: user.email,
+        line_items: [
+          {
+            price_data: {
+              currency,
+              product_data: {
+                name: `Assinatura Anual — go2apply (boleto, 12 meses de acesso)`,
+              },
+              unit_amount: Math.round(boletoPrice * 100),
             },
-            recurring: {
-              interval: plan.billing_interval as 'month' | 'year',
-              interval_count: plan.interval_count,
-            },
-            unit_amount: unitAmount,
+            quantity: 1,
           },
-          quantity: 1,
+        ],
+        metadata: { userId, planId, kind: 'annual_boleto' },
+        success_url: `${APP_URL}/go2apply?subscription=success`,
+        cancel_url: `${APP_URL}/go2apply?subscription=cancelled`,
+      });
+      checkoutUrl = session.url;
+    } else {
+      // ── Assinatura recorrente (Mensal em cartão/boleto, Anual em cartão) ─
+      const unitAmount = Math.round(
+        (isBoleto ? getBoletoPrice(plan.name) ?? Number(plan.price) : Number(plan.price)) * 100
+      );
+
+      const session = await stripe.checkout.sessions.create({
+        mode: 'subscription',
+        payment_method_types: isBoleto ? ['boleto'] : ['card'],
+        ...(promotionCodeId ? { discounts: [{ promotion_code: promotionCodeId }] } : {}),
+        customer_email: user.email,
+        // Cartão: exige coletar o cartão mesmo o valor devido hoje sendo R$0 (trial).
+        // Boleto: não se aplica — não há trial, a 1ª fatura já é cobrada.
+        ...(isBoleto ? {} : { payment_method_collection: 'always' as const }),
+        line_items: [
+          {
+            price_data: {
+              currency,
+              product_data: {
+                name: `Assinatura ${plan.name} — go2apply`,
+              },
+              recurring: {
+                interval: plan.billing_interval as 'month' | 'year',
+                interval_count: plan.interval_count,
+              },
+              unit_amount: unitAmount,
+            },
+            quantity: 1,
+          },
+        ],
+        subscription_data: {
+          // Boleto não suporta trial (não existe boleto de R$0) — cobra na hora
+          ...(isBoleto ? {} : { trial_period_days: plan.trial_days }),
+          metadata: { userId, planId },
         },
-      ],
-      subscription_data: {
-        // Boleto não suporta trial (não existe boleto de R$0) — cobra na hora
-        ...(isBoleto ? {} : { trial_period_days: plan.trial_days }),
         metadata: { userId, planId },
-      },
-      metadata: { userId, planId },
-      success_url: `${APP_URL}/go2apply?subscription=success`,
-      cancel_url: `${APP_URL}/go2apply?subscription=cancelled`,
-    });
+        success_url: `${APP_URL}/go2apply?subscription=success`,
+        cancel_url: `${APP_URL}/go2apply?subscription=cancelled`,
+      });
+      checkoutUrl = session.url;
+      trialDaysApplied = isBoleto ? 0 : plan.trial_days;
+    }
 
     // Registra a assinatura como "incomplete" — o webhook promove para trialing/active
+    // (ou, no boleto anual, direto para "active" com current_period_end de 1 ano,
+    // só quando o boleto for de fato pago — ver payments/webhook/route.ts)
     await query(
       `INSERT INTO equalizagro.user_subscriptions (user_id, plan_id, status)
        VALUES ($1, $2, 'incomplete')`,
       [userId, planId]
     );
 
-    console.log(`[Subscriptions] Checkout criado: ${session.id} para ${user.email} (plano ${plan.name})`);
+    console.log(`[Subscriptions] Checkout criado para ${user.email} (plano ${plan.name}, método ${paymentMethod || 'card'})`);
 
     return apiResponse({
       success: true,
-      checkoutUrl: session.url,
-      plan: { name: plan.name, price: plan.price, currency: plan.currency, trialDays: isBoleto ? 0 : plan.trial_days },
+      checkoutUrl,
+      plan: { name: plan.name, price: plan.price, currency: plan.currency, trialDays: trialDaysApplied },
     });
   } catch (error) {
     return apiError(error);

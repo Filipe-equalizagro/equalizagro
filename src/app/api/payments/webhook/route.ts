@@ -139,6 +139,43 @@ export async function POST(request: NextRequest) {
         return apiResponse({ success: true, message: 'Checkout de assinatura vinculado' });
       }
 
+      // Boleto Anual — pagamento único pelo ano inteiro. IMPORTANTE: boleto
+      // não é instantâneo (o cliente pode levar dias para pagar no banco),
+      // então só liberamos acesso em 'async_payment_succeeded' — nunca em
+      // 'checkout.session.completed' sozinho, que só significa que o boleto
+      // foi EMITIDO, ainda não que foi pago.
+      if (session.metadata?.kind === 'annual_boleto') {
+        if (event.type !== 'checkout.session.async_payment_succeeded') {
+          return apiResponse({ success: true, message: 'Boleto anual emitido — aguardando pagamento' });
+        }
+
+        const userId = session.metadata.userId;
+        const planId = session.metadata.planId;
+        if (!userId || !planId) {
+          console.error('[StripeWebhook] annual_boleto sem metadata:', session.id);
+          return apiResponse({ success: true, message: 'Sem metadata — ignorado' });
+        }
+
+        const periodEnd = new Date();
+        periodEnd.setDate(periodEnd.getDate() + 365);
+
+        const updated = await query(
+          `UPDATE equalizagro.user_subscriptions
+           SET status = 'active', current_period_end = $1, stripe_customer_id = $2, updated_at = NOW()
+           WHERE user_id = $3 AND plan_id = $4 AND status = 'incomplete' AND stripe_subscription_id IS NULL
+           RETURNING id`,
+          [periodEnd, session.customer || null, userId, planId]
+        );
+
+        if (updated.rows.length === 0) {
+          console.log('[StripeWebhook] annual_boleto — nenhuma linha "incomplete" pendente (reenvio do evento ou já processado):', session.id);
+        } else {
+          console.log(`[StripeWebhook] Boleto anual pago — acesso liberado por 1 ano: userId=${userId}`);
+        }
+
+        return apiResponse({ success: true, message: 'Boleto anual pago — acesso liberado' });
+      }
+
       const purchaseId = session.metadata?.purchaseId;
 
       if (!purchaseId) {
@@ -196,6 +233,21 @@ export async function POST(request: NextRequest) {
           [purchaseId]
         );
       }
+
+      // Boleto anual expirou sem pagamento — cancela a linha pendente para
+      // não travar novas tentativas (o check de "assinatura em andamento"
+      // bloqueia enquanto o status ficar "incomplete").
+      if (session.metadata?.kind === 'annual_boleto') {
+        const { userId, planId } = session.metadata;
+        if (userId && planId) {
+          await query(
+            `UPDATE equalizagro.user_subscriptions SET status = 'canceled', updated_at = NOW()
+             WHERE user_id = $1 AND plan_id = $2 AND status = 'incomplete' AND stripe_subscription_id IS NULL`,
+            [userId, planId]
+          );
+        }
+      }
+
       return apiResponse({ success: true, message: 'Status atualizado' });
     }
 
