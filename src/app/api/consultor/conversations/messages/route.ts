@@ -3,6 +3,7 @@ import { NextRequest } from 'next/server';
 import { ApiError, apiResponse, apiError } from '@/lib/api-utils';
 import { query } from '@/lib/database';
 import { ensureConversationTables } from '@/lib/db-init';
+import { hasActiveSubscription } from '@/lib/subscriptions';
 
 /**
  * GET - Buscar mensagens de uma conversa
@@ -168,8 +169,9 @@ export async function POST(request: NextRequest) {
     );
 
     // Decrementar 1 crédito por troca de mensagem (apenas quando há pelo menos 1 msg de assistente)
+    // Assinantes ativos (trial ou pagantes) têm acesso ilimitado — não descontam crédito
     const hasAssistantMsg = messages.some(m => m.role === 'assistant');
-    if (hasAssistantMsg && insertedMessages.length > 0) {
+    if (hasAssistantMsg && insertedMessages.length > 0 && !(await hasActiveSubscription(userId))) {
       await query(
         `UPDATE equalizagro.users
          SET credits_balance = GREATEST(credits_balance - 1, 0),

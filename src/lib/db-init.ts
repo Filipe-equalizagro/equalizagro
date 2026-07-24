@@ -1,4 +1,5 @@
 import { query } from './database';
+import { EXEMPT_EMAILS } from './billing-exempt';
 
 /**
  * Garante que as tabelas de conversas e mensagens existam no banco.
@@ -51,6 +52,97 @@ export async function ensureCalculatorHistoryTable(): Promise<void> {
     CREATE INDEX IF NOT EXISTS idx_calculator_history_created_at
     ON equalizagro.calculator_history(created_at)
   `, []);
+}
+
+/**
+ * Planos de assinatura recorrente (mensal/anual) e as assinaturas ativas
+ * dos usuários, sincronizadas via webhook da Stripe. Enquanto uma assinatura
+ * estiver ativa/em trial, o usuário tem acesso ilimitado (não gasta créditos).
+ */
+export async function ensureSubscriptionTables(): Promise<void> {
+  await query(`
+    CREATE TABLE IF NOT EXISTS equalizagro.subscription_plans (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      name TEXT NOT NULL,
+      billing_interval TEXT NOT NULL,
+      interval_count INTEGER NOT NULL DEFAULT 1,
+      price NUMERIC(10,2) NOT NULL,
+      currency TEXT NOT NULL DEFAULT 'BRL',
+      trial_days INTEGER NOT NULL DEFAULT 7,
+      is_active BOOLEAN DEFAULT true,
+      display_order INTEGER DEFAULT 0,
+      created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+    )
+  `, []);
+
+  await query(`
+    CREATE TABLE IF NOT EXISTS equalizagro.user_subscriptions (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      user_id UUID NOT NULL,
+      plan_id UUID REFERENCES equalizagro.subscription_plans(id),
+      stripe_customer_id TEXT,
+      stripe_subscription_id TEXT,
+      status TEXT NOT NULL DEFAULT 'incomplete',
+      trial_end TIMESTAMP WITH TIME ZONE,
+      current_period_end TIMESTAMP WITH TIME ZONE,
+      cancel_at_period_end BOOLEAN DEFAULT false,
+      created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+      updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+    )
+  `, []);
+
+  await query(`
+    CREATE INDEX IF NOT EXISTS idx_user_subscriptions_user_id
+    ON equalizagro.user_subscriptions(user_id)
+  `, []);
+  await query(`
+    CREATE UNIQUE INDEX IF NOT EXISTS idx_user_subscriptions_stripe_sub
+    ON equalizagro.user_subscriptions(stripe_subscription_id)
+    WHERE stripe_subscription_id IS NOT NULL
+  `, []);
+
+  // Semeadura idempotente dos planos atuais — não duplica se já existirem.
+  const existing = await query(`SELECT name FROM equalizagro.subscription_plans`, []);
+  const existingNames = new Set(existing.rows.map((r: any) => r.name));
+
+  if (!existingNames.has('Mensal')) {
+    await query(
+      `INSERT INTO equalizagro.subscription_plans
+         (name, billing_interval, interval_count, price, currency, trial_days, display_order)
+       VALUES ('Mensal', 'month', 1, 230.00, 'BRL', 7, 1)`,
+      []
+    );
+  }
+  if (!existingNames.has('Anual')) {
+    await query(
+      `INSERT INTO equalizagro.subscription_plans
+         (name, billing_interval, interval_count, price, currency, trial_days, display_order)
+       VALUES ('Anual', 'year', 1, 1920.00, 'BRL', 7, 2)`,
+      []
+    );
+  }
+}
+
+/**
+ * Coluna que marca usuários da equipe/admin (e suporte externo) isentos de
+ * cobrança — acesso ilimitado ao Consultor.IA independente de assinatura.
+ * Reconciliada a cada chamada contra a lista mantida em billing-exempt.ts,
+ * então basta editar o array lá para adicionar/remover alguém.
+ */
+export async function ensureBillingExemptColumn(): Promise<void> {
+  await query(`ALTER TABLE equalizagro.users ADD COLUMN IF NOT EXISTS billing_exempt BOOLEAN NOT NULL DEFAULT false`, []);
+
+  const emails = EXEMPT_EMAILS.map(e => e.toLowerCase());
+  await query(
+    `UPDATE equalizagro.users SET billing_exempt = true, updated_at = NOW()
+     WHERE LOWER(email) = ANY($1::text[]) AND billing_exempt = false`,
+    [emails]
+  );
+  await query(
+    `UPDATE equalizagro.users SET billing_exempt = false, updated_at = NOW()
+     WHERE NOT (LOWER(email) = ANY($1::text[])) AND billing_exempt = true`,
+    [emails]
+  );
 }
 
 // Executa um statement DDL isoladamente — um erro não aborta os demais.

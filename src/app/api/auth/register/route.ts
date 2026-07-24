@@ -2,6 +2,9 @@
 import { NextRequest } from 'next/server';
 import { ApiError, apiResponse, apiError, validateEmail, validatePassword, getClientIp } from '@/lib/api-utils';
 import { query } from '@/lib/database';
+import { ensureBillingExemptColumn } from '@/lib/db-init';
+import { sendVerificationEmail } from '@/lib/email';
+import { isExemptEmail } from '@/lib/billing-exempt';
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
 
@@ -30,20 +33,36 @@ export async function POST(request: NextRequest) {
       throw new ApiError(400, 'Telefone inválido');
     }
 
-    // Verificar se email já existe
+    // Verificar se já existe uma conta ATIVA com esse email
     let existingUser;
     try {
       existingUser = await query(
-        'SELECT id FROM equalizagro.users WHERE LOWER(email) = LOWER($1)',
+        'SELECT id FROM equalizagro.users WHERE LOWER(email) = LOWER($1) AND deleted_at IS NULL',
         [email]
       );
     } catch (err) {
       console.error('[Register] Erro ao verificar email:', err);
       throw new ApiError(500, 'Erro ao verificar disponibilidade do email');
     }
-    
+
     if (existingUser.rows.length > 0) {
       throw new ApiError(409, 'Este email já está cadastrado');
+    }
+
+    // Verificar se existe uma conta EXCLUÍDA (soft delete) com esse email —
+    // se houver, reaproveita o registro em vez de tentar inserir um novo
+    // (email é único na tabela; sem isso, quem excluiu a conta nunca
+    // conseguiria se cadastrar de novo com o mesmo email).
+    let deletedUserId: string | null = null;
+    try {
+      const deletedUser = await query(
+        'SELECT id FROM equalizagro.users WHERE LOWER(email) = LOWER($1) AND deleted_at IS NOT NULL',
+        [email]
+      );
+      if (deletedUser.rows.length > 0) deletedUserId = deletedUser.rows[0].id;
+    } catch (err) {
+      console.error('[Register] Erro ao verificar conta excluída:', err);
+      throw new ApiError(500, 'Erro ao verificar disponibilidade do email');
     }
 
     // Hash da senha
@@ -57,6 +76,14 @@ export async function POST(request: NextRequest) {
 
     // Gerar token de verificação de email
     const emailVerificationToken = crypto.randomBytes(32).toString('hex');
+
+    // Equipe/admin da lista interna tem acesso ilimitado desde o cadastro
+    const billingExempt = isExemptEmail(email);
+    try {
+      await ensureBillingExemptColumn();
+    } catch (err) {
+      console.error('[Register] Erro ao garantir coluna billing_exempt:', err);
+    }
 
     // Definir role: 'team' exige token de admin válido no header Authorization
     let userRole = 'client';
@@ -97,23 +124,47 @@ export async function POST(request: NextRequest) {
       userRole = 'team';
     }
 
-    // Criar usuário no banco de dados
+    // Criar usuário no banco de dados — reativa a conta excluída se existir,
+    // senão insere um registro novo.
     let result;
     try {
-      result = await query(
-        `INSERT INTO equalizagro.users (
-          email,
-          phone,
-          full_name,
-          password_hash,
-          email_verification_token,
-          email_verification_expires_at,
-          role,
-          auth_status
-        ) VALUES ($1, $2, $3, $4, $5, NOW() + INTERVAL '24 hours', $6, 'pending')
-        RETURNING id`,
-        [email.toLowerCase(), phone, name, passwordHash, emailVerificationToken, userRole]
-      );
+      if (deletedUserId) {
+        result = await query(
+          `UPDATE equalizagro.users
+           SET phone = $1,
+               full_name = $2,
+               password_hash = $3,
+               email_verification_token = $4,
+               email_verification_expires_at = NOW() + INTERVAL '24 hours',
+               role = $5,
+               auth_status = 'pending',
+               email_verified = false,
+               credits_balance = 0,
+               total_credits_purchased = 0,
+               billing_exempt = $6,
+               deleted_at = NULL,
+               updated_at = NOW()
+           WHERE id = $7
+           RETURNING id`,
+          [phone, name, passwordHash, emailVerificationToken, userRole, billingExempt, deletedUserId]
+        );
+      } else {
+        result = await query(
+          `INSERT INTO equalizagro.users (
+            email,
+            phone,
+            full_name,
+            password_hash,
+            email_verification_token,
+            email_verification_expires_at,
+            role,
+            auth_status,
+            billing_exempt
+          ) VALUES ($1, $2, $3, $4, $5, NOW() + INTERVAL '24 hours', $6, 'pending', $7)
+          RETURNING id`,
+          [email.toLowerCase(), phone, name, passwordHash, emailVerificationToken, userRole, billingExempt]
+        );
+      }
     } catch (err) {
       console.error('[Register] Erro ao criar usuário:', err);
       throw new ApiError(500, 'Erro ao criar usuário');
@@ -153,17 +204,20 @@ export async function POST(request: NextRequest) {
     }
 
     console.log(`[Register] Novo usuário criado: ${email} (ID: ${userId}, role: ${userRole})`);
-    console.log(`[Register] Token de verificação: ${emailVerificationToken}`);
 
-    // TODO: Enviar email de verificação
-    // await sendVerificationEmail(email, name, emailVerificationToken);
+    // Envio de email não bloqueia o cadastro — a conta já foi criada com sucesso
+    // mesmo que o envio falhe (ex.: RESEND_API_KEY ausente em algum ambiente).
+    try {
+      await sendVerificationEmail(email, name, emailVerificationToken);
+    } catch (err) {
+      console.error('[Register] Erro ao enviar email de verificação:', err);
+    }
 
     return apiResponse({
       success: true,
       message: 'Usuário registrado com sucesso! Verifique seu email para ativar sua conta.',
       userId: userId,
       requiresEmailVerification: true,
-      verificationToken: emailVerificationToken, // Em produção, remover isso e enviar apenas por email
     });
   } catch (error) {
     return apiError(error);

@@ -635,15 +635,20 @@ export default function ConsultorIA() {
 
       // Sempre que o servidor responde com sucesso, ele é a fonte da verdade (inclui lista vazia).
       // Antes: messages.length === 0 caía no localStorage e reapareciam mensagens “apagadas”.
+      // A mensagem de boas-vindas (id '1') nunca é salva no banco — por isso é sempre
+      // reinserida na frente das mensagens reais, para não sumir ao recarregar a página.
       if (data.success && Array.isArray(data.messages)) {
         const loadedMessages: Message[] =
           data.messages.length > 0
-            ? data.messages.map((msg: any) => ({
-                id: msg.id,
-                role: msg.role,
-                content: msg.content,
-                timestamp: new Date(msg.timestamp),
-              }))
+            ? [
+                ...createWelcomeAssistantMessages(),
+                ...data.messages.map((msg: any) => ({
+                  id: msg.id,
+                  role: msg.role,
+                  content: msg.content,
+                  timestamp: new Date(msg.timestamp),
+                })),
+              ]
             : createWelcomeAssistantMessages();
 
         console.log('[ConsultorIA] Total de mensagens (servidor):', loadedMessages.length);
@@ -1340,10 +1345,10 @@ export default function ConsultorIA() {
     </head><body>
       <div class="header">
         <h1>${title}</h1>
-        <div class="meta">Consultor.IA - goa2pply <br>${date}<br>${userName_}</div>
+        <div class="meta">go2apply<br>${date}<br>${userName_}</div>
       </div>
       ${rows || '<p style="color:#999">Nenhuma mensagem nesta conversa.</p>'}
-      <div class="footer">Gerado pelo Consultor.IA — go2apply</div>
+      <div class="footer">Gerado pela plataforma go2apply</div>
     </body></html>`;
 
     const win = window.open('', '_blank');

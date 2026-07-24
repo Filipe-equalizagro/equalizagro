@@ -1,9 +1,18 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Mail, Lock, AlertCircle, Eye, EyeOff } from 'lucide-react';
 import { loginWithCredentials, verifySession } from '@/lib/auth';
 import './login.css';
+
+// Slides do painel de imagem — alternam automaticamente e o usuário
+// pode escolher manualmente pelos indicadores (dots).
+const LOGIN_SLIDES = [
+  { src: '/images/laptop_consultoria_taskbar_clean_880x727.png', alt: 'Consultor.IA — go2apply' },
+  { src: '/images/laptop_dmv_taskbar_clean_880x727.png', alt: 'DMV — go2apply' },
+];
+
+const SLIDE_INTERVAL_MS = 6000;
 
 export default function LoginPage() {
   const [checking, setChecking]   = useState(true);
@@ -12,6 +21,27 @@ export default function LoginPage() {
   const [errors, setErrors]       = useState<Record<string, string>>({});
   const [email, setEmail]         = useState('');
   const [password, setPassword]   = useState('');
+  const [activeSlide, setActiveSlide] = useState(0);
+  const slideTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  // Loop automático entre os slides
+  useEffect(() => {
+    slideTimerRef.current = setInterval(() => {
+      setActiveSlide(prev => (prev + 1) % LOGIN_SLIDES.length);
+    }, SLIDE_INTERVAL_MS);
+    return () => {
+      if (slideTimerRef.current) clearInterval(slideTimerRef.current);
+    };
+  }, []);
+
+  // Seleção manual — reinicia o timer para não trocar logo em seguida
+  const goToSlide = (index: number) => {
+    setActiveSlide(index);
+    if (slideTimerRef.current) clearInterval(slideTimerRef.current);
+    slideTimerRef.current = setInterval(() => {
+      setActiveSlide(prev => (prev + 1) % LOGIN_SLIDES.length);
+    }, SLIDE_INTERVAL_MS);
+  };
 
   useEffect(() => {
     verifySession().then(r => {
@@ -44,10 +74,28 @@ export default function LoginPage() {
   return (
     <div className="lp-root">
 
-      {/* ── Painel esquerdo — imagem ── */}
+      {/* ── Painel esquerdo — imagem (carrossel) ── */}
       <div className="lp-image-panel">
         <div className="lp-image-inner">
-          <img src="/images/printgo2apply.png" alt="Campo agrícola Equalizagro" />
+          {LOGIN_SLIDES.map((slide, index) => (
+            <img
+              key={slide.src}
+              src={slide.src}
+              alt={slide.alt}
+              className={`lp-image-slide${index === activeSlide ? ' lp-image-slide--active' : ''}`}
+            />
+          ))}
+          <div className="lp-image-dots">
+            {LOGIN_SLIDES.map((slide, index) => (
+              <button
+                key={slide.src}
+                type="button"
+                className={`lp-image-dot${index === activeSlide ? ' lp-image-dot--active' : ''}`}
+                aria-label={`Mostrar imagem: ${slide.alt}`}
+                onClick={() => goToSlide(index)}
+              />
+            ))}
+          </div>
         </div>
       </div>
 
@@ -113,8 +161,8 @@ export default function LoginPage() {
 
           <div className="lp-register-notice">
             <p>Não tem cadastro?</p>
-            <a href="https://api.whatsapp.com/send/?phone=555533432606&text=Ol%C3%A1!+Gostaria+de+criar+meu+acesso+na+plataforma+go2apply." target="_blank" rel="noopener noreferrer">
-              Entre em contato
+            <a href="/cadastro">
+              Cadastre-se
             </a>
           </div>
 

@@ -1,0 +1,192 @@
+/* components/SubscriptionModal/SubscriptionModal.css */
+
+.sub-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 20, 0.55);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.sub-modal {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 2.25rem 2rem;
+  max-width: 640px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.28);
+}
+
+.sub-modal__close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  border: none;
+  background: #f3f4f6;
+  color: #4b5563;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.sub-modal__close:hover { background: #e5e7eb; }
+
+.sub-modal__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0.35rem 0.75rem;
+  background: rgba(201, 164, 32, 0.12);
+  color: #92730f;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.sub-modal__title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #16281f;
+  margin: 0 0 0.4rem;
+}
+
+.sub-modal__subtitle {
+  color: #6b7280;
+  font-size: 0.92rem;
+  margin: 0 0 1.5rem;
+}
+
+.sub-modal__loading {
+  display: flex;
+  justify-content: center;
+  padding: 3rem 0;
+}
+.sub-modal__spinner {
+  width: 32px; height: 32px;
+  border: 3px solid rgba(26, 95, 58, 0.15);
+  border-top-color: #1a5f3a;
+  border-radius: 50%;
+  animation: subModalSpin 0.75s linear infinite;
+}
+@keyframes subModalSpin { to { transform: rotate(360deg); } }
+
+.sub-plans {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.sub-plan {
+  position: relative;
+  border: 2px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 1.25rem 1rem;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, transform 0.15s;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+.sub-plan:hover { border-color: #1a5f3a; transform: translateY(-2px); }
+.sub-plan--selected {
+  border-color: #1a5f3a;
+  background: rgba(26, 95, 58, 0.05);
+  box-shadow: 0 6px 18px rgba(26, 95, 58, 0.15);
+}
+.sub-plan--highlight { border-color: #c9a420; }
+.sub-plan--highlight.sub-plan--selected { border-color: #1a5f3a; }
+
+.sub-plan__tag {
+  position: absolute;
+  top: -11px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #c9a420;
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.sub-plan__check {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #1a5f3a;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sub-plan__name {
+  font-weight: 700;
+  color: #16281f;
+  font-size: 0.95rem;
+  margin-top: 0.5rem;
+}
+
+.sub-plan__price {
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+  margin: 0.25rem 0;
+}
+.sub-plan__currency { font-size: 0.85rem; color: #6b7280; font-weight: 600; }
+.sub-plan__value { font-size: 1.7rem; font-weight: 800; color: #1a5f3a; }
+.sub-plan__period { font-size: 0.8rem; color: #6b7280; margin-left: 2px; }
+
+.sub-plan__total { font-size: 0.72rem; color: #6b7280; }
+.sub-plan__trial { font-size: 0.72rem; color: #92730f; font-weight: 600; margin-top: 0.2rem; }
+
+.sub-modal__error {
+  color: #dc2626;
+  font-size: 0.85rem;
+  text-align: center;
+  margin: 0 0 0.75rem;
+}
+
+.sub-modal__cta {
+  width: 100%;
+  padding: 0.95rem;
+  background: linear-gradient(135deg, #1a5f3a 0%, #2d7a4f 100%);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.15s;
+}
+.sub-modal__cta:hover:not(:disabled) { transform: translateY(-1px); }
+.sub-modal__cta:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.sub-modal__fineprint {
+  text-align: center;
+  font-size: 0.75rem;
+  color: #9ca3af;
+  margin: 0.6rem 0 0;
+}
+
+@media (max-width: 520px) {
+  .sub-plans { grid-template-columns: 1fr; }
+  .sub-modal { padding: 1.75rem 1.25rem; }
+}

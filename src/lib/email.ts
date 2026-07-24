@@ -1,9 +1,38 @@
 import { Resend } from 'resend';
 
+export async function sendVerificationEmail(to: string, name: string, token: string) {
+  const resend = new Resend(process.env.RESEND_API_KEY);
+  const FROM = process.env.EMAIL_FROM || 'go2apply <noreply@equalizagro.com>';
+  const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://www.equalizagro.com';
+  const verifyUrl = `${APP_URL}/cadastro?token=${token}`;
+
+  await resend.emails.send({
+    from: FROM,
+    to,
+    subject: 'Confirme seu email — go2apply',
+    html: `
+      <div style="font-family:sans-serif;max-width:520px;margin:0 auto;padding:2rem;background:#f4f9f5;border-radius:12px;">
+        <img src="${APP_URL}/images/EQUALIZAGRO%20ok.png" alt="Equalizagro" style="height:40px;margin-bottom:1.5rem;" />
+        <h2 style="color:#1a5f3a;margin:0 0 0.75rem;">Confirme seu email</h2>
+        <p style="color:#374151;">Olá, <strong>${name}</strong>.</p>
+        <p style="color:#374151;">Falta só confirmar seu email para ativar sua conta go2apply. Clique no botão abaixo:</p>
+        <a href="${verifyUrl}" style="display:inline-block;margin:1.5rem 0;padding:0.8rem 2rem;background:#1a5f3a;color:#fff;text-decoration:none;border-radius:8px;font-weight:700;">
+          Confirmar email
+        </a>
+        <p style="color:#6b7280;font-size:0.85rem;">Se o botão não funcionar, copie e cole este código na tela de verificação:</p>
+        <p style="color:#1a5f3a;font-size:0.8rem;font-family:monospace;background:#eef8f1;padding:0.6rem;border-radius:6px;word-break:break-all;">${token}</p>
+        <p style="color:#6b7280;font-size:0.85rem;">Este código expira em <strong>24 horas</strong>. Se você não se cadastrou na go2apply, ignore este email.</p>
+        <hr style="border:none;border-top:1px solid #e5e7eb;margin:1.5rem 0;" />
+        <p style="color:#9ca3af;font-size:0.78rem;">© Equalizagro 2026 · go2apply</p>
+      </div>
+    `,
+  });
+}
+
 export async function sendPasswordResetEmail(to: string, name: string, token: string, sessionId: string) {
   const resend = new Resend(process.env.RESEND_API_KEY);
-  const FROM = process.env.EMAIL_FROM || 'go2apply <noreply@go2apply.com.br>';
-  const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://go2apply.com.br';
+  const FROM = process.env.EMAIL_FROM || 'go2apply <noreply@equalizagro.com>';
+  const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://www.equalizagro.com';
   const resetUrl = `${APP_URL}/recuperar-senha?token=${token}&sid=${sessionId}`;
 
   await resend.emails.send({

@@ -53,12 +53,54 @@
   background: #f0f7f2;
 }
 
-.lp-image-panel img {
+/* Slides do carrossel — empilhados, alternam via opacidade */
+.lp-image-slide {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: contain;
   object-position: center;
   display: block;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+  pointer-events: none;
+}
+
+.lp-image-slide--active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Indicadores (dots) — permitem escolher a imagem manualmente */
+.lp-image-dots {
+  position: absolute;
+  bottom: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 3;
+}
+
+.lp-image-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.lp-image-dot:hover {
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.lp-image-dot--active {
+  background: #1a5f3a;
+  transform: scale(1.25);
 }
 
 /* Overlay gradiente do rodapé — destaca o texto */
@@ -66,6 +108,8 @@
   content: '';
   position: absolute;
   inset: 0;
+  z-index: 2;
+  pointer-events: none;
 }
 
 

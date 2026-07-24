@@ -1,14 +1,23 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   Mail, Lock, User, Phone, AlertCircle,
   Briefcase, MapPin, CheckCircle,
 } from 'lucide-react';
-import { registerUser, verifyEmailToken, verifySession } from '@/lib/auth';
+import { registerUser, verifyEmailToken, verifySession, loginWithCredentials } from '@/lib/auth';
+import PlanosSection from '@/components/PlanosSection/PlanosSection';
 import '../login/login.css';
 
-type Step = 'form' | 'verify' | 'done';
+type Step = 'form' | 'verify' | 'plan' | 'done';
+
+// Slides do painel de imagem — mesmo carrossel usado na tela de login.
+const CADASTRO_SLIDES = [
+  { src: '/images/laptop_consultoria_taskbar_clean_880x727.png', alt: 'Consultor.IA — go2apply' },
+  { src: '/images/laptop_dmv_taskbar_clean_880x727.png', alt: 'DMV — go2apply' },
+];
+
+const SLIDE_INTERVAL_MS = 6000;
 
 const CARGOS = [
   'Engenheiro(a) Agrônomo(a)', 'Técnico(a) Agrícola',
@@ -24,16 +33,15 @@ const INTERESSES = [
 ];
 
 export default function CadastroPage() {
-  // Cadastro público desativado — equipe cadastra via painel admin
-  if (typeof window !== 'undefined') window.location.replace('/');
-
   const [checking, setChecking]       = useState(true);
   const [step, setStep]               = useState<Step>('form');
   const [isLoading, setIsLoading]     = useState(false);
   const [errors, setErrors]           = useState<Record<string, string>>({});
   const [verifyEmail, setVerifyEmail] = useState('');
   const [verifyToken, setVerifyToken] = useState('');
-  const [devToken, setDevToken]       = useState('');
+  const [newUserId, setNewUserId]     = useState<string | null>(null);
+  const [activeSlide, setActiveSlide] = useState(0);
+  const slideTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const [form, setForm] = useState({
     name: '', email: '', phone: '',
@@ -48,11 +56,77 @@ export default function CadastroPage() {
     });
   }, []);
 
+  // Loop automático do carrossel de imagens (mesmo comportamento do login)
+  useEffect(() => {
+    slideTimerRef.current = setInterval(() => {
+      setActiveSlide(prev => (prev + 1) % CADASTRO_SLIDES.length);
+    }, SLIDE_INTERVAL_MS);
+    return () => {
+      if (slideTimerRef.current) clearInterval(slideTimerRef.current);
+    };
+  }, []);
+
+  // Clique no link do email (/cadastro?token=...) — verifica automaticamente.
+  // Precisa ficar antes do "if (checking) return" abaixo: hooks não podem
+  // ser chamados condicionalmente / depois de um retorno antecipado.
+  useEffect(() => {
+    if (checking) return;
+    const params = new URLSearchParams(window.location.search);
+    const tokenFromLink = params.get('token');
+    if (tokenFromLink) {
+      setVerifyToken(tokenFromLink);
+      setStep('verify');
+      runVerification(tokenFromLink);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [checking]);
+
+  // Polling: detecta que o email foi confirmado em OUTRA aba (ex.: a pessoa
+  // clicou "Confirmar email" no Gmail, que abriu numa aba separada) e avança
+  // esta tela automaticamente, sem precisar recarregar ou colar código.
+  useEffect(() => {
+    if (step !== 'verify' || !verifyEmail) return;
+    const interval = setInterval(async () => {
+      try {
+        const res = await fetch(`/api/auth/verification-status?email=${encodeURIComponent(verifyEmail)}`);
+        const data = await res.json();
+        if (data.success && data.verified) {
+          clearInterval(interval);
+          await proceedAfterVerified();
+        }
+      } catch {
+        // Silencioso — tenta de novo no próximo ciclo
+      }
+    }, 3000);
+    return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [step, verifyEmail]);
+
   if (checking) return <div className="lp-checking"><div className="lp-spinner" /></div>;
+
+  // Tela de planos ocupa a página inteira — não usa o layout de dois painéis
+  // do formulário de cadastro/login.
+  if (step === 'plan' && newUserId) {
+    return (
+      <PlanosSection
+        userId={newUserId}
+        onSkip={() => { window.location.href = '/go2apply'; }}
+      />
+    );
+  }
 
   const set = (k: string, v: string) => {
     setForm(p => ({ ...p, [k]: v }));
     setErrors(p => ({ ...p, [k]: '' }));
+  };
+
+  // Seleção manual do carrossel — reinicia o timer para não trocar logo em seguida
+  const goToSlide = (index: number) => {
+    setActiveSlide(index);
+    if (slideTimerRef.current) clearInterval(slideTimerRef.current);
+    slideTimerRef.current = setInterval(() => {
+      setActiveSlide(prev => (prev + 1) % CADASTRO_SLIDES.length);
+    }, SLIDE_INTERVAL_MS);
   };
 
   const formatPhone = (v: string) => {
@@ -87,8 +161,6 @@ export default function CadastroPage() {
       });
       if (r.success) {
         setVerifyEmail(form.email);
-        setVerifyToken(r.verificationToken || '');
-        setDevToken(r.verificationToken || '');
         setStep('verify');
       } else {
         setErrors({ submit: r.message });
@@ -100,14 +172,34 @@ export default function CadastroPage() {
     }
   };
 
-  const handleVerify = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!verifyToken) { setErrors({ verify: 'Código obrigatório' }); return; }
+  // Avança depois que o email foi confirmado (por token ou detectado via
+  // polling). Login automático só é possível se a senha ainda estiver em
+  // memória (mesma aba/navegador onde a conta foi criada) — se a pessoa
+  // confirmou por outro dispositivo/aba, cai no fallback de login manual.
+  const proceedAfterVerified = async () => {
+    if (form.password) {
+      const loginResult = await loginWithCredentials({ email: form.email, password: form.password });
+      if (loginResult.success && loginResult.userId) {
+        setNewUserId(loginResult.userId);
+        setStep('plan');
+        return;
+      }
+    }
+    setStep('done');
+  };
+
+  // Reutilizável: chamado tanto pelo botão "Verificar email" quanto
+  // automaticamente quando a pessoa clica no link recebido por email.
+  const runVerification = async (tokenToVerify: string) => {
+    if (!tokenToVerify) { setErrors({ verify: 'Código obrigatório' }); return; }
     setIsLoading(true);
     try {
-      const r = await verifyEmailToken(verifyToken);
-      if (r.success) setStep('done');
-      else setErrors({ verify: r.message });
+      const r = await verifyEmailToken(tokenToVerify);
+      if (!r.success) {
+        setErrors({ verify: r.message });
+        return;
+      }
+      await proceedAfterVerified();
     } catch {
       setErrors({ verify: 'Erro ao verificar. Tente novamente.' });
     } finally {
@@ -115,13 +207,36 @@ export default function CadastroPage() {
     }
   };
 
+  const handleVerify = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await runVerification(verifyToken);
+  };
+
   return (
     <div className="lp-root">
 
-      {/* ── Painel esquerdo — imagem ── */}
+      {/* ── Painel esquerdo — imagem (carrossel) ── */}
       <div className="lp-image-panel">
         <div className="lp-image-inner">
-          <img src="/images/campo-consultoria.jpeg" alt="Campo agrícola Equalizagro" />
+          {CADASTRO_SLIDES.map((slide, index) => (
+            <img
+              key={slide.src}
+              src={slide.src}
+              alt={slide.alt}
+              className={`lp-image-slide${index === activeSlide ? ' lp-image-slide--active' : ''}`}
+            />
+          ))}
+          <div className="lp-image-dots">
+            {CADASTRO_SLIDES.map((slide, index) => (
+              <button
+                key={slide.src}
+                type="button"
+                className={`lp-image-dot${index === activeSlide ? ' lp-image-dot--active' : ''}`}
+                aria-label={`Mostrar imagem: ${slide.alt}`}
+                onClick={() => goToSlide(index)}
+              />
+            ))}
+          </div>
         </div>
       </div>
 
@@ -138,15 +253,17 @@ export default function CadastroPage() {
             <>
               <div className="lp-header">
                 <h1 className="lp-title">Verifique seu email</h1>
-                <p className="lp-sub">Enviamos um código para <strong>{verifyEmail}</strong></p>
+                <p className="lp-sub">
+                  {verifyEmail
+                    ? <>Enviamos um link de confirmação para <strong>{verifyEmail}</strong></>
+                    : 'Confirmando seu email...'}
+                </p>
+                {verifyEmail && (
+                  <p className="lp-sub" style={{ fontSize: '0.8rem', marginTop: '-0.5rem' }}>
+                    Assim que você clicar no link recebido, esta página avança automaticamente.
+                  </p>
+                )}
               </div>
-
-              {devToken && (
-                <div className="lp-dev-token">
-                  <span>🔧 Token (dev)</span>
-                  <code>{devToken}</code>
-                </div>
-              )}
 
               <form onSubmit={handleVerify} className="lp-form">
                 <div className="lp-field">
@@ -316,7 +433,6 @@ export default function CadastroPage() {
           <p className="lp-footer-link"><a href="/">← Voltar ao site</a></p>
         </div>
       </div>
-
     </div>
   );
 }

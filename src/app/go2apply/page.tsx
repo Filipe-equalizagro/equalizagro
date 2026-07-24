@@ -4,10 +4,20 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import {
   Brain, Calculator, Users, ShieldCheck,
-  Home, LogOut, ChevronRight, Menu, X, MoveHorizontal,
+  Home, LogOut, ChevronRight, Menu, X, MoveHorizontal, Sparkles, Settings,
 } from 'lucide-react';
 import { verifySession, logout } from '@/lib/auth';
+import SubscriptionModal from '@/components/SubscriptionModal/SubscriptionModal';
 import './dashboard.css';
+
+interface SubscriptionInfo {
+  status: string;
+  planName: string;
+  billingInterval: 'month' | 'year';
+  trialEnd: string | null;
+  currentPeriodEnd: string | null;
+  cancelAtPeriodEnd: boolean;
+}
 
 const SIDEBAR_MIN     = 68;
 const SIDEBAR_MAX     = 340;
@@ -59,6 +69,12 @@ export default function DashboardPage() {
   const [isMobile, setIsMobile]         = useState(false);
   const widthRef = useRef(SIDEBAR_DEFAULT);
 
+  const [userId, setUserId] = useState<string | null>(null);
+  const [subscription, setSubscription] = useState<SubscriptionInfo | null>(null);
+  const [subscriptionLoading, setSubscriptionLoading] = useState(true);
+  const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
+  const [portalLoading, setPortalLoading] = useState(false);
+
   useEffect(() => {
     const checkSession = async () => {
       const result = await verifySession();
@@ -81,6 +97,7 @@ export default function DashboardPage() {
         localStorage.setItem('userInitial', initial);
         localStorage.setItem('userName', result.fullName);
       }
+      if (result.userId) setUserId(result.userId);
       setIsLoading(false);
       const saved = parseInt(localStorage.getItem('db-sidebar-width') || '');
       if (!isNaN(saved) && saved >= SIDEBAR_MIN && saved <= SIDEBAR_MAX) {
@@ -90,6 +107,42 @@ export default function DashboardPage() {
     };
     checkSession();
   }, []);
+
+  // Busca o status da assinatura assim que o userId estiver disponível
+  useEffect(() => {
+    if (!userId) return;
+    const fetchSubscription = async () => {
+      setSubscriptionLoading(true);
+      try {
+        const res = await fetch(`/api/subscriptions/my-subscription?userId=${userId}`);
+        const data = await res.json();
+        if (data.success) setSubscription(data.subscription);
+      } catch {
+        // Silencioso — dashboard funciona normalmente mesmo sem esse dado
+      } finally {
+        setSubscriptionLoading(false);
+      }
+    };
+    fetchSubscription();
+  }, [userId]);
+
+  const handleManageSubscription = async () => {
+    if (!userId) return;
+    setPortalLoading(true);
+    try {
+      const res = await fetch('/api/subscriptions/create-portal', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId }),
+      });
+      const data = await res.json();
+      if (data.success && data.portalUrl) {
+        window.location.href = data.portalUrl;
+      }
+    } finally {
+      setPortalLoading(false);
+    }
+  };
 
   /* ── Detecta mobile (< 1024px) ── */
   useEffect(() => {
@@ -334,12 +387,63 @@ export default function DashboardPage() {
               </Link>
             ))}
           </div>
+
+          {/* Assinatura — CTA para quem não tem, status para quem tem */}
+          {!subscriptionLoading && (
+            subscription ? (
+              <div className="db-sub-card db-sub-card--active">
+                <div className="db-sub-card__icon"><Sparkles size={22} /></div>
+                <div className="db-sub-card__text">
+                  <h3>
+                    Assinatura {subscription.planName}
+                    {subscription.status === 'trialing' && ' — período grátis'}
+                  </h3>
+                  <p>
+                    {subscription.status === 'trialing' && subscription.trialEnd
+                      ? `Seu trial termina em ${new Date(subscription.trialEnd).toLocaleDateString('pt-BR')}. `
+                      : subscription.currentPeriodEnd
+                      ? `Próxima cobrança em ${new Date(subscription.currentPeriodEnd).toLocaleDateString('pt-BR')}. `
+                      : ''}
+                    {subscription.cancelAtPeriodEnd && 'Cancelamento agendado — acesso continua até o fim do período. '}
+                    Acesso ilimitado ao Consultor.IA e às ferramentas.
+                  </p>
+                </div>
+                <button
+                  className="db-sub-card__manage"
+                  onClick={handleManageSubscription}
+                  disabled={portalLoading}
+                >
+                  <Settings size={15} />
+                  {portalLoading ? 'Abrindo...' : 'Gerenciar assinatura'}
+                </button>
+              </div>
+            ) : (
+              <div className="db-sub-card db-sub-card--cta">
+                <div className="db-sub-card__icon"><Sparkles size={22} /></div>
+                <div className="db-sub-card__text">
+                  <h3>Desbloqueie acesso ilimitado</h3>
+                  <p>Consultor.IA e todas as ferramentas de pulverização, sem gastar créditos. 7 dias grátis.</p>
+                </div>
+                <button className="db-sub-card__manage" onClick={() => setShowSubscriptionModal(true)}>
+                  Ver planos
+                </button>
+              </div>
+            )
+          )}
         </div>
 
         <footer className="db-footer">
           <p>© Equalizagro 2026</p>
         </footer>
       </div>
+
+      {userId && (
+        <SubscriptionModal
+          isOpen={showSubscriptionModal}
+          onClose={() => setShowSubscriptionModal(false)}
+          userId={userId}
+        />
+      )}
     </div>
   );
 }

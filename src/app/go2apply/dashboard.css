@@ -570,6 +570,75 @@
 }
 
 /* ── Tool cards ── */
+/* Card de assinatura — CTA (sem assinatura) ou status (assinante) */
+.db-sub-card {
+  margin-top: 1rem;
+  padding: 1.25rem 1.5rem;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.db-sub-card--cta {
+  background: linear-gradient(135deg, #1a5f3a 0%, #2d7a4f 100%);
+  color: #fff;
+}
+.db-sub-card--cta .db-sub-card__text p { color: rgba(255,255,255,0.85); }
+
+.db-sub-card--active {
+  background: #ffffff;
+  border: 1px solid rgba(26, 95, 58, 0.2);
+  color: #16281f;
+}
+.db-sub-card--active .db-sub-card__icon { background: rgba(26, 95, 58, 0.1); color: #1a5f3a; }
+.db-sub-card--active .db-sub-card__text p { color: #6b7280; }
+
+.db-sub-card__icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.db-sub-card__text {
+  flex: 1;
+  min-width: 200px;
+}
+.db-sub-card__text h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 0 0 0.2rem;
+}
+.db-sub-card__text p {
+  font-size: 0.85rem;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.db-sub-card__manage {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.65rem 1.1rem;
+  border-radius: 10px;
+  border: none;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity 0.15s, transform 0.15s;
+}
+.db-sub-card--cta .db-sub-card__manage { background: #fff; color: #1a5f3a; }
+.db-sub-card--active .db-sub-card__manage { background: #1a5f3a; color: #fff; }
+.db-sub-card__manage:hover:not(:disabled) { transform: translateY(-1px); }
+.db-sub-card__manage:disabled { opacity: 0.6; cursor: not-allowed; }
+
 .db-cards {
   display: grid;
   gap: 1rem;

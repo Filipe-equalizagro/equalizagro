@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { query } from '@/lib/database';
 import bcrypt from 'bcryptjs';
-import { ensureConversationTables } from '@/lib/db-init';
+import { ensureConversationTables, ensureBillingExemptColumn } from '@/lib/db-init';
+import { checkAccess } from '@/lib/subscriptions';
 
 const N8N_WEBHOOK = 'https://equalizagro.app.n8n.cloud/webhook/consultor-caldas';
 
@@ -61,7 +62,7 @@ async function upsertConversation(userId: string, conversationId: string | null,
   return result.rows[0].id;
 }
 
-async function saveMessages(userId: string, convId: string, userMsg: string, aiMsg: string): Promise<void> {
+async function saveMessages(userId: string, convId: string, userMsg: string, aiMsg: string, unlimited: boolean): Promise<void> {
   await query(
     `INSERT INTO equalizagro.messages
        (conversation_id, user_id, role, content, created_at, updated_at)
@@ -78,14 +79,16 @@ async function saveMessages(userId: string, convId: string, userMsg: string, aiM
      WHERE id = $1`,
     [convId]
   );
-  // Decrementar 1 crédito por troca de mensagem (user + assistant = 1 uso)
-  await query(
-    `UPDATE equalizagro.users
-     SET credits_balance = GREATEST(credits_balance - 1, 0),
-         updated_at = NOW()
-     WHERE id = $1`,
-    [userId]
-  );
+  // Isentos e assinantes ativos (trial ou pagantes) têm acesso ilimitado — não descontam crédito
+  if (!unlimited) {
+    await query(
+      `UPDATE equalizagro.users
+       SET credits_balance = GREATEST(credits_balance - 1, 0),
+           updated_at = NOW()
+       WHERE id = $1`,
+      [userId]
+    );
+  }
 }
 
 export async function POST(request: NextRequest) {
@@ -98,6 +101,30 @@ export async function POST(request: NextRequest) {
     }
 
     const sessionId = contextId || `eq_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+
+    // ── Gate de acesso ──────────────────────────────────────────────
+    // Isentos (equipe/admin) e assinantes (trial ou ativos) têm acesso
+    // ilimitado. Os demais só passam se ainda tiverem créditos — sem
+    // crédito e sem assinatura, bloqueia antes de gastar com o n8n.
+    const authToken = token || request.headers.get('authorization')?.replace('Bearer ', '');
+    if (!authToken) {
+      return NextResponse.json({ success: false, message: 'Sessão expirada. Faça login novamente.' }, { status: 401 });
+    }
+
+    if (!tablesReady) { await ensureConversationTables(); await ensureBillingExemptColumn(); tablesReady = true; }
+    const userId = await getUserIdFromToken(authToken);
+    if (!userId) {
+      return NextResponse.json({ success: false, message: 'Sessão expirada. Faça login novamente.' }, { status: 401 });
+    }
+
+    const access = await checkAccess(userId);
+    if (!access.allowed) {
+      return NextResponse.json({
+        success: false,
+        message: 'Seus créditos acabaram. Assine um plano para continuar usando o Consultor.IA.',
+        requiresSubscription: true,
+      }, { status: 402 });
+    }
 
     // ── Chamar n8n ──────────────────────────────────────────────────
     // X-Aton-Key: token secreto de servidor para o n8n autenticar a origem
@@ -129,25 +156,15 @@ export async function POST(request: NextRequest) {
     // O componente NÃO salva mais — apenas exibe. Isso garante que toda
     // interação com o n8n seja registrada independente do estado do frontend.
     let savedConversationId: string | null = null;
-    const authToken = token || request.headers.get('authorization')?.replace('Bearer ', '');
-
-    if (authToken) {
-      try {
-        if (!tablesReady) { await ensureConversationTables(); tablesReady = true; }
-        const userId = await getUserIdFromToken(authToken);
-        if (userId) {
-          // upsertConversation: se conversationId for UUID válido do usuário, usa ele;
-          // caso contrário cria nova conversa com o título da primeira mensagem.
-          const convId = await upsertConversation(userId, conversationId, message);
-          await saveMessages(userId, convId, message, responseText);
-          savedConversationId = convId;
-          console.log('[Chat] Salvo — userId:', userId, 'convId:', convId);
-        } else {
-          console.warn('[Chat] Token inválido ou expirado — mensagem não salva');
-        }
-      } catch (e) {
-        console.error('[Chat] Erro ao salvar no banco:', e);
-      }
+    try {
+      // upsertConversation: se conversationId for UUID válido do usuário, usa ele;
+      // caso contrário cria nova conversa com o título da primeira mensagem.
+      const convId = await upsertConversation(userId, conversationId, message);
+      await saveMessages(userId, convId, message, responseText, access.unlimited);
+      savedConversationId = convId;
+      console.log('[Chat] Salvo — userId:', userId, 'convId:', convId);
+    } catch (e) {
+      console.error('[Chat] Erro ao salvar no banco:', e);
     }
 
     return NextResponse.json({

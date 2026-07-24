@@ -2,6 +2,7 @@
 import { query } from '@/lib/database';
 import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
+import { checkAccess } from '@/lib/subscriptions';
 
 /**
  * Buscar userId do token no banco de dados (auth_tokens)
@@ -152,18 +153,23 @@ async function fetchUserPlanData(userId: string) {
   renewalDate.setMonth(renewalDate.getMonth() + 1);
   renewalDate.setDate(1);
 
+  // Isento (equipe/admin) ou assinante ativo (trial ou pagante) tem acesso ilimitado
+  const access = await checkAccess(userId);
+  const unlimited = access.unlimited;
+
   return NextResponse.json({
     success: true,
     data: {
       userId: user.id,
       fullName: user.full_name,
       email: user.email,
-      planName: planData.planName,
+      planName: unlimited ? 'Assinatura go2apply' : planData.planName,
       creditsAvailable: user.credits_balance || 0,
       creditsUsed: creditsUsed,
       monthlyLimit: planData.monthlyLimit,
       renewalDate: renewalDate.toISOString(),
       joinDate: user.created_at,
+      unlimited,
     },
   });
 }
