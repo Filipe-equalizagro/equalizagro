@@ -37,6 +37,26 @@
   animation: dbSpin 0.75s linear infinite;
 }
 
+/* ── Bloqueio (sem crédito/assinatura) ── */
+.db-blocked {
+  position: relative;
+  min-height: 100vh;
+}
+
+.db-blocked__logout {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.5rem;
+  background: none;
+  border: none;
+  color: #6b7280;
+  font-size: 0.82rem;
+  text-decoration: underline;
+  cursor: pointer;
+  z-index: 10;
+}
+.db-blocked__logout:hover { color: #374151; }
+
 /* ── Root layout ── */
 .db-layout {
   display: flex;

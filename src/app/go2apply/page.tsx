@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { verifySession, logout } from '@/lib/auth';
 import SubscriptionModal from '@/components/SubscriptionModal/SubscriptionModal';
+import PlanosSection from '@/components/PlanosSection/PlanosSection';
 import './dashboard.css';
 
 interface SubscriptionInfo {
@@ -72,6 +73,8 @@ export default function DashboardPage() {
   const [userId, setUserId] = useState<string | null>(null);
   const [subscription, setSubscription] = useState<SubscriptionInfo | null>(null);
   const [subscriptionLoading, setSubscriptionLoading] = useState(true);
+  // null enquanto carrega — evita bloquear/liberar precipitadamente antes da resposta
+  const [hasAccess, setHasAccess] = useState<boolean | null>(null);
   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
   const [portalLoading, setPortalLoading] = useState(false);
 
@@ -116,9 +119,15 @@ export default function DashboardPage() {
       try {
         const res = await fetch(`/api/subscriptions/my-subscription?userId=${userId}`);
         const data = await res.json();
-        if (data.success) setSubscription(data.subscription);
+        if (data.success) {
+          setSubscription(data.subscription);
+          setHasAccess(data.hasAccess !== false);
+        } else {
+          setHasAccess(true);
+        }
       } catch {
-        // Silencioso — dashboard funciona normalmente mesmo sem esse dado
+        // Falha ao verificar — não bloqueia por erro de rede/servidor
+        setHasAccess(true);
       } finally {
         setSubscriptionLoading(false);
       }
@@ -215,6 +224,30 @@ export default function DashboardPage() {
   }
 
   if (!isAuthenticated) return null;
+
+  // Aguarda a checagem de acesso antes de decidir entre painel e bloqueio —
+  // evita um flash do dashboard completo para quem vai ser bloqueado.
+  if (subscriptionLoading) {
+    return (
+      <div className="db-loading">
+        <div className="db-loading__spinner" />
+        <p>Carregando painel...</p>
+      </div>
+    );
+  }
+
+  // Sem crédito e sem assinatura/isenção — bloqueia toda a plataforma e
+  // mostra a tela de planos no lugar do dashboard (sem opção de "pular").
+  if (hasAccess === false && userId) {
+    return (
+      <div className="db-blocked">
+        <PlanosSection userId={userId} />
+        <button className="db-blocked__logout" onClick={handleLogout}>
+          Sair da conta
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="db-layout">
