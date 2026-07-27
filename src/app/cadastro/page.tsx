@@ -32,6 +32,13 @@ const INTERESSES = [
   'Nutrição de plantas', 'Todos os acima',
 ];
 
+// Guarda email/senha temporariamente durante a etapa "verifique seu email" —
+// só nesta aba (sessionStorage), só até o login automático acontecer. Sem
+// isso, um recarregamento da página (ou o hot-reload em desenvolvimento)
+// perde a senha da memória do React e o login automático pós-confirmação
+// falha, mesmo com o polling funcionando normalmente.
+const PENDING_KEY = 'cadastro_pending_verification';
+
 export default function CadastroPage() {
   const [checking, setChecking]       = useState(true);
   const [step, setStep]               = useState<Step>('form');
@@ -48,6 +55,7 @@ export default function CadastroPage() {
     password: '', confirmPassword: '',
     cargo: '', regiao: '', interesse: '',
   });
+  const [termsAccepted, setTermsAccepted] = useState(false);
 
   useEffect(() => {
     verifySession().then(r => {
@@ -77,7 +85,23 @@ export default function CadastroPage() {
       setVerifyToken(tokenFromLink);
       setStep('verify');
       runVerification(tokenFromLink);
+      return;
     }
+
+    // Sem token na URL — restaura uma verificação pendente desta mesma aba
+    // (ex.: página recarregada, ou hot-reload em dev) para retomar o polling
+    // e manter a senha disponível para o login automático.
+    try {
+      const raw = sessionStorage.getItem(PENDING_KEY);
+      if (raw) {
+        const pending = JSON.parse(raw);
+        if (pending?.email) {
+          setVerifyEmail(pending.email);
+          setForm(p => ({ ...p, email: pending.email, password: pending.password || '' }));
+          setStep('verify');
+        }
+      }
+    } catch { /* ignorar */ }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [checking]);
 
@@ -147,6 +171,8 @@ export default function CadastroPage() {
       errs.password = 'Mínimo 6 caracteres';
     if (form.password !== form.confirmPassword)
       errs.confirmPassword = 'Senhas não conferem';
+    if (!termsAccepted)
+      errs.terms = 'É necessário aceitar os Termos de Uso e a Política de Privacidade';
     if (Object.keys(errs).length) { setErrors(errs); return; }
 
     setIsLoading(true);
@@ -155,6 +181,7 @@ export default function CadastroPage() {
         name: form.name, email: form.email,
         phone: form.phone.replace(/\D/g, ''),
         password: form.password,
+        termsAccepted: true,
         cargo: form.cargo || undefined,
         regiao: form.regiao || undefined,
         interesse: form.interesse || undefined,
@@ -162,6 +189,9 @@ export default function CadastroPage() {
       if (r.success) {
         setVerifyEmail(form.email);
         setStep('verify');
+        try {
+          sessionStorage.setItem(PENDING_KEY, JSON.stringify({ email: form.email, password: form.password }));
+        } catch { /* ignorar — pior caso, cai no fallback de login manual */ }
       } else {
         setErrors({ submit: r.message });
       }
@@ -173,18 +203,21 @@ export default function CadastroPage() {
   };
 
   // Avança depois que o email foi confirmado (por token ou detectado via
-  // polling). Login automático só é possível se a senha ainda estiver em
-  // memória (mesma aba/navegador onde a conta foi criada) — se a pessoa
-  // confirmou por outro dispositivo/aba, cai no fallback de login manual.
+  // polling). Login automático só é possível se a senha ainda estiver
+  // disponível (em memória, ou restaurada do sessionStorage desta aba) — se
+  // a pessoa confirmou por outro dispositivo E esta aba perdeu a senha
+  // (ex.: sessionStorage limpo pelo navegador), cai no fallback de login manual.
   const proceedAfterVerified = async () => {
     if (form.password) {
       const loginResult = await loginWithCredentials({ email: form.email, password: form.password });
       if (loginResult.success && loginResult.userId) {
+        try { sessionStorage.removeItem(PENDING_KEY); } catch { /* ignorar */ }
         setNewUserId(loginResult.userId);
         setStep('plan');
         return;
       }
     }
+    try { sessionStorage.removeItem(PENDING_KEY); } catch { /* ignorar */ }
     setStep('done');
   };
 
@@ -245,7 +278,7 @@ export default function CadastroPage() {
         <div className="lp-card">
 
           <a href="/" className="lp-logo">
-            <img src="/images/EQUALIZAGRO ok.png" alt="Equalizagro" />
+            <img src="/images/go2apply-logo-colorido.png" alt="Go2apply" />
           </a>
 
           {/* ── Verificação de email ── */}
@@ -411,6 +444,24 @@ export default function CadastroPage() {
                     <option value="">Selecione</option>
                     {INTERESSES.map(i => <option key={i} value={i}>{i}</option>)}
                   </select>
+                </div>
+
+                <div className="lp-field lp-terms">
+                  <label className="lp-terms__label">
+                    <input
+                      type="checkbox"
+                      checked={termsAccepted}
+                      onChange={e => { setTermsAccepted(e.target.checked); setErrors(p => ({ ...p, terms: '' })); }}
+                    />
+                    <span>
+                      Li e concordo com os{' '}
+                      <a href="/docs/termos-de-uso.pdf" target="_blank" rel="noopener noreferrer">Termos de Uso</a>
+                      {' '}e a{' '}
+                      <a href="/docs/politica-de-privacidade.pdf" target="_blank" rel="noopener noreferrer">Política de Privacidade</a>
+                      {' '}do go2apply.
+                    </span>
+                  </label>
+                  {errors.terms && <p className="lp-err"><AlertCircle size={14} />{errors.terms}</p>}
                 </div>
 
                 {errors.submit && (

@@ -875,12 +875,12 @@ export default function ConsultorIA() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${getAuthToken()}`,
         },
         body: JSON.stringify({
           message: combinedMessage,
           contextId: gptContextId,
           conversationId: currentConversationIdRef.current,
-          token: getAuthToken(),
           userName: planData?.fullName || 'Usuário',
         }),
       });

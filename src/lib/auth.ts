@@ -73,6 +73,9 @@ export interface RegisterData {
   email: string;
   phone: string;
   password: string;
+  // Aceite dos Termos de Uso e Política de Privacidade — obrigatório para
+  // cadastro de cliente (role client/undefined), dispensado para equipe.
+  termsAccepted?: boolean;
   // Campos opcionais para cadastro da equipe
   cargo?: string;
   regiao?: string;

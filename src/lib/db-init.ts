@@ -162,6 +162,16 @@ export async function ensureBillingExemptColumn(): Promise<void> {
   );
 }
 
+/**
+ * Guarda quando e qual versão dos Termos de Uso / Política de Privacidade
+ * o usuário aceitou no cadastro — serve de prova do consentimento (a própria
+ * cláusula 1.4 dos Termos exige que o aceite seja registrado no cadastro).
+ */
+export async function ensureTermsAcceptanceColumns(): Promise<void> {
+  await query(`ALTER TABLE equalizagro.users ADD COLUMN IF NOT EXISTS terms_accepted_at TIMESTAMP WITH TIME ZONE`, []);
+  await query(`ALTER TABLE equalizagro.users ADD COLUMN IF NOT EXISTS terms_version TEXT`, []);
+}
+
 // Executa um statement DDL isoladamente — um erro não aborta os demais.
 // Isso é crucial: se um único ALTER/CREATE falhar, o resto do schema ainda
 // é garantido, evitando que TODA operação de conversa falhe em cascata.

@@ -62,7 +62,7 @@ async function upsertConversation(userId: string, conversationId: string | null,
   return result.rows[0].id;
 }
 
-async function saveMessages(userId: string, convId: string, userMsg: string, aiMsg: string, unlimited: boolean): Promise<void> {
+async function saveMessages(userId: string, convId: string, userMsg: string, aiMsg: string): Promise<void> {
   await query(
     `INSERT INTO equalizagro.messages
        (conversation_id, user_id, role, content, created_at, updated_at)
@@ -79,16 +79,6 @@ async function saveMessages(userId: string, convId: string, userMsg: string, aiM
      WHERE id = $1`,
     [convId]
   );
-  // Isentos e assinantes ativos (trial ou pagantes) têm acesso ilimitado — não descontam crédito
-  if (!unlimited) {
-    await query(
-      `UPDATE equalizagro.users
-       SET credits_balance = GREATEST(credits_balance - 1, 0),
-           updated_at = NOW()
-       WHERE id = $1`,
-      [userId]
-    );
-  }
 }
 
 export async function POST(request: NextRequest) {
@@ -103,10 +93,10 @@ export async function POST(request: NextRequest) {
     const sessionId = contextId || `eq_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
     // ── Gate de acesso ──────────────────────────────────────────────
-    // Isentos (equipe/admin) e assinantes (trial ou ativos) têm acesso
-    // ilimitado. Os demais só passam se ainda tiverem créditos — sem
-    // crédito e sem assinatura, bloqueia antes de gastar com o n8n.
-    const authToken = token || request.headers.get('authorization')?.replace('Bearer ', '');
+    // Só existem duas portas: isento (equipe/admin) ou assinatura ativa/
+    // trial (mensal ou anual). Sem nenhuma das duas, bloqueia antes de
+    // gastar com o n8n.
+    const authToken = request.headers.get('authorization')?.replace('Bearer ', '') || token;
     if (!authToken) {
       return NextResponse.json({ success: false, message: 'Sessão expirada. Faça login novamente.' }, { status: 401 });
     }
@@ -121,7 +111,7 @@ export async function POST(request: NextRequest) {
     if (!access.allowed) {
       return NextResponse.json({
         success: false,
-        message: 'Seus créditos acabaram. Assine um plano para continuar usando o Consultor.IA.',
+        message: 'Assine um plano para continuar usando o Consultor.IA.',
         requiresSubscription: true,
       }, { status: 402 });
     }
@@ -160,7 +150,7 @@ export async function POST(request: NextRequest) {
       // upsertConversation: se conversationId for UUID válido do usuário, usa ele;
       // caso contrário cria nova conversa com o título da primeira mensagem.
       const convId = await upsertConversation(userId, conversationId, message);
-      await saveMessages(userId, convId, message, responseText, access.unlimited);
+      await saveMessages(userId, convId, message, responseText);
       savedConversationId = convId;
       console.log('[Chat] Salvo — userId:', userId, 'convId:', convId);
     } catch (e) {

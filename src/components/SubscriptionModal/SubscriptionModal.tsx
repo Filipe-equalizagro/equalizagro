@@ -100,7 +100,7 @@ export default function SubscriptionModal({ isOpen, onClose, userId }: Subscript
 
         <h2 className="sub-modal__title">Assine e tenha acesso ilimitado</h2>
         <p className="sub-modal__subtitle">
-          Consultor.IA e todas as ferramentas de pulverização, sem gastar créditos.
+          Consultor.IA, Pulverização e Consultor Kow, sem limites.
         </p>
 
         {loading ? (
@@ -116,7 +116,11 @@ export default function SubscriptionModal({ isOpen, onClose, userId }: Subscript
                   <div
                     key={plan.id}
                     className={`sub-plan${selectedPlan === plan.id ? ' sub-plan--selected' : ''}${isAnual ? ' sub-plan--highlight' : ''}`}
-                    onClick={() => setSelectedPlan(plan.id)}
+                    onClick={() => {
+                      setSelectedPlan(plan.id);
+                      // Boleto só existe para o Anual — volta pro cartão ao escolher Mensal
+                      if (!isAnual) setPaymentMethod('card');
+                    }}
                   >
                     {isAnual && <span className="sub-plan__tag">Melhor custo-benefício</span>}
                     {selectedPlan === plan.id && (
@@ -151,30 +155,32 @@ export default function SubscriptionModal({ isOpen, onClose, userId }: Subscript
               })}
             </div>
 
-            <div className="sub-modal__payment-method">
-              <label>Forma de pagamento</label>
-              <div className="sub-modal__payment-options">
-                <button
-                  type="button"
-                  className={`sub-modal__payment-option${paymentMethod === 'card' ? ' sub-modal__payment-option--selected' : ''}`}
-                  onClick={() => setPaymentMethod('card')}
-                >
-                  Cartão de crédito
-                </button>
-                <button
-                  type="button"
-                  className={`sub-modal__payment-option${paymentMethod === 'boleto' ? ' sub-modal__payment-option--selected' : ''}`}
-                  onClick={() => setPaymentMethod('boleto')}
-                >
-                  Boleto
-                </button>
+            {isAnualSelected && (
+              <div className="sub-modal__payment-method">
+                <label>Forma de pagamento</label>
+                <div className="sub-modal__payment-options">
+                  <button
+                    type="button"
+                    className={`sub-modal__payment-option${paymentMethod === 'card' ? ' sub-modal__payment-option--selected' : ''}`}
+                    onClick={() => setPaymentMethod('card')}
+                  >
+                    Cartão de crédito
+                  </button>
+                  <button
+                    type="button"
+                    className={`sub-modal__payment-option${paymentMethod === 'boleto' ? ' sub-modal__payment-option--selected' : ''}`}
+                    onClick={() => setPaymentMethod('boleto')}
+                  >
+                    Boleto
+                  </button>
+                </div>
+                {paymentMethod === 'boleto' && (
+                  <p className="sub-modal__payment-note">
+                    No boleto não há período grátis — o valor cobre os 12 meses de acesso, cobrado à vista.
+                  </p>
+                )}
               </div>
-              {paymentMethod === 'boleto' && (
-                <p className="sub-modal__payment-note">
-                  No boleto não há período grátis — o valor do plano é cobrado na primeira fatura.
-                </p>
-              )}
-            </div>
+            )}
 
             {isAnualSelected && paymentMethod === 'card' && (
               <div className="sub-modal__promo">
@@ -200,18 +206,14 @@ export default function SubscriptionModal({ isOpen, onClose, userId }: Subscript
                 ? 'Redirecionando...'
                 : paymentMethod === 'card'
                 ? 'Começar meus 7 dias grátis'
-                : isAnualSelected
-                ? 'Gerar boleto anual'
-                : 'Assinar com boleto'}
+                : 'Gerar boleto anual'}
             </button>
             <p className="sub-modal__fineprint">
               {paymentMethod === 'card'
                 ? isAnualSelected
                   ? 'Cartão solicitado agora, cobrança só após o período grátis. Compromisso de 12 meses, renovação automática.'
                   : 'Cartão solicitado agora, cobrança só após o período grátis. Cancele quando quiser.'
-                : isAnualSelected
-                ? 'O boleto cobre os 12 meses de acesso — pagamento único, sem recorrência mensal.'
-                : 'Você receberá um novo boleto a cada mês.'}
+                : 'O boleto cobre os 12 meses de acesso — pagamento único, sem recorrência mensal.'}
             </p>
           </>
         )}

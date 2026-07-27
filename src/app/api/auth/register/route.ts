@@ -2,19 +2,29 @@
 import { NextRequest } from 'next/server';
 import { ApiError, apiResponse, apiError, validateEmail, validatePassword, getClientIp } from '@/lib/api-utils';
 import { query } from '@/lib/database';
-import { ensureBillingExemptColumn } from '@/lib/db-init';
+import { ensureBillingExemptColumn, ensureTermsAcceptanceColumns } from '@/lib/db-init';
 import { sendVerificationEmail } from '@/lib/email';
 import { isExemptEmail } from '@/lib/billing-exempt';
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
 
+// Data da versão vigente dos Termos de Uso / Política de Privacidade
+// (mesma data de "Última atualização" nos dois PDFs em public/docs/).
+const TERMS_VERSION = '2026-07-24';
+
 export async function POST(request: NextRequest) {
   try {
-    const { email, password, name, phone, cargo, regiao, interesse, comoConheceu, role } = await request.json();
+    const { email, password, name, phone, cargo, regiao, interesse, comoConheceu, role, termsAccepted } = await request.json();
 
     // Validações
     if (!email || !password || !name || !phone) {
       throw new ApiError(400, 'Email, senha, nome e telefone são obrigatórios');
+    }
+
+    // Cadastro de cliente (não equipe) exige aceite explícito dos Termos de
+    // Uso e da Política de Privacidade antes de criar a conta.
+    if (role !== 'team' && termsAccepted !== true) {
+      throw new ApiError(400, 'É necessário aceitar os Termos de Uso e a Política de Privacidade para se cadastrar');
     }
 
     if (!validateEmail(email)) {
@@ -81,9 +91,12 @@ export async function POST(request: NextRequest) {
     const billingExempt = isExemptEmail(email);
     try {
       await ensureBillingExemptColumn();
+      await ensureTermsAcceptanceColumns();
     } catch (err) {
-      console.error('[Register] Erro ao garantir coluna billing_exempt:', err);
+      console.error('[Register] Erro ao garantir colunas billing_exempt/terms:', err);
     }
+
+    const termsAcceptedAt = termsAccepted === true ? new Date() : null;
 
     // Definir role: 'team' exige token de admin válido no header Authorization
     let userRole = 'client';
@@ -142,11 +155,13 @@ export async function POST(request: NextRequest) {
                credits_balance = 0,
                total_credits_purchased = 0,
                billing_exempt = $6,
+               terms_accepted_at = $7,
+               terms_version = $8,
                deleted_at = NULL,
                updated_at = NOW()
-           WHERE id = $7
+           WHERE id = $9
            RETURNING id`,
-          [phone, name, passwordHash, emailVerificationToken, userRole, billingExempt, deletedUserId]
+          [phone, name, passwordHash, emailVerificationToken, userRole, billingExempt, termsAcceptedAt, termsAcceptedAt ? TERMS_VERSION : null, deletedUserId]
         );
       } else {
         result = await query(
@@ -159,10 +174,12 @@ export async function POST(request: NextRequest) {
             email_verification_expires_at,
             role,
             auth_status,
-            billing_exempt
-          ) VALUES ($1, $2, $3, $4, $5, NOW() + INTERVAL '24 hours', $6, 'pending', $7)
+            billing_exempt,
+            terms_accepted_at,
+            terms_version
+          ) VALUES ($1, $2, $3, $4, $5, NOW() + INTERVAL '24 hours', $6, 'pending', $7, $8, $9)
           RETURNING id`,
-          [email.toLowerCase(), phone, name, passwordHash, emailVerificationToken, userRole, billingExempt]
+          [email.toLowerCase(), phone, name, passwordHash, emailVerificationToken, userRole, billingExempt, termsAcceptedAt, termsAcceptedAt ? TERMS_VERSION : null]
         );
       }
     } catch (err) {

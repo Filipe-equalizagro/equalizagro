@@ -1760,8 +1760,8 @@
             if (_tk) {
                 fetch('/api/tools/track-usage', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ tabId: id, token: _tk })
+                    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + _tk },
+                    body: JSON.stringify({ tabId: id })
                 }).catch(function(){});
             }
         } catch(e) {}
@@ -3250,8 +3250,8 @@
         if (!token) return;
         fetch('/api/tools/calculator-history', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ token: token, entry: entry })
+            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+            body: JSON.stringify({ entry: entry })
         }).catch(function(){});
     }
 

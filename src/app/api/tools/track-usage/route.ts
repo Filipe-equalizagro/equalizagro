@@ -35,7 +35,8 @@ async function getUserId(token: string): Promise<string | null> {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { tabId, token } = body;
+    const { tabId } = body;
+    const token = request.headers.get('authorization')?.replace('Bearer ', '') || body.token;
 
     if (!tabId || !token) {
       return NextResponse.json({ success: false }, { status: 400 });

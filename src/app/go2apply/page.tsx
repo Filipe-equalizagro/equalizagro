@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import {
-  Brain, Calculator, Users, ShieldCheck,
+  Brain, Calculator, Droplet, Users, ShieldCheck,
   Home, LogOut, ChevronRight, Menu, X, MoveHorizontal, Settings,
 } from 'lucide-react';
 import { verifySession, logout } from '@/lib/auth';
@@ -48,6 +48,18 @@ const ALL_TOOLS = [
     accent: '#c9a420',
     accentBg: 'rgba(212, 175, 55, 0.12)',
     tag: 'Pulverização',
+    adminOnly: false,
+  },
+  {
+    id: 'consultorKow',
+    title: 'Consultor Kow',
+    shortTitle: 'Consultor Kow',
+    description: 'Consulta o Kow e a tendência de adjuvante de cada produto, com busca, calculadora e IA.',
+    icon: Droplet,
+    href: '/consultor-kow',
+    accent: '#2ba198',
+    accentBg: 'rgba(43, 161, 152, 0.12)',
+    tag: 'Consultor Kow',
     adminOnly: false,
   },
 ];
@@ -462,7 +474,7 @@ export default function DashboardPage() {
               <div className="db-sub-card db-sub-card--cta">
                 <div className="db-sub-card__text">
                   <h3>Desbloqueie acesso ilimitado</h3>
-                  <p>Consultor.IA e todas as ferramentas de pulverização, sem gastar créditos. 7 dias grátis.</p>
+                  <p>Consultor.IA, Pulverização e Consultor Kow, sem limites. 7 dias grátis.</p>
                 </div>
                 <button className="db-sub-card__manage" onClick={() => setShowSubscriptionModal(true)}>
                   Ver planos

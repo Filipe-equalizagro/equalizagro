@@ -44,13 +44,12 @@ async function getOrCreateLaunchPromotionCodeId(): Promise<string> {
  * POST - Criar uma sessão de Checkout
  * Body: { userId, planId, promoCode?, paymentMethod?: 'card' | 'boleto' }
  *
- * Cartão: sempre assinatura recorrente na Stripe, com trial (dias grátis).
- * Boleto não suporta trial (a Stripe não gera boleto de R$0) nem re-cobrança
- * automática confiável — por isso:
- *   - Mensal + boleto: assinatura recorrente igual ao cartão, só sem trial
- *     (cada ciclo gera um novo boleto, mês a mês).
- *   - Anual + boleto: PAGAMENTO ÚNICO pelo valor cheio de 12 meses de acesso
- *     (não é 12x de R$157 — é o boleto do ano inteiro).
+ * Cartão: sempre assinatura recorrente na Stripe, com trial (dias grátis) —
+ * disponível para Mensal e Anual.
+ * Boleto: disponível SOMENTE para o Anual, como PAGAMENTO ÚNICO pelo valor
+ * cheio de 12 meses de acesso (não 12x de R$157 — é o boleto do ano
+ * inteiro). Sem trial (a Stripe não gera boleto de R$0) e sem Mensal (não
+ * há recorrência automática confiável via boleto).
  */
 export async function POST(request: NextRequest) {
   try {
@@ -71,6 +70,10 @@ export async function POST(request: NextRequest) {
       throw new ApiError(404, 'Plano de assinatura não encontrado');
     }
     const plan = planResult.rows[0];
+
+    if (isBoleto && plan.name !== 'Anual') {
+      throw new ApiError(400, 'Boleto disponível apenas para o plano Anual');
+    }
 
     const userResult = await query(`SELECT id, email FROM equalizagro.users WHERE id = $1`, [userId]);
     if (userResult.rows.length === 0) {
@@ -137,19 +140,17 @@ export async function POST(request: NextRequest) {
       });
       checkoutUrl = session.url;
     } else {
-      // ── Assinatura recorrente (Mensal em cartão/boleto, Anual em cartão) ─
-      const unitAmount = Math.round(
-        (isBoleto ? getBoletoPrice(plan.name) ?? Number(plan.price) : Number(plan.price)) * 100
-      );
+      // ── Assinatura recorrente via cartão (Mensal ou Anual) — boleto nunca
+      // chega aqui, pois é sempre pagamento único e só existe para o Anual.
+      const unitAmount = Math.round(Number(plan.price) * 100);
 
       const session = await stripe.checkout.sessions.create({
         mode: 'subscription',
-        payment_method_types: isBoleto ? ['boleto'] : ['card'],
+        payment_method_types: ['card'],
         ...(promotionCodeId ? { discounts: [{ promotion_code: promotionCodeId }] } : {}),
         customer_email: user.email,
-        // Cartão: exige coletar o cartão mesmo o valor devido hoje sendo R$0 (trial).
-        // Boleto: não se aplica — não há trial, a 1ª fatura já é cobrada.
-        ...(isBoleto ? {} : { payment_method_collection: 'always' as const }),
+        // Exige coletar o cartão mesmo o valor devido hoje sendo R$0 (trial)
+        payment_method_collection: 'always',
         line_items: [
           {
             price_data: {
@@ -167,8 +168,7 @@ export async function POST(request: NextRequest) {
           },
         ],
         subscription_data: {
-          // Boleto não suporta trial (não existe boleto de R$0) — cobra na hora
-          ...(isBoleto ? {} : { trial_period_days: plan.trial_days }),
+          trial_period_days: plan.trial_days,
           metadata: { userId, planId },
         },
         metadata: { userId, planId },
@@ -176,7 +176,7 @@ export async function POST(request: NextRequest) {
         cancel_url: `${APP_URL}/go2apply?subscription=cancelled`,
       });
       checkoutUrl = session.url;
-      trialDaysApplied = isBoleto ? 0 : plan.trial_days;
+      trialDaysApplied = plan.trial_days;
     }
 
     // Registra a assinatura como "incomplete" — o webhook promove para trialing/active

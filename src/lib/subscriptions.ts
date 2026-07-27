@@ -33,23 +33,23 @@ export type AccessCheck = {
 };
 
 /**
- * Gate central de acesso ao Consultor.IA: usuários isentos (equipe/admin) ou
- * com assinatura ativa/trial têm acesso ilimitado. Os demais só passam se
- * ainda tiverem créditos — sem créditos e sem assinatura, acesso é negado.
+ * Gate central de acesso ao Consultor.IA e ao Consultor Kow: só existem duas
+ * portas de entrada — isento (equipe/admin) ou assinatura ativa/trial
+ * (mensal ou anual). Não há mais crédito avulso comprado como caminho de
+ * acesso — sem isenção e sem assinatura, o acesso é sempre negado.
  */
 export async function checkAccess(userId: string): Promise<AccessCheck> {
   const result = await query(
-    `SELECT billing_exempt, credits_balance FROM equalizagro.users WHERE id = $1`,
+    `SELECT billing_exempt FROM equalizagro.users WHERE id = $1`,
     [userId]
   );
   if (result.rows.length === 0) return { allowed: false, unlimited: false, exempt: false };
 
-  const { billing_exempt, credits_balance } = result.rows[0];
+  const { billing_exempt } = result.rows[0];
   if (billing_exempt) return { allowed: true, unlimited: true, exempt: true };
 
   const subscribed = await hasActiveSubscription(userId);
   if (subscribed) return { allowed: true, unlimited: true, exempt: false };
 
-  const hasCredits = Number(credits_balance || 0) > 0;
-  return { allowed: hasCredits, unlimited: false, exempt: false };
+  return { allowed: false, unlimited: false, exempt: false };
 }

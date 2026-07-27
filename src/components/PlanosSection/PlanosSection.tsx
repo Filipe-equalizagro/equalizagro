@@ -119,7 +119,11 @@ export default function PlanosSection({ userId, onSkip }: PlanosSectionProps) {
                     <div
                       key={plan.id}
                       className={`planos-card${selectedPlan === plan.id ? ' planos-card--selected' : ''}${isAnual ? ' planos-card--highlight' : ''}`}
-                      onClick={() => setSelectedPlan(plan.id)}
+                      onClick={() => {
+                        setSelectedPlan(plan.id);
+                        // Boleto só existe para o Anual — volta pro cartão ao escolher Mensal
+                        if (!isAnual) setPaymentMethod('card');
+                      }}
                     >
                       {isAnual && <span className="planos-card__tag">Melhor custo-benefício</span>}
                       {selectedPlan === plan.id && (
@@ -153,30 +157,32 @@ export default function PlanosSection({ userId, onSkip }: PlanosSectionProps) {
                 })}
               </div>
 
-              <div className="planos-choice__payment-method">
-                <label>Forma de pagamento</label>
-                <div className="planos-choice__payment-options">
-                  <button
-                    type="button"
-                    className={`planos-choice__payment-option${paymentMethod === 'card' ? ' planos-choice__payment-option--selected' : ''}`}
-                    onClick={() => setPaymentMethod('card')}
-                  >
-                    Cartão de crédito
-                  </button>
-                  <button
-                    type="button"
-                    className={`planos-choice__payment-option${paymentMethod === 'boleto' ? ' planos-choice__payment-option--selected' : ''}`}
-                    onClick={() => setPaymentMethod('boleto')}
-                  >
-                    Boleto
-                  </button>
+              {isAnualSelected && (
+                <div className="planos-choice__payment-method">
+                  <label>Forma de pagamento</label>
+                  <div className="planos-choice__payment-options">
+                    <button
+                      type="button"
+                      className={`planos-choice__payment-option${paymentMethod === 'card' ? ' planos-choice__payment-option--selected' : ''}`}
+                      onClick={() => setPaymentMethod('card')}
+                    >
+                      Cartão de crédito
+                    </button>
+                    <button
+                      type="button"
+                      className={`planos-choice__payment-option${paymentMethod === 'boleto' ? ' planos-choice__payment-option--selected' : ''}`}
+                      onClick={() => setPaymentMethod('boleto')}
+                    >
+                      Boleto
+                    </button>
+                  </div>
+                  {paymentMethod === 'boleto' && (
+                    <p className="planos-choice__payment-note">
+                      No boleto não há período grátis — o valor cobre os 12 meses de acesso, cobrado à vista.
+                    </p>
+                  )}
                 </div>
-                {paymentMethod === 'boleto' && (
-                  <p className="planos-choice__payment-note">
-                    No boleto não há período grátis — o valor do plano é cobrado na primeira fatura.
-                  </p>
-                )}
-              </div>
+              )}
 
               {isAnualSelected && paymentMethod === 'card' && (
                 <div className="planos-choice__promo">
@@ -202,16 +208,12 @@ export default function PlanosSection({ userId, onSkip }: PlanosSectionProps) {
                   ? 'Redirecionando...'
                   : paymentMethod === 'card'
                   ? 'Começar meus 7 dias grátis'
-                  : isAnualSelected
-                  ? 'Gerar boleto anual'
-                  : 'Assinar com boleto'}
+                  : 'Gerar boleto anual'}
               </button>
               <p className="planos-choice__fineprint">
                 {paymentMethod === 'card'
                   ? 'Pagamento processado com segurança pela Stripe. Cartão solicitado agora, cobrança só após o período grátis.'
-                  : isAnualSelected
-                  ? 'Pagamento processado com segurança pela Stripe. O boleto cobre os 12 meses de acesso — pagamento único, sem recorrência mensal.'
-                  : 'Pagamento processado com segurança pela Stripe. Você receberá um novo boleto a cada mês.'}
+                  : 'Pagamento processado com segurança pela Stripe. O boleto cobre os 12 meses de acesso — pagamento único, sem recorrência mensal.'}
               </p>
               {onSkip && (
                 <button className="planos-choice__skip" onClick={onSkip}>

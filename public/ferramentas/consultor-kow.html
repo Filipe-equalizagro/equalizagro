@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Consultor Kow — go2apply</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#EBEEEA;
+    --surface:#FFFFFF;
+    --ink:#132019;
+    --muted:#586A5F;
+    --line:#D7DED8;
+    --primary:#1F5E43;
+    --primary-2:#2A7A57;
+    --shadow:0 1px 2px rgba(19,32,25,.05), 0 8px 30px rgba(19,32,25,.06);
+    --radius:14px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;height:100%}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Inter',system-ui,sans-serif;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+    display:flex;
+    flex-direction:column;
+    height:100vh;
+  }
+  .wrap{max-width:720px;margin:0 auto;padding:20px 20px 0;width:100%;box-sizing:border-box;display:flex;flex-direction:column;flex:1;min-height:0}
+
+  header{margin-bottom:14px;flex-shrink:0}
+  .eyebrow{
+    font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:15px;
+    color:var(--primary);margin-bottom:4px;
+  }
+  .lede{color:var(--muted);font-size:13px;margin:0}
+
+  .chat{
+    flex:1;min-height:0;overflow-y:auto;
+    display:flex;flex-direction:column;gap:12px;
+    padding:4px 2px 16px;
+  }
+  .msg{max-width:85%;padding:11px 14px;border-radius:12px;font-size:14.5px;white-space:pre-wrap;word-break:break-word}
+  .msg-user{align-self:flex-end;background:var(--primary);color:#fff;border-bottom-right-radius:3px}
+  .msg-bot{align-self:flex-start;background:var(--surface);border:1px solid var(--line);border-bottom-left-radius:3px;box-shadow:var(--shadow)}
+  .msg-bot.err{border-color:#e2b6ac;background:#FBEFEC;color:#8f3a2e}
+  .msg-typing{align-self:flex-start;color:var(--muted);font-size:13px;padding:2px 4px}
+
+  .opcoes{display:flex;flex-wrap:wrap;gap:8px;align-self:flex-start;max-width:85%}
+  .opcao-btn{
+    background:var(--surface);border:1.5px solid var(--primary);color:var(--primary);
+    border-radius:999px;padding:8px 16px;font-family:'Inter',sans-serif;font-size:13.5px;
+    font-weight:600;cursor:pointer;transition:background .12s,color .12s;
+  }
+  .opcao-btn:hover{background:var(--primary);color:#fff}
+  .opcao-btn:disabled{opacity:.5;cursor:default}
+
+  .composer{flex-shrink:0;padding:12px 2px 20px;border-top:1px solid var(--line)}
+  .ask-row{display:flex;gap:10px}
+  #q{
+    flex:1;min-width:0;
+    font-family:'Inter',sans-serif;font-size:15px;color:var(--ink);
+    background:#F6F8F5;border:1.5px solid var(--line);border-radius:10px;
+    padding:13px 14px;outline:none;transition:border-color .15s,background .15s;
+  }
+  #q:focus{border-color:var(--primary-2);background:#fff}
+  #q::placeholder{color:#8b988f}
+  #q:disabled{opacity:.6}
+  button{font-family:'Space Grotesk',sans-serif;cursor:pointer}
+  .btn{
+    background:var(--primary);color:#fff;border:none;border-radius:10px;
+    padding:0 22px;font-size:14px;font-weight:600;letter-spacing:.01em;
+    transition:background .15s,transform .05s;min-height:48px;
+  }
+  .btn:hover{background:var(--primary-2)}
+  .btn:active{transform:translateY(1px)}
+  .btn:disabled{opacity:.55;cursor:progress}
+
+  .note{color:var(--muted);font-size:10px;line-height:1.4;margin:10px 0 16px}
+  .note p{margin:0 0 3px}
+  .foot-brand{
+    text-align:center;font-family:'Space Grotesk',sans-serif;font-weight:600;
+    color:var(--primary-2);letter-spacing:.03em;font-size:12px;margin:8px 0 0 !important;
+  }
+
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Consultor Kow</div>
+    <p class="lede">Pergunte sobre o Kow e a tendência de adjuvante de um produto, ou tire dúvidas sobre o assunto.</p>
+  </header>
+
+  <div class="chat" id="chat"></div>
+
+  <div class="composer">
+    <div class="ask-row">
+      <input id="q" type="text" placeholder="Digite um produto ou uma pergunta…" autocomplete="off" />
+      <button class="btn" id="askBtn" onclick="ask()">Perguntar</button>
+    </div>
+    <div class="note">
+      <p>*Não se trata de recomendação agronômica de adjuvantes e, sim, a tendência de resposta, para subsidiar a construção de recomendações.</p>
+      <p>**A recomendação deve ser feita por técnico capacitado, avaliando formulação, objetivo e cultura.</p>
+      <p class="foot-brand">go2apply</p>
+    </div>
+  </div>
+</div>
+
+<script>
+/* sessionId — um por conversa, o mesmo valor em todas as chamadas dela.
+   É o que permite o webhook lembrar de uma pergunta anterior (ex.: escolher
+   entre produtos ambíguos). Gerado uma vez ao carregar a página. */
+const sessionId = 'kow_' + Date.now() + '_' + Math.random().toString(36).slice(2, 10);
+
+const chatEl = document.getElementById('chat');
+const qEl = document.getElementById('q');
+const askBtn = document.getElementById('askBtn');
+
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+function addMessage(text, who){
+  const div = document.createElement('div');
+  div.className = 'msg ' + (who === 'user' ? 'msg-user' : 'msg-bot');
+  div.textContent = text;
+  chatEl.appendChild(div);
+  chatEl.scrollTop = chatEl.scrollHeight;
+  return div;
+}
+
+function addOpcoes(opcoes){
+  const box = document.createElement('div');
+  box.className = 'opcoes';
+  opcoes.forEach(op => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'opcao-btn';
+    b.textContent = op;
+    b.onclick = () => {
+      // Desabilita todos os botões desse grupo ao escolher uma opção
+      [...box.children].forEach(c => c.disabled = true);
+      sendPergunta(op);
+    };
+    box.appendChild(b);
+  });
+  chatEl.appendChild(box);
+  chatEl.scrollTop = chatEl.scrollHeight;
+}
+
+async function sendPergunta(pergunta){
+  addMessage(pergunta, 'user');
+  askBtn.disabled = true; qEl.disabled = true;
+  const typing = document.createElement('div');
+  typing.className = 'msg-typing';
+  typing.textContent = 'Consultando…';
+  chatEl.appendChild(typing);
+  chatEl.scrollTop = chatEl.scrollHeight;
+
+  try{
+    const token = localStorage.getItem('authToken');
+    if(!token){
+      typing.remove();
+      const el = addMessage('Sessão expirada. Faça login novamente.', 'bot');
+      el.classList.add('err');
+      return;
+    }
+    const resp = await fetch('/api/kow/perguntar', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body: JSON.stringify({ pergunta, sessionId }),
+    });
+    const data = await resp.json();
+    typing.remove();
+
+    if (resp.status === 402){
+      const el = addMessage(data.message || 'Seus créditos acabaram. Assine um plano para continuar.', 'bot');
+      el.classList.add('err');
+      return;
+    }
+    if (resp.status === 401){
+      const el = addMessage('Sessão expirada. Faça login novamente.', 'bot');
+      el.classList.add('err');
+      return;
+    }
+    if (!data.success){
+      const el = addMessage(data.message || 'Não foi possível consultar agora. Tente novamente.', 'bot');
+      el.classList.add('err');
+      return;
+    }
+
+    addMessage(data.resposta, 'bot');
+    if (data.tipo === 'ambiguo' && Array.isArray(data.opcoes) && data.opcoes.length){
+      addOpcoes(data.opcoes);
+    }
+  }catch(e){
+    typing.remove();
+    const el = addMessage('Não foi possível consultar agora. Tente novamente em instantes.', 'bot');
+    el.classList.add('err');
+  }finally{
+    askBtn.disabled = false; qEl.disabled = false; qEl.focus();
+  }
+}
+
+function ask(){
+  const pergunta = qEl.value.trim();
+  if(!pergunta) return;
+  qEl.value = '';
+  sendPergunta(pergunta);
+}
+
+qEl.addEventListener('keydown', e => { if(e.key === 'Enter') ask(); });
+
+addMessage('Pergunte sobre o Kow ou a tendência de adjuvante de um produto — ex.: "Qual o Kow de glifosato?"', 'bot');
+qEl.focus();
+</script>
+</body>
+</html>
