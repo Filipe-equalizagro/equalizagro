@@ -234,18 +234,20 @@ export async function POST(request: NextRequest) {
         );
       }
 
-      // Boleto anual expirou sem pagamento — cancela a linha pendente para
-      // não travar novas tentativas (o check de "assinatura em andamento"
-      // bloqueia enquanto o status ficar "incomplete").
-      if (session.metadata?.kind === 'annual_boleto') {
-        const { userId, planId } = session.metadata;
-        if (userId && planId) {
-          await query(
-            `UPDATE equalizagro.user_subscriptions SET status = 'canceled', updated_at = NOW()
-             WHERE user_id = $1 AND plan_id = $2 AND status = 'incomplete' AND stripe_subscription_id IS NULL`,
-            [userId, planId]
-          );
-        }
+      // Checkout expirou ou o pagamento falhou sem nunca vincular uma
+      // assinatura de verdade (stripe_subscription_id continua nulo) — vale
+      // tanto pro boleto anual (pagamento único) quanto pra qualquer
+      // assinatura recorrente abandonada. Sem isso, a linha "incomplete"
+      // fica travada pra sempre e a pessoa nunca mais consegue tentar
+      // assinar de novo (o check de "assinatura em andamento" bloqueia
+      // qualquer novo checkout enquanto o status ficar "incomplete").
+      const { userId, planId } = session.metadata || {};
+      if (userId && planId) {
+        await query(
+          `UPDATE equalizagro.user_subscriptions SET status = 'canceled', updated_at = NOW()
+           WHERE user_id = $1 AND plan_id = $2 AND status = 'incomplete' AND stripe_subscription_id IS NULL`,
+          [userId, planId]
+        );
       }
 
       return apiResponse({ success: true, message: 'Status atualizado' });

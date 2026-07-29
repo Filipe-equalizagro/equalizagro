@@ -130,6 +130,22 @@ export default function DashboardPage() {
     const fetchSubscription = async () => {
       setSubscriptionLoading(true);
       try {
+        // Se o usuário acabou de voltar do Checkout da Stripe pelo cancel_url
+        // (cancelou ou apertou "voltar"), limpa a assinatura "incomplete"
+        // pendente ANTES de checar o acesso — sem isso, essa linha travada
+        // bloqueava qualquer nova tentativa de assinatura por até 24h.
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('subscription') === 'cancelled') {
+          await fetch('/api/subscriptions/cancel-pending', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId }),
+          }).catch(() => {});
+          params.delete('subscription');
+          const cleanUrl = window.location.pathname + (params.toString() ? `?${params}` : '');
+          window.history.replaceState({}, '', cleanUrl);
+        }
+
         const res = await fetch(`/api/subscriptions/my-subscription?userId=${userId}`);
         const data = await res.json();
         if (data.success) {
@@ -137,11 +153,12 @@ export default function DashboardPage() {
           setHasAccess(data.hasAccess !== false);
           setIsExempt(data.isExempt === true);
         } else {
-          setHasAccess(true);
+          // Checagem de acesso é uma fronteira de segurança — falha aqui
+          // bloqueia (fail-closed), nunca libera acesso de graça.
+          setHasAccess(false);
         }
       } catch {
-        // Falha ao verificar — não bloqueia por erro de rede/servidor
-        setHasAccess(true);
+        setHasAccess(false);
       } finally {
         setSubscriptionLoading(false);
       }

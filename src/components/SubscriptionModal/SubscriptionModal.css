@@ -88,6 +88,14 @@
   gap: 1rem;
   margin-bottom: 1.25rem;
 }
+.sub-plans--single {
+  grid-template-columns: 1fr;
+  justify-items: center;
+}
+.sub-plans--single .sub-plan {
+  width: 100%;
+  max-width: 320px;
+}
 
 .sub-plan {
   position: relative;
@@ -157,6 +165,14 @@
 .sub-plan__total { font-size: 0.72rem; color: #6b7280; }
 .sub-plan__trial { font-size: 0.72rem; color: #92730f; font-weight: 600; margin-top: 0.2rem; }
 
+.sub-modal__payment-hint {
+  margin: 0 0 1rem;
+  font-size: 0.75rem;
+  color: #6b7280;
+  text-align: center;
+  line-height: 1.4;
+}
+
 .sub-modal__payment-method {
   margin: 0 0 1rem;
 }
@@ -187,6 +203,14 @@
   border-color: #1a5f3a;
   background: rgba(26, 95, 58, 0.06);
   color: #1a5f3a;
+}
+.sub-modal__payment-option--disabled {
+  cursor: not-allowed;
+  color: #9ca3af;
+  background: #f9fafb;
+}
+.sub-modal__payment-option--disabled:hover {
+  border-color: #e5e7eb;
 }
 .sub-modal__payment-note {
   font-size: 0.75rem;

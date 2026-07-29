@@ -81,10 +81,19 @@ export async function POST(request: NextRequest) {
     }
     const user = userResult.rows[0];
 
-    // Impede assinatura duplicada — se já houver uma ativa/trial/pendente, não cria outra
+    // Impede assinatura duplicada — se já houver uma ativa/trial/pendente, não cria outra.
+    // "incomplete" só bloqueia se for recente (checkout ainda pode ser concluído);
+    // depois de 24h (mesmo prazo que a Stripe usa para expirar a sessão), uma
+    // linha "incomplete" travada é tratada como abandonada — sem isso, uma
+    // pessoa que fechasse o checkout sem pagar ficaria bloqueada para sempre
+    // caso o webhook de expiração falhasse ou se atrasasse.
     const activeCheck = await query(
       `SELECT id FROM equalizagro.user_subscriptions
-       WHERE user_id = $1 AND status IN ('trialing', 'active', 'past_due', 'incomplete')`,
+       WHERE user_id = $1
+         AND (
+           status IN ('trialing', 'active', 'past_due')
+           OR (status = 'incomplete' AND created_at > NOW() - INTERVAL '24 hours')
+         )`,
       [userId]
     );
     if (activeCheck.rows.length > 0) {

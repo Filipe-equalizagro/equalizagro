@@ -110,8 +110,10 @@ export default function PlanosSection({ userId, onSkip }: PlanosSectionProps) {
             <div className="planos-choice__loading"><div className="planos-choice__spinner" /></div>
           ) : (
             <>
-              <div className="planos-cards">
-                {plans.map((plan) => {
+              <div className={`planos-cards${paymentMethod === 'boleto' ? ' planos-cards--single' : ''}`}>
+                {plans
+                  .filter((plan) => paymentMethod !== 'boleto' || plan.name === 'Anual')
+                  .map((plan) => {
                   const isAnual = plan.name === 'Anual';
                   const isBoletoOneTime = paymentMethod === 'boleto' && plan.boleto_is_one_time;
                   const displayPrice = paymentMethod === 'boleto' ? plan.boleto_price ?? Number(plan.price) : Number(plan.price);
@@ -121,7 +123,6 @@ export default function PlanosSection({ userId, onSkip }: PlanosSectionProps) {
                       className={`planos-card${selectedPlan === plan.id ? ' planos-card--selected' : ''}${isAnual ? ' planos-card--highlight' : ''}`}
                       onClick={() => {
                         setSelectedPlan(plan.id);
-                        // Boleto só existe para o Anual — volta pro cartão ao escolher Mensal
                         if (!isAnual) setPaymentMethod('card');
                       }}
                     >
@@ -157,32 +158,36 @@ export default function PlanosSection({ userId, onSkip }: PlanosSectionProps) {
                 })}
               </div>
 
-              {isAnualSelected && (
-                <div className="planos-choice__payment-method">
-                  <label>Forma de pagamento</label>
-                  <div className="planos-choice__payment-options">
-                    <button
-                      type="button"
-                      className={`planos-choice__payment-option${paymentMethod === 'card' ? ' planos-choice__payment-option--selected' : ''}`}
-                      onClick={() => setPaymentMethod('card')}
-                    >
-                      Cartão de crédito
-                    </button>
-                    <button
-                      type="button"
-                      className={`planos-choice__payment-option${paymentMethod === 'boleto' ? ' planos-choice__payment-option--selected' : ''}`}
-                      onClick={() => setPaymentMethod('boleto')}
-                    >
-                      Boleto
-                    </button>
-                  </div>
-                  {paymentMethod === 'boleto' && (
-                    <p className="planos-choice__payment-note">
-                      No boleto não há período grátis — o valor cobre os 12 meses de acesso, cobrado à vista.
-                    </p>
-                  )}
+              <div className="planos-choice__payment-method">
+                <label>Forma de pagamento</label>
+                <div className="planos-choice__payment-options">
+                  <button
+                    type="button"
+                    className={`planos-choice__payment-option${paymentMethod === 'card' ? ' planos-choice__payment-option--selected' : ''}`}
+                    onClick={() => setPaymentMethod('card')}
+                  >
+                    Cartão de crédito
+                  </button>
+                  <button
+                    type="button"
+                    disabled={!isAnualSelected}
+                    title={!isAnualSelected ? 'Boleto disponível apenas no plano Anual' : undefined}
+                    className={`planos-choice__payment-option${paymentMethod === 'boleto' ? ' planos-choice__payment-option--selected' : ''}${!isAnualSelected ? ' planos-choice__payment-option--disabled' : ''}`}
+                    onClick={() => { if (isAnualSelected) setPaymentMethod('boleto'); }}
+                  >
+                    Boleto
+                  </button>
                 </div>
-              )}
+                {!isAnualSelected ? (
+                  <p className="planos-choice__payment-note">
+                    Boleto disponível apenas no plano Anual (pagamento único). O Mensal é cobrado somente no cartão de crédito.
+                  </p>
+                ) : paymentMethod === 'boleto' ? (
+                  <p className="planos-choice__payment-note">
+                    No boleto não há período grátis — o valor cobre os 12 meses de acesso, cobrado à vista.
+                  </p>
+                ) : null}
+              </div>
 
               {isAnualSelected && paymentMethod === 'card' && (
                 <div className="planos-choice__promo">

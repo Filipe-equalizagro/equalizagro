@@ -162,6 +162,14 @@
   gap: 1.5rem;
   margin-bottom: 1.75rem;
 }
+.planos-cards--single {
+  grid-template-columns: 1fr;
+  justify-items: center;
+}
+.planos-cards--single .planos-card {
+  width: 100%;
+  max-width: 360px;
+}
 
 .planos-card {
   position: relative;
@@ -251,6 +259,15 @@
 }
 .planos-card__list li svg { color: #1a5f3a; flex-shrink: 0; }
 
+.planos-choice__payment-hint {
+  max-width: 420px;
+  margin: 0 auto 1.25rem;
+  font-size: 0.78rem;
+  color: #6b7280;
+  text-align: center;
+  line-height: 1.4;
+}
+
 .planos-choice__payment-method {
   max-width: 420px;
   margin: 0 auto 1.25rem;
@@ -282,6 +299,14 @@
   border-color: #1a5f3a;
   background: rgba(26, 95, 58, 0.06);
   color: #1a5f3a;
+}
+.planos-choice__payment-option--disabled {
+  cursor: not-allowed;
+  color: #9ca3af;
+  background: #f9fafb;
+}
+.planos-choice__payment-option--disabled:hover {
+  border-color: #e5e7eb;
 }
 .planos-choice__payment-note {
   font-size: 0.78rem;

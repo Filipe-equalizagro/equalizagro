@@ -107,8 +107,10 @@ export default function SubscriptionModal({ isOpen, onClose, userId }: Subscript
           <div className="sub-modal__loading"><div className="sub-modal__spinner" /></div>
         ) : (
           <>
-            <div className="sub-plans">
-              {plans.map(plan => {
+            <div className={`sub-plans${paymentMethod === 'boleto' ? ' sub-plans--single' : ''}`}>
+              {plans
+                .filter(plan => paymentMethod !== 'boleto' || plan.name === 'Anual')
+                .map(plan => {
                 const isAnual = plan.name === 'Anual';
                 const isBoletoOneTime = paymentMethod === 'boleto' && plan.boleto_is_one_time;
                 const displayPrice = paymentMethod === 'boleto' ? plan.boleto_price ?? Number(plan.price) : Number(plan.price);
@@ -155,32 +157,36 @@ export default function SubscriptionModal({ isOpen, onClose, userId }: Subscript
               })}
             </div>
 
-            {isAnualSelected && (
-              <div className="sub-modal__payment-method">
-                <label>Forma de pagamento</label>
-                <div className="sub-modal__payment-options">
-                  <button
-                    type="button"
-                    className={`sub-modal__payment-option${paymentMethod === 'card' ? ' sub-modal__payment-option--selected' : ''}`}
-                    onClick={() => setPaymentMethod('card')}
-                  >
-                    Cartão de crédito
-                  </button>
-                  <button
-                    type="button"
-                    className={`sub-modal__payment-option${paymentMethod === 'boleto' ? ' sub-modal__payment-option--selected' : ''}`}
-                    onClick={() => setPaymentMethod('boleto')}
-                  >
-                    Boleto
-                  </button>
-                </div>
-                {paymentMethod === 'boleto' && (
-                  <p className="sub-modal__payment-note">
-                    No boleto não há período grátis — o valor cobre os 12 meses de acesso, cobrado à vista.
-                  </p>
-                )}
+            <div className="sub-modal__payment-method">
+              <label>Forma de pagamento</label>
+              <div className="sub-modal__payment-options">
+                <button
+                  type="button"
+                  className={`sub-modal__payment-option${paymentMethod === 'card' ? ' sub-modal__payment-option--selected' : ''}`}
+                  onClick={() => setPaymentMethod('card')}
+                >
+                  Cartão de crédito
+                </button>
+                <button
+                  type="button"
+                  disabled={!isAnualSelected}
+                  title={!isAnualSelected ? 'Boleto disponível apenas no plano Anual' : undefined}
+                  className={`sub-modal__payment-option${paymentMethod === 'boleto' ? ' sub-modal__payment-option--selected' : ''}${!isAnualSelected ? ' sub-modal__payment-option--disabled' : ''}`}
+                  onClick={() => { if (isAnualSelected) setPaymentMethod('boleto'); }}
+                >
+                  Boleto
+                </button>
               </div>
-            )}
+              {!isAnualSelected ? (
+                <p className="sub-modal__payment-note">
+                  Boleto disponível apenas no plano Anual (pagamento único). O Mensal é cobrado somente no cartão de crédito.
+                </p>
+              ) : paymentMethod === 'boleto' ? (
+                <p className="sub-modal__payment-note">
+                  No boleto não há período grátis — o valor cobre os 12 meses de acesso, cobrado à vista.
+                </p>
+              ) : null}
+            </div>
 
             {isAnualSelected && paymentMethod === 'card' && (
               <div className="sub-modal__promo">
