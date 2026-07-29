@@ -1,0 +1,7397 @@
+[
+  {
+    "produto": "propargito",
+    "kowTexto": "501.187",
+    "kow": 501187,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "hexitiazoxi",
+    "kowTexto": "468",
+    "kow": 468,
+    "tend": "Óleo emulsionável em concentração moderada + tensoativo",
+    "faixa": 2,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "cyflumetofen",
+    "kowTexto": "19.953",
+    "kow": 19953,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "fenpiroximato",
+    "kowTexto": "501.187",
+    "kow": 501187,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "amitraz",
+    "kowTexto": "316.227,8",
+    "kow": 316227.8,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "etoxazol",
+    "kowTexto": "389.045",
+    "kow": 389045,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "piridabem",
+    "kowTexto": "2.344.229",
+    "kow": 2344229,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "mancozebe",
+    "kowTexto": "N/A",
+    "kow": null,
+    "tend": "N/A",
+    "faixa": null,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "lufenurom",
+    "kowTexto": "131.825,7",
+    "kow": 131825.7,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "Espirodiclofeno",
+    "kowTexto": "630.957",
+    "kow": 630957,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "metomil",
+    "kowTexto": "1,23",
+    "kow": 1.23,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "diafentiurom",
+    "kowTexto": "575.440",
+    "kow": 575440,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "dimetoato",
+    "kowTexto": "5,62",
+    "kow": 5.62,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "acrinatrina",
+    "kowTexto": "1.995.262",
+    "kow": 1995262,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "Azoxistrobina",
+    "kowTexto": "316",
+    "kow": 316,
+    "tend": "Óleo emulsionável em concentração moderada + tensoativo",
+    "faixa": 2,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "difenoconazol",
+    "kowTexto": "22.906",
+    "kow": 22906,
+    "tend": "Óleo emulsionável em alta concentração + Tensoativo",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "ciproconazol",
+    "kowTexto": "1.230",
+    "kow": 1230,
+    "tend": "Óleo emulsionável em alta concentração + Tensoativo",
+    "faixa": 4,
+    "phHidro": {
+      "min": 5,
+      "max": 7,
+      "label": "pH 5,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 5,
+      "max": 7,
+      "label": "pH 5,0 – 7,0"
+    }
+  },
+  {
+    "produto": "fluazinam",
+    "kowTexto": "118.088",
+    "kow": 118088,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 5,
+      "max": 8,
+      "label": "pH 5,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 6,
+      "label": "pH 3,0 – 6,0"
+    }
+  },
+  {
+    "produto": "clorotalonil",
+    "kowTexto": "759",
+    "kow": 759,
+    "tend": "Óleo emulsionável em alta concentração, considerando adição de tensoativo",
+    "faixa": 3,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "flutriafol",
+    "kowTexto": "199",
+    "kow": 199,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 3,
+      "max": 6,
+      "label": "pH 3,0 – 6,0"
+    },
+    "phLipo": {
+      "min": 5,
+      "max": 8,
+      "label": "pH 5,0 – 8,0"
+    }
+  },
+  {
+    "produto": "trifloxistrobina",
+    "kowTexto": "31.623",
+    "kow": 31623,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "Picoxistrobina",
+    "kowTexto": "3.981",
+    "kow": 3981,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "Boscalida",
+    "kowTexto": "912",
+    "kow": 912,
+    "tend": "Óleo emulsionável em alta concentração, considerando adição de tensoativo",
+    "faixa": 3,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "piraclostrobina",
+    "kowTexto": "9.772",
+    "kow": 9772,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "tiofanato-metílico",
+    "kowTexto": "38,1",
+    "kow": 38.1,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 4,
+      "max": 5,
+      "label": "pH 4,0 – 5,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 5,
+      "label": "pH 4,0 – 5,0"
+    }
+  },
+  {
+    "produto": "epoxiconazol",
+    "kowTexto": "2.512",
+    "kow": 2512,
+    "tend": "Óleo emulsionável em alta concentração + Tensoativo",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "fenpropimorfe",
+    "kowTexto": "641",
+    "kow": 641,
+    "tend": "Óleo emulsionável em alta concentração, considerando adição de tensoativo",
+    "faixa": 3,
+    "phHidro": {
+      "min": 3,
+      "max": 4,
+      "label": "pH 3,0 – 4,0"
+    },
+    "phLipo": {
+      "min": 7,
+      "max": 8,
+      "label": "pH 7,0 – 8,0"
+    }
+  },
+  {
+    "produto": "fludioxonil",
+    "kowTexto": "13.183",
+    "kow": 13183,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "captana",
+    "kowTexto": "316",
+    "kow": 316,
+    "tend": "Óleo emulsionável em concentração moderada + tensoativo",
+    "faixa": 2,
+    "phHidro": {
+      "min": 4,
+      "max": 5,
+      "label": "pH 4,0 – 5,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 5,
+      "label": "pH 4,0 – 5,0"
+    }
+  },
+  {
+    "produto": "cimoxanil",
+    "kowTexto": "4,68",
+    "kow": 4.68,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "propiconazol",
+    "kowTexto": "5.248,1",
+    "kow": 5248.1,
+    "tend": "Óleo emulsionável em alta concentração + Tensoativo",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "fluxapiroxade",
+    "kowTexto": "1.269",
+    "kow": 1269,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 5,
+      "label": "pH 4,0 – 5,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 5,
+      "label": "pH 4,0 – 5,0"
+    }
+  },
+  {
+    "produto": "dimetomorfe",
+    "kowTexto": "479",
+    "kow": 479,
+    "tend": "Óleo emulsionável em concentração moderada + tensoativo",
+    "faixa": 2,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "oxicloreto de cobre",
+    "kowTexto": "N/A",
+    "kow": null,
+    "tend": "N/A",
+    "faixa": null,
+    "phHidro": {
+      "min": 6,
+      "max": 8,
+      "label": "pH 6,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 6,
+      "max": 8,
+      "label": "pH 6,0 – 8,0"
+    }
+  },
+  {
+    "produto": "cresoxim-metílico",
+    "kowTexto": "2.512",
+    "kow": 2512,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "iprodiona",
+    "kowTexto": "1.000",
+    "kow": 1000,
+    "tend": "Óleo emulsionável em alta concentração, considerando adição de tensoativo",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 5,
+      "label": "pH 4,0 – 5,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 5,
+      "label": "pH 4,0 – 5,0"
+    }
+  },
+  {
+    "produto": "tiram",
+    "kowTexto": "53,7",
+    "kow": 53.7,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 4,
+      "max": 5,
+      "label": "pH 4,0 – 5,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 5,
+      "label": "pH 4,0 – 5,0"
+    }
+  },
+  {
+    "produto": "benalaxil",
+    "kowTexto": "3.467",
+    "kow": 3467,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "procimidona",
+    "kowTexto": "1.995",
+    "kow": 1995,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 5,
+      "label": "pH 4,0 – 5,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 5,
+      "label": "pH 4,0 – 5,0"
+    }
+  },
+  {
+    "produto": "tiabendazol",
+    "kowTexto": "161",
+    "kow": 161,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "ciprodinil",
+    "kowTexto": "7.862",
+    "kow": 7862,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 3,
+      "max": 6,
+      "label": "pH 3,0 – 6,0"
+    },
+    "phLipo": {
+      "min": 5,
+      "max": 8,
+      "label": "pH 5,0 – 8,0"
+    }
+  },
+  {
+    "produto": "Cloridrato de propamocarbe",
+    "kowTexto": "0,0398",
+    "kow": 0.0398,
+    "tend": "Tensoativo",
+    "faixa": 0,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "folpete",
+    "kowTexto": "1.288",
+    "kow": 1288,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 5,
+      "label": "pH 4,0 – 5,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 5,
+      "label": "pH 4,0 – 5,0"
+    }
+  },
+  {
+    "produto": "Fosetil-alumínio",
+    "kowTexto": "0,532",
+    "kow": 0.532,
+    "tend": "Tensoativo",
+    "faixa": 0,
+    "phHidro": {
+      "min": 5,
+      "max": 8,
+      "label": "pH 5,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 6,
+      "label": "pH 3,0 – 6,0"
+    }
+  },
+  {
+    "produto": "hidróxido de cobre",
+    "kowTexto": "N/A",
+    "kow": null,
+    "tend": "N/A",
+    "faixa": null,
+    "phHidro": {
+      "min": 6,
+      "max": 8,
+      "label": "pH 6,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 6,
+      "max": 8,
+      "label": "pH 6,0 – 8,0"
+    }
+  },
+  {
+    "produto": "imazalil",
+    "kowTexto": "14,9",
+    "kow": 14.9,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 3,
+      "max": 4,
+      "label": "pH 3,0 – 4,0"
+    },
+    "phLipo": {
+      "min": 7,
+      "max": 8,
+      "label": "pH 7,0 – 8,0"
+    }
+  },
+  {
+    "produto": "pirimetanil",
+    "kowTexto": "670",
+    "kow": 670,
+    "tend": "Óleo emulsionável em alta concentração, considerando adição de tensoativo",
+    "faixa": 3,
+    "phHidro": {
+      "min": 3,
+      "max": 6,
+      "label": "pH 3,0 – 6,0"
+    },
+    "phLipo": {
+      "min": 5,
+      "max": 8,
+      "label": "pH 5,0 – 8,0"
+    }
+  },
+  {
+    "produto": "tetraconazol",
+    "kowTexto": "3.630,8",
+    "kow": 3630.8,
+    "tend": "Óleo emulsionável em alta concentração + Tensoativo",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "Ciazofamida",
+    "kowTexto": "1.585",
+    "kow": 1585,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "ditianona",
+    "kowTexto": "1.585",
+    "kow": 1585,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "fluopicolide",
+    "kowTexto": "794",
+    "kow": 794,
+    "tend": "Óleo emulsionável em alta concentração, considerando adição de tensoativo",
+    "faixa": 3,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "fosetil",
+    "kowTexto": "0,532",
+    "kow": 0.532,
+    "tend": "Tensoativo",
+    "faixa": 0,
+    "phHidro": {
+      "min": 5,
+      "max": 8,
+      "label": "pH 5,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 6,
+      "label": "pH 3,0 – 6,0"
+    }
+  },
+  {
+    "produto": "metconazol",
+    "kowTexto": "7.079,5",
+    "kow": 7079.5,
+    "tend": "Óleo emulsionável em alta concentração + Tensoativo",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "miclobutanil",
+    "kowTexto": "776",
+    "kow": 776,
+    "tend": "Óleo emulsionável em alta concentração, considerando adição de tensoativo",
+    "faixa": 3,
+    "phHidro": {
+      "min": 3,
+      "max": 6,
+      "label": "pH 3,0 – 6,0"
+    },
+    "phLipo": {
+      "min": 5,
+      "max": 8,
+      "label": "pH 5,0 – 8,0"
+    }
+  },
+  {
+    "produto": "triadimenol",
+    "kowTexto": "1.514",
+    "kow": 1514,
+    "tend": "Óleo emulsionável em alta concentração + Tensoativo",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "triciclazol",
+    "kowTexto": "25,1",
+    "kow": 25.1,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "zoxamida",
+    "kowTexto": "5.754",
+    "kow": 5754,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "ametoctradina",
+    "kowTexto": "25.119",
+    "kow": 25119,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 3,
+      "max": 6,
+      "label": "pH 3,0 – 6,0"
+    },
+    "phLipo": {
+      "min": 5,
+      "max": 8,
+      "label": "pH 5,0 – 8,0"
+    }
+  },
+  {
+    "produto": "bentiavalicarbe isopropílico",
+    "kowTexto": "363",
+    "kow": 363,
+    "tend": "Óleo emulsionável em concentração moderada + tensoativo",
+    "faixa": 2,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "Benzovindiflupyr",
+    "kowTexto": "19.953",
+    "kow": 19953,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 6,
+      "max": 8,
+      "label": "pH 6,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 4,
+      "label": "pH 3,0 – 4,0"
+    }
+  },
+  {
+    "produto": "Bixafem",
+    "kowTexto": "1.995",
+    "kow": 1995,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "bromuconazol",
+    "kowTexto": "1.738",
+    "kow": 1738,
+    "tend": "Óleo emulsionável em alta concentração + Tensoativo",
+    "faixa": 4,
+    "phHidro": {
+      "min": 3,
+      "max": 6,
+      "label": "pH 3,0 – 6,0"
+    },
+    "phLipo": {
+      "min": 5,
+      "max": 8,
+      "label": "pH 5,0 – 8,0"
+    }
+  },
+  {
+    "produto": "carboxina",
+    "kowTexto": "200",
+    "kow": 200,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "casugamicina",
+    "kowTexto": "0,011",
+    "kow": 0.011,
+    "tend": "Tensoativo",
+    "faixa": 0,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "Ciclobutrifluram",
+    "kowTexto": "1.585",
+    "kow": 1585,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "cloreto de benzalcônio",
+    "kowTexto": "N/A",
+    "kow": null,
+    "tend": "N/A",
+    "faixa": null,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "diclorana",
+    "kowTexto": "631",
+    "kow": 631,
+    "tend": "Óleo emulsionável em alta concentração, considerando adição de tensoativo",
+    "faixa": 3,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "dimoxistrobin",
+    "kowTexto": "3.890",
+    "kow": 3890,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "dodina",
+    "kowTexto": "17,8",
+    "kow": 17.8,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "etridiazol",
+    "kowTexto": "2.344",
+    "kow": 2344,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 3,
+      "max": 6,
+      "label": "pH 3,0 – 6,0"
+    },
+    "phLipo": {
+      "min": 5,
+      "max": 8,
+      "label": "pH 5,0 – 8,0"
+    }
+  },
+  {
+    "produto": "famoxadona",
+    "kowTexto": "44.668",
+    "kow": 44668,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "fenamidona",
+    "kowTexto": "631",
+    "kow": 631,
+    "tend": "Óleo emulsionável em alta concentração, considerando adição de tensoativo",
+    "faixa": 3,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "Fenpirazamina",
+    "kowTexto": "3.311",
+    "kow": 3311,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "Fenpropidina",
+    "kowTexto": "794,3",
+    "kow": 794.3,
+    "tend": "Óleo emulsionável em alta concentração, considerando adição de tensoativo",
+    "faixa": 3,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "Florylpicoxamida",
+    "kowTexto": "15.849",
+    "kow": 15849,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "Fluopyram",
+    "kowTexto": "1.995",
+    "kow": 1995,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "Fluoxapiprolim",
+    "kowTexto": "5.012",
+    "kow": 5012,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "Fluoxastrobina",
+    "kowTexto": "708",
+    "kow": 708,
+    "tend": "Óleo emulsionável em alta concentração, considerando adição de tensoativo",
+    "faixa": 3,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "fluquinconazol",
+    "kowTexto": "1.737,8",
+    "kow": 1737.8,
+    "tend": "Óleo emulsionável em alta concentração + Tensoativo",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "Flutolanil",
+    "kowTexto": "1.479",
+    "kow": 1479,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "ftalida",
+    "kowTexto": "1.023",
+    "kow": 1023,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "hidróxido de fentina",
+    "kowTexto": "2.692",
+    "kow": 2692,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "imibenconazol",
+    "kowTexto": "87.096",
+    "kow": 87096,
+    "tend": "Óleo emulsionável em alta concentração + Tensoativo",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "impirfluxam",
+    "kowTexto": "4.467",
+    "kow": 4467,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "ipconazol",
+    "kowTexto": "19.952,6",
+    "kow": 19952.6,
+    "tend": "Óleo emulsionável em alta concentração + Tensoativo",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "Ipflufenoquina",
+    "kowTexto": "732",
+    "kow": 732,
+    "tend": "Óleo emulsionável em alta concentração, considerando adição de tensoativo",
+    "faixa": 3,
+    "phHidro": {
+      "min": 3,
+      "max": 6,
+      "label": "pH 3,0 – 6,0"
+    },
+    "phLipo": {
+      "min": 5,
+      "max": 8,
+      "label": "pH 5,0 – 8,0"
+    }
+  },
+  {
+    "produto": "Isofetamida",
+    "kowTexto": "316",
+    "kow": 316,
+    "tend": "Óleo emulsionável em concentração moderada + tensoativo",
+    "faixa": 2,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "Isopirazam",
+    "kowTexto": "17.783",
+    "kow": 17783,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "Mandestrobina",
+    "kowTexto": "3.236",
+    "kow": 3236,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "mandipropamid",
+    "kowTexto": "1.995",
+    "kow": 1995,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "mefentrifluconazol",
+    "kowTexto": "2.512",
+    "kow": 2512,
+    "tend": "Óleo emulsionável em alta concentração + Tensoativo",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 5,
+      "label": "pH 4,0 – 5,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 5,
+      "label": "pH 4,0 – 5,0"
+    }
+  },
+  {
+    "produto": "metalaxil-M",
+    "kowTexto": "44,7",
+    "kow": 44.7,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "metiram",
+    "kowTexto": "2,14",
+    "kow": 2.14,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 5,
+      "max": 6,
+      "label": "pH 5,0 – 6,0"
+    },
+    "phLipo": {
+      "min": 5,
+      "max": 6,
+      "label": "pH 5,0 – 6,0"
+    }
+  },
+  {
+    "produto": "metominostrobin",
+    "kowTexto": "209",
+    "kow": 209,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "Oxatiapiprolim",
+    "kowTexto": "4.571",
+    "kow": 4571,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "oxicarboxina",
+    "kowTexto": "5,92",
+    "kow": 5.92,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "pencicurom",
+    "kowTexto": "47.863",
+    "kow": 47863,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "Pidiflumetofen",
+    "kowTexto": "6.310",
+    "kow": 6310,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "piriofenone",
+    "kowTexto": "1.585",
+    "kow": 1585,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "propinebe",
+    "kowTexto": "0,55",
+    "kow": 0.55,
+    "tend": "Tensoativo",
+    "faixa": 0,
+    "phHidro": {
+      "min": 5,
+      "max": 6,
+      "label": "pH 5,0 – 6,0"
+    },
+    "phLipo": {
+      "min": 5,
+      "max": 6,
+      "label": "pH 5,0 – 6,0"
+    }
+  },
+  {
+    "produto": "tifluzamida",
+    "kowTexto": "12.589",
+    "kow": 12589,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "triflumizol",
+    "kowTexto": "56.102",
+    "kow": 56102,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 3,
+      "max": 6,
+      "label": "pH 3,0 – 6,0"
+    },
+    "phLipo": {
+      "min": 5,
+      "max": 8,
+      "label": "pH 5,0 – 8,0"
+    }
+  },
+  {
+    "produto": "triticonazol",
+    "kowTexto": "1.259",
+    "kow": 1259,
+    "tend": "Óleo emulsionável em alta concentração + Tensoativo",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "valifenalate",
+    "kowTexto": "1.288,2",
+    "kow": 1288.2,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "óxido cuproso",
+    "kowTexto": "N/A",
+    "kow": null,
+    "tend": "N/A",
+    "faixa": null,
+    "phHidro": {
+      "min": 6,
+      "max": 8,
+      "label": "pH 6,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 6,
+      "max": 8,
+      "label": "pH 6,0 – 8,0"
+    }
+  },
+  {
+    "produto": "tebuconazol",
+    "kowTexto": "3.920",
+    "kow": 3920,
+    "tend": "Óleo emulsionável em alta concentração + Tensoativo",
+    "faixa": 4,
+    "phHidro": {
+      "min": 3,
+      "max": 4,
+      "label": "pH 3,0 – 4,0"
+    },
+    "phLipo": {
+      "min": 5,
+      "max": 7,
+      "label": "pH 5,0 – 7,0"
+    }
+  },
+  {
+    "produto": "Aminopiralide",
+    "kowTexto": "0,0178",
+    "kow": 0.0178,
+    "tend": "Tensoativo",
+    "faixa": 0,
+    "phHidro": {
+      "min": 5,
+      "max": 8,
+      "label": "pH 5,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 6,
+      "label": "pH 3,0 – 6,0"
+    }
+  },
+  {
+    "produto": "Fluindapyr",
+    "kowTexto": "13.183",
+    "kow": 13183,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "Protioconazol",
+    "kowTexto": "14.436",
+    "kow": 14436,
+    "tend": "Óleo emulsionável em alta concentração + Tensoativo",
+    "faixa": 4,
+    "phHidro": {
+      "min": 5,
+      "max": 8,
+      "label": "pH 5,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 6,
+      "label": "pH 3,0 – 6,0"
+    }
+  },
+  {
+    "produto": "lambda-cialotrina",
+    "kowTexto": "10.000.000",
+    "kow": 10000000,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "glifosato",
+    "kowTexto": "0,0125",
+    "kow": 0.0125,
+    "tend": "Tensoativo",
+    "faixa": 0,
+    "phHidro": {
+      "min": 5,
+      "max": 8,
+      "label": "pH 5,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 6,
+      "label": "pH 3,0 – 6,0"
+    }
+  },
+  {
+    "produto": "Glufosinato - sal de amônio",
+    "kowTexto": "0,0109",
+    "kow": 0.0109,
+    "tend": "Óleo emulsionável + Tensoativo",
+    "faixa": 0,
+    "phHidro": {
+      "min": 7,
+      "max": 8,
+      "label": "pH 7,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 4,
+      "label": "pH 3,0 – 4,0"
+    }
+  },
+  {
+    "produto": "2,4-D",
+    "kowTexto": "646",
+    "kow": 646,
+    "tend": "Óleo emulsionável em alta concentração, considerando adição de tensoativo",
+    "faixa": 3,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "cletodim",
+    "kowTexto": "3.557",
+    "kow": 3557,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "Dicamba",
+    "kowTexto": "29",
+    "kow": 29,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 7,
+      "max": 8,
+      "label": "pH 7,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 4,
+      "label": "pH 3,0 – 4,0"
+    }
+  },
+  {
+    "produto": "Mesotriona",
+    "kowTexto": "7,94",
+    "kow": 7.94,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 7,
+      "max": 8,
+      "label": "pH 7,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 4,
+      "label": "pH 3,0 – 4,0"
+    }
+  },
+  {
+    "produto": "flumioxazina",
+    "kowTexto": "355",
+    "kow": 355,
+    "tend": "Óleo emulsionável em concentração moderada + tensoativo",
+    "faixa": 2,
+    "phHidro": {
+      "min": 4,
+      "max": 5,
+      "label": "pH 4,0 – 5,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 5,
+      "label": "pH 4,0 – 5,0"
+    }
+  },
+  {
+    "produto": "Dibrometo de diquate",
+    "kowTexto": "0,000055",
+    "kow": 5.5e-05,
+    "tend": "Tensoativo",
+    "faixa": 0,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "hexazinona",
+    "kowTexto": "14,8",
+    "kow": 14.8,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "diurom",
+    "kowTexto": "589",
+    "kow": 589,
+    "tend": "Óleo emulsionável em alta concentração, considerando adição de tensoativo",
+    "faixa": 3,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "clomazona",
+    "kowTexto": "350",
+    "kow": 350,
+    "tend": "Óleo emulsionável em concentração moderada + tensoativo",
+    "faixa": 2,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "Triclopir-butotílico",
+    "kowTexto": "2,64",
+    "kow": 2.64,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 5,
+      "max": 8,
+      "label": "pH 5,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 6,
+      "label": "pH 3,0 – 6,0"
+    }
+  },
+  {
+    "produto": "imazetapir",
+    "kowTexto": "11",
+    "kow": 11,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 3,
+      "max": 6,
+      "label": "pH 3,0 – 6,0"
+    },
+    "phLipo": {
+      "min": 5,
+      "max": 8,
+      "label": "pH 5,0 – 8,0"
+    }
+  },
+  {
+    "produto": "Atrazina",
+    "kowTexto": "481",
+    "kow": 481,
+    "tend": "Óleo emulsionável em concentração moderada + tensoativo",
+    "faixa": 2,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "picloram",
+    "kowTexto": "5,46",
+    "kow": 5.46,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 5,
+      "max": 8,
+      "label": "pH 5,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 6,
+      "label": "pH 3,0 – 6,0"
+    }
+  },
+  {
+    "produto": "S-metolacloro",
+    "kowTexto": "794",
+    "kow": 794,
+    "tend": "Óleo emulsionável em alta concentração, considerando adição de tensoativo",
+    "faixa": 3,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "metribuzim",
+    "kowTexto": "44,7",
+    "kow": 44.7,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "isoxaflutol",
+    "kowTexto": "209",
+    "kow": 209,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "sulfentrazona",
+    "kowTexto": "35,8",
+    "kow": 35.8,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 5,
+      "max": 8,
+      "label": "pH 5,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 6,
+      "label": "pH 3,0 – 6,0"
+    }
+  },
+  {
+    "produto": "Ametrina",
+    "kowTexto": "380",
+    "kow": 380,
+    "tend": "Óleo emulsionável em concentração moderada + tensoativo",
+    "faixa": 2,
+    "phHidro": {
+      "min": 3,
+      "max": 6,
+      "label": "pH 3,0 – 6,0"
+    },
+    "phLipo": {
+      "min": 5,
+      "max": 8,
+      "label": "pH 5,0 – 8,0"
+    }
+  },
+  {
+    "produto": "Fluroxipir-meptílico",
+    "kowTexto": "3,13",
+    "kow": 3.13,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 7,
+      "max": 8,
+      "label": "pH 7,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 4,
+      "label": "pH 3,0 – 4,0"
+    }
+  },
+  {
+    "produto": "nicossulfurom",
+    "kowTexto": "0,44",
+    "kow": 0.44,
+    "tend": "Tensoativo",
+    "faixa": 0,
+    "phHidro": {
+      "min": 7,
+      "max": 8,
+      "label": "pH 7,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 4,
+      "label": "pH 3,0 – 4,0"
+    }
+  },
+  {
+    "produto": "amicarbazona",
+    "kowTexto": "15,1",
+    "kow": 15.1,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 3,
+      "max": 6,
+      "label": "pH 3,0 – 6,0"
+    },
+    "phLipo": {
+      "min": 5,
+      "max": 8,
+      "label": "pH 5,0 – 8,0"
+    }
+  },
+  {
+    "produto": "tebutiurom",
+    "kowTexto": "67,1",
+    "kow": 67.1,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "fomesafem",
+    "kowTexto": "4,04",
+    "kow": 4.04,
+    "tend": "Tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 7,
+      "max": 8,
+      "label": "pH 7,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 7,
+      "max": 8,
+      "label": "pH 7,0 – 8,0"
+    }
+  },
+  {
+    "produto": "haloxifope-P-metílico",
+    "kowTexto": "11.700",
+    "kow": 11700,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "clorimurom-etílico",
+    "kowTexto": "320",
+    "kow": 320,
+    "tend": "Óleo emulsionável em concentração moderada + tensoativo",
+    "faixa": 2,
+    "phHidro": {
+      "min": 7,
+      "max": 8,
+      "label": "pH 7,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 4,
+      "label": "pH 3,0 – 4,0"
+    }
+  },
+  {
+    "produto": "diclosulam",
+    "kowTexto": "26,3",
+    "kow": 26.3,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 7,
+      "max": 8,
+      "label": "pH 7,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 4,
+      "label": "pH 3,0 – 4,0"
+    }
+  },
+  {
+    "produto": "imazapique",
+    "kowTexto": "0,16",
+    "kow": 0.16,
+    "tend": "Tensoativo",
+    "faixa": 0,
+    "phHidro": {
+      "min": 5,
+      "max": 8,
+      "label": "pH 5,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 6,
+      "label": "pH 3,0 – 6,0"
+    }
+  },
+  {
+    "produto": "Simazina",
+    "kowTexto": "122",
+    "kow": 122,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "imazapir",
+    "kowTexto": "125",
+    "kow": 125,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 7,
+      "max": 8,
+      "label": "pH 7,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 4,
+      "label": "pH 3,0 – 4,0"
+    }
+  },
+  {
+    "produto": "metsulfurom-metílico",
+    "kowTexto": "1",
+    "kow": 1,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 7,
+      "max": 8,
+      "label": "pH 7,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 4,
+      "label": "pH 3,0 – 4,0"
+    }
+  },
+  {
+    "produto": "tidiazurom",
+    "kowTexto": "58,9",
+    "kow": 58.9,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 5,
+      "max": 8,
+      "label": "pH 5,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 6,
+      "label": "pH 3,0 – 6,0"
+    }
+  },
+  {
+    "produto": "carfentrazona-etílica",
+    "kowTexto": "2.291",
+    "kow": 2291,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "saflufenacil",
+    "kowTexto": "75,3",
+    "kow": 75.3,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 7,
+      "max": 8,
+      "label": "pH 7,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 4,
+      "label": "pH 3,0 – 4,0"
+    }
+  },
+  {
+    "produto": "terbutilazina",
+    "kowTexto": "1.095",
+    "kow": 1095,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 3,
+      "max": 6,
+      "label": "pH 3,0 – 6,0"
+    },
+    "phLipo": {
+      "min": 5,
+      "max": 8,
+      "label": "pH 5,0 – 8,0"
+    }
+  },
+  {
+    "produto": "oxifluorfem",
+    "kowTexto": "29.400",
+    "kow": 29400,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "lactofem",
+    "kowTexto": "5.914",
+    "kow": 5914,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "trifluralina",
+    "kowTexto": "118.000",
+    "kow": 118000,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "propanil",
+    "kowTexto": "193",
+    "kow": 193,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "quizalofope-P-etílico",
+    "kowTexto": "45.709",
+    "kow": 45709,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "Bispiribaque-sódico",
+    "kowTexto": "9,23",
+    "kow": 9.23,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 7,
+      "max": 8,
+      "label": "pH 7,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 4,
+      "label": "pH 3,0 – 4,0"
+    }
+  },
+  {
+    "produto": "imazamoxi",
+    "kowTexto": "526",
+    "kow": 526,
+    "tend": "Óleo emulsionável em alta concentração, considerando adição de tensoativo",
+    "faixa": 3,
+    "phHidro": {
+      "min": 7,
+      "max": 8,
+      "label": "pH 7,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 4,
+      "label": "pH 3,0 – 4,0"
+    }
+  },
+  {
+    "produto": "imazaquim",
+    "kowTexto": "207",
+    "kow": 207,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 7,
+      "max": 8,
+      "label": "pH 7,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 4,
+      "label": "pH 3,0 – 4,0"
+    }
+  },
+  {
+    "produto": "Clodinafope-Propargil",
+    "kowTexto": "7.943",
+    "kow": 7943,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "diflufenicam",
+    "kowTexto": "79.433",
+    "kow": 79433,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "MSMA",
+    "kowTexto": "88,9",
+    "kow": 88.9,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 7,
+      "max": 8,
+      "label": "pH 7,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 4,
+      "label": "pH 3,0 – 4,0"
+    }
+  },
+  {
+    "produto": "Penoxsulam",
+    "kowTexto": "0,443",
+    "kow": 0.443,
+    "tend": "Tensoativo",
+    "faixa": 0,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "prometrina",
+    "kowTexto": "1.081",
+    "kow": 1081,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 3,
+      "max": 6,
+      "label": "pH 3,0 – 6,0"
+    },
+    "phLipo": {
+      "min": 5,
+      "max": 8,
+      "label": "pH 5,0 – 8,0"
+    }
+  },
+  {
+    "produto": "trifloxissulfurom-sódico",
+    "kowTexto": "23,7",
+    "kow": 23.7,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 5,
+      "max": 8,
+      "label": "pH 5,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 6,
+      "label": "pH 3,0 – 6,0"
+    }
+  },
+  {
+    "produto": "Acetocloro",
+    "kowTexto": "300",
+    "kow": 300,
+    "tend": "Óleo emulsionável em concentração moderada + tensoativo",
+    "faixa": 2,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "Asulam",
+    "kowTexto": "61,2",
+    "kow": 61.2,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 5,
+      "max": 8,
+      "label": "pH 5,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 6,
+      "label": "pH 3,0 – 6,0"
+    }
+  },
+  {
+    "produto": "bentazona",
+    "kowTexto": "34,3",
+    "kow": 34.3,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 7,
+      "max": 8,
+      "label": "pH 7,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 4,
+      "label": "pH 3,0 – 4,0"
+    }
+  },
+  {
+    "produto": "cialofope-butílico",
+    "kowTexto": "2.089",
+    "kow": 2089,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "fenoxaprope-P-etílico",
+    "kowTexto": "13.200",
+    "kow": 13200,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "fluazifope-P-butílico",
+    "kowTexto": "22,2",
+    "kow": 22.2,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 5,
+      "max": 8,
+      "label": "pH 5,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 6,
+      "label": "pH 3,0 – 6,0"
+    }
+  },
+  {
+    "produto": "linurom",
+    "kowTexto": "1.010",
+    "kow": 1010,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "metamitrona",
+    "kowTexto": "5,13",
+    "kow": 5.13,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "piroxsulam",
+    "kowTexto": "2,42",
+    "kow": 2.42,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 7,
+      "max": 8,
+      "label": "pH 7,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 4,
+      "label": "pH 3,0 – 4,0"
+    }
+  },
+  {
+    "produto": "quincloraque",
+    "kowTexto": "5,76",
+    "kow": 5.76,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 7,
+      "max": 8,
+      "label": "pH 7,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 4,
+      "label": "pH 3,0 – 4,0"
+    }
+  },
+  {
+    "produto": "Tembotriona",
+    "kowTexto": "119",
+    "kow": 119,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 7,
+      "max": 8,
+      "label": "pH 7,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 4,
+      "label": "pH 3,0 – 4,0"
+    }
+  },
+  {
+    "produto": "Tiafenacil",
+    "kowTexto": "501",
+    "kow": 501,
+    "tend": "Óleo emulsionável em alta concentração, considerando adição de tensoativo",
+    "faixa": 3,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "acifluorfem-sódico",
+    "kowTexto": "15,6",
+    "kow": 15.6,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 5,
+      "max": 8,
+      "label": "pH 5,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 6,
+      "label": "pH 3,0 – 6,0"
+    }
+  },
+  {
+    "produto": "Alacloro",
+    "kowTexto": "794",
+    "kow": 794,
+    "tend": "Óleo emulsionável em alta concentração, considerando adição de tensoativo",
+    "faixa": 3,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "Aminociclopiraclor",
+    "kowTexto": "0,0267",
+    "kow": 0.0267,
+    "tend": "Tensoativo",
+    "faixa": 0,
+    "phHidro": {
+      "min": 5,
+      "max": 8,
+      "label": "pH 5,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 6,
+      "label": "pH 3,0 – 6,0"
+    }
+  },
+  {
+    "produto": "Azimsulfurom",
+    "kowTexto": "4,43",
+    "kow": 4.43,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 7,
+      "max": 8,
+      "label": "pH 7,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 4,
+      "label": "pH 3,0 – 4,0"
+    }
+  },
+  {
+    "produto": "Biciclopirona",
+    "kowTexto": "6,24",
+    "kow": 6.24,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 7,
+      "max": 8,
+      "label": "pH 7,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 4,
+      "label": "pH 3,0 – 4,0"
+    }
+  },
+  {
+    "produto": "Bixlozona",
+    "kowTexto": "1.995",
+    "kow": 1995,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "bromacila",
+    "kowTexto": "214",
+    "kow": 214,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 5,
+      "max": 8,
+      "label": "pH 5,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 6,
+      "label": "pH 3,0 – 6,0"
+    }
+  },
+  {
+    "produto": "Ciclanilida",
+    "kowTexto": "172.431",
+    "kow": 172431,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 7,
+      "max": 8,
+      "label": "pH 7,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 4,
+      "label": "pH 3,0 – 4,0"
+    }
+  },
+  {
+    "produto": "ciclossulfamurom",
+    "kowTexto": "733",
+    "kow": 733,
+    "tend": "Óleo emulsionável em alta concentração, considerando adição de tensoativo",
+    "faixa": 3,
+    "phHidro": {
+      "min": 7,
+      "max": 8,
+      "label": "pH 7,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 4,
+      "label": "pH 3,0 – 4,0"
+    }
+  },
+  {
+    "produto": "Cinmetilina",
+    "kowTexto": "6.850",
+    "kow": 6850,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "cloransulam-metílico",
+    "kowTexto": "1,12",
+    "kow": 1.12,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 5,
+      "max": 8,
+      "label": "pH 5,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 6,
+      "label": "pH 3,0 – 6,0"
+    }
+  },
+  {
+    "produto": "etoxissulfurom",
+    "kowTexto": "28",
+    "kow": 28,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 7,
+      "max": 8,
+      "label": "pH 7,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 4,
+      "label": "pH 3,0 – 4,0"
+    }
+  },
+  {
+    "produto": "flazasulfurom",
+    "kowTexto": "70,7",
+    "kow": 70.7,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 7,
+      "max": 8,
+      "label": "pH 7,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 4,
+      "label": "pH 3,0 – 4,0"
+    }
+  },
+  {
+    "produto": "Florpirauxifen-benzil",
+    "kowTexto": "288.403",
+    "kow": 288403,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "Flucarbazona sódica",
+    "kowTexto": "0,0617",
+    "kow": 0.0617,
+    "tend": "Tensoativo",
+    "faixa": 0,
+    "phHidro": {
+      "min": 5,
+      "max": 8,
+      "label": "pH 5,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 6,
+      "label": "pH 3,0 – 6,0"
+    }
+  },
+  {
+    "produto": "flumetsulam",
+    "kowTexto": "0,0188",
+    "kow": 0.0188,
+    "tend": "Tensoativo",
+    "faixa": 0,
+    "phHidro": {
+      "min": 7,
+      "max": 8,
+      "label": "pH 7,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 4,
+      "label": "pH 3,0 – 4,0"
+    }
+  },
+  {
+    "produto": "flumicloraque-pentílico",
+    "kowTexto": "97.720",
+    "kow": 97720,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "foramsulfurom",
+    "kowTexto": "4,01",
+    "kow": 4.01,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "glifosato-sal de amônio",
+    "kowTexto": "0,0125",
+    "kow": 0.0125,
+    "tend": "Tensoativo",
+    "faixa": 0,
+    "phHidro": {
+      "min": 5,
+      "max": 8,
+      "label": "pH 5,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 6,
+      "label": "pH 3,0 – 6,0"
+    }
+  },
+  {
+    "produto": "Halauxifen-metil",
+    "kowTexto": "5.754",
+    "kow": 5754,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "halossulfurom-metílico",
+    "kowTexto": "47",
+    "kow": 47,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 7,
+      "max": 8,
+      "label": "pH 7,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 4,
+      "label": "pH 3,0 – 4,0"
+    }
+  },
+  {
+    "produto": "indaziflam",
+    "kowTexto": "2,8",
+    "kow": 2.8,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 3,
+      "max": 6,
+      "label": "pH 3,0 – 6,0"
+    },
+    "phLipo": {
+      "min": 5,
+      "max": 8,
+      "label": "pH 5,0 – 8,0"
+    }
+  },
+  {
+    "produto": "Iodossulfurom-Metílico-Sódico",
+    "kowTexto": "11,7",
+    "kow": 11.7,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 7,
+      "max": 8,
+      "label": "pH 7,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 4,
+      "label": "pH 3,0 – 4,0"
+    }
+  },
+  {
+    "produto": "ioxinil",
+    "kowTexto": "14.094",
+    "kow": 14094,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 7,
+      "max": 8,
+      "label": "pH 7,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 4,
+      "label": "pH 3,0 – 4,0"
+    }
+  },
+  {
+    "produto": "MCPA",
+    "kowTexto": "16,8",
+    "kow": 16.8,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 7,
+      "max": 8,
+      "label": "pH 7,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 4,
+      "label": "pH 3,0 – 4,0"
+    }
+  },
+  {
+    "produto": "Mesossulfurom metilico",
+    "kowTexto": "24,5",
+    "kow": 24.5,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 7,
+      "max": 8,
+      "label": "pH 7,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 4,
+      "label": "pH 3,0 – 4,0"
+    }
+  },
+  {
+    "produto": "Metamifop",
+    "kowTexto": "281.838",
+    "kow": 281838,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "octanoato de ioxinila",
+    "kowTexto": "14.094",
+    "kow": 14094,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 7,
+      "max": 8,
+      "label": "pH 7,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 4,
+      "label": "pH 3,0 – 4,0"
+    }
+  },
+  {
+    "produto": "ortossulfamurom",
+    "kowTexto": "20,4",
+    "kow": 20.4,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "oxadiazona",
+    "kowTexto": "63.100",
+    "kow": 63100,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "pendimetalina",
+    "kowTexto": "152.000",
+    "kow": 152000,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "Pinoxadem",
+    "kowTexto": "1.585",
+    "kow": 1585,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "piraflufem",
+    "kowTexto": "3.090",
+    "kow": 3090,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "pirazossulfurom-etílico",
+    "kowTexto": "20",
+    "kow": 20,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "Piritiobaque-sódico",
+    "kowTexto": "14,4",
+    "kow": 14.4,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 7,
+      "max": 8,
+      "label": "pH 7,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 4,
+      "label": "pH 3,0 – 4,0"
+    }
+  },
+  {
+    "produto": "Piroxassulfona",
+    "kowTexto": "245",
+    "kow": 245,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "profoxidim",
+    "kowTexto": "94.091",
+    "kow": 94091,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 5,
+      "max": 8,
+      "label": "pH 5,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 6,
+      "label": "pH 3,0 – 6,0"
+    }
+  },
+  {
+    "produto": "propaquizafope",
+    "kowTexto": "60.256",
+    "kow": 60256,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "quizalofope-P-tefurílico",
+    "kowTexto": "45.709",
+    "kow": 45709,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "tiencarbazona metílica",
+    "kowTexto": "0,179",
+    "kow": 0.179,
+    "tend": "Tensoativo",
+    "faixa": 0,
+    "phHidro": {
+      "min": 5,
+      "max": 8,
+      "label": "pH 5,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 6,
+      "label": "pH 3,0 – 6,0"
+    }
+  },
+  {
+    "produto": "Tolpiralate",
+    "kowTexto": "79,4",
+    "kow": 79.4,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "tiobencarbe",
+    "kowTexto": "2.630",
+    "kow": 2630,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "trinexapaque-etílico",
+    "kowTexto": "275",
+    "kow": 275,
+    "tend": "Óleo emulsionável em concentração moderada + tensoativo",
+    "faixa": 2,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "Cloreto de Mepiquate",
+    "kowTexto": "0,000269",
+    "kow": 0.000269,
+    "tend": "Tensoativo",
+    "faixa": 0,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "sulfometurom-metílico",
+    "kowTexto": "11",
+    "kow": 11,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 5,
+      "max": 8,
+      "label": "pH 5,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 6,
+      "label": "pH 3,0 – 6,0"
+    }
+  },
+  {
+    "produto": "bifentrina",
+    "kowTexto": "3.981.072",
+    "kow": 3981072,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "fipronil",
+    "kowTexto": "10.233",
+    "kow": 10233,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "imidacloprido",
+    "kowTexto": "3,72",
+    "kow": 3.72,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "acetamiprido",
+    "kowTexto": "6,31",
+    "kow": 6.31,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "tiametoxam",
+    "kowTexto": "0,741",
+    "kow": 0.741,
+    "tend": "Tensoativo",
+    "faixa": 0,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "clorfenapir",
+    "kowTexto": "67.608",
+    "kow": 67608,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "acefato",
+    "kowTexto": "0,141",
+    "kow": 0.141,
+    "tend": "Tensoativo",
+    "faixa": 0,
+    "phHidro": {
+      "min": 5,
+      "max": 7,
+      "label": "pH 5,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 5,
+      "max": 7,
+      "label": "pH 5,0 – 7,0"
+    }
+  },
+  {
+    "produto": "clorpirifós",
+    "kowTexto": "91.201",
+    "kow": 91201,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "diflubenzurom",
+    "kowTexto": "7.762",
+    "kow": 7762,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "piriproxifem",
+    "kowTexto": "234.423",
+    "kow": 234423,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "cipermetrina",
+    "kowTexto": "3.981.072",
+    "kow": 3981072,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "indoxacarbe",
+    "kowTexto": "44.668",
+    "kow": 44668,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "tiodicarbe",
+    "kowTexto": "31,6",
+    "kow": 31.6,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "clorantraniliprole",
+    "kowTexto": "575,4",
+    "kow": 575.4,
+    "tend": "Óleo emulsionável em alta concentração, considerando adição de tensoativo",
+    "faixa": 3,
+    "phHidro": {
+      "min": 5,
+      "max": 7,
+      "label": "pH 5,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 5,
+      "max": 7,
+      "label": "pH 5,0 – 7,0"
+    }
+  },
+  {
+    "produto": "Abamectina",
+    "kowTexto": "25.119",
+    "kow": 25119,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "metoxifenozida",
+    "kowTexto": "5.248",
+    "kow": 5248,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "pimetrozina",
+    "kowTexto": "0,653",
+    "kow": 0.653,
+    "tend": "Tensoativo",
+    "faixa": 0,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "flonicamida",
+    "kowTexto": "2",
+    "kow": 2,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "malationa",
+    "kowTexto": "229",
+    "kow": 229,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 4,
+      "max": 5,
+      "label": "pH 4,0 – 5,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 5,
+      "label": "pH 4,0 – 5,0"
+    }
+  },
+  {
+    "produto": "Etiprole",
+    "kowTexto": "794",
+    "kow": 794,
+    "tend": "Óleo emulsionável em alta concentração, considerando adição de tensoativo",
+    "faixa": 3,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "permetrina",
+    "kowTexto": "1.258.925",
+    "kow": 1258925,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "profenofós",
+    "kowTexto": "27.542",
+    "kow": 27542,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 5,
+      "label": "pH 4,0 – 5,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 5,
+      "label": "pH 4,0 – 5,0"
+    }
+  },
+  {
+    "produto": "alfa-cipermetrina",
+    "kowTexto": "3.981.072",
+    "kow": 3981072,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "novalurom",
+    "kowTexto": "19.953",
+    "kow": 19953,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "Clotianidina",
+    "kowTexto": "5,01",
+    "kow": 5.01,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "deltametrina",
+    "kowTexto": "39.811",
+    "kow": 39811,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "sulfluramida",
+    "kowTexto": "N/A",
+    "kow": null,
+    "tend": "N/A",
+    "faixa": null,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "Espiromesifeno",
+    "kowTexto": "35.481",
+    "kow": 35481,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "teflubenzurom",
+    "kowTexto": "19.953",
+    "kow": 19953,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 5,
+      "max": 8,
+      "label": "pH 5,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 6,
+      "label": "pH 3,0 – 6,0"
+    }
+  },
+  {
+    "produto": "tiacloprido",
+    "kowTexto": "18,2",
+    "kow": 18.2,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "triflumurom",
+    "kowTexto": "79.433",
+    "kow": 79433,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "zeta-cipermetrina",
+    "kowTexto": "3.981.072",
+    "kow": 3981072,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "Benzoato de Emamectina",
+    "kowTexto": "1.197",
+    "kow": 1197,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 3,
+      "max": 4,
+      "label": "pH 3,0 – 4,0"
+    },
+    "phLipo": {
+      "min": 7,
+      "max": 8,
+      "label": "pH 7,0 – 8,0"
+    }
+  },
+  {
+    "produto": "Flubendiamida",
+    "kowTexto": "13.804",
+    "kow": 13804,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "benfuracarbe",
+    "kowTexto": "16.596",
+    "kow": 16596,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "carbossulfano",
+    "kowTexto": "26.302.680",
+    "kow": 26302680,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "ciromazina",
+    "kowTexto": "0,448",
+    "kow": 0.448,
+    "tend": "Tensoativo",
+    "faixa": 0,
+    "phHidro": {
+      "min": 3,
+      "max": 6,
+      "label": "pH 3,0 – 6,0"
+    },
+    "phLipo": {
+      "min": 5,
+      "max": 8,
+      "label": "pH 5,0 – 8,0"
+    }
+  },
+  {
+    "produto": "Cloridrato de cartape",
+    "kowTexto": "0,112",
+    "kow": 0.112,
+    "tend": "Tensoativo",
+    "faixa": 0,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "Dinotefuram",
+    "kowTexto": "0,282",
+    "kow": 0.282,
+    "tend": "Tensoativo",
+    "faixa": 0,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "etofenproxi",
+    "kowTexto": "7.943.282",
+    "kow": 7943282,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "flufenoxurom",
+    "kowTexto": "128.825",
+    "kow": 128825,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "Gama-cialotrina",
+    "kowTexto": "10.000.000",
+    "kow": 10000000,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "Afidopiropeno",
+    "kowTexto": "2.818",
+    "kow": 2818,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "azadiractina",
+    "kowTexto": "9,77",
+    "kow": 9.77,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "beta-ciflutrina",
+    "kowTexto": "1.000.000",
+    "kow": 1000000,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "Beta-Cipermetrina",
+    "kowTexto": "3.981.072",
+    "kow": 3981072,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "Bistriflurom",
+    "kowTexto": "549.540,9",
+    "kow": 549540.9,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "buprofezina",
+    "kowTexto": "31.623",
+    "kow": 31623,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "cadusafós",
+    "kowTexto": "7.079",
+    "kow": 7079,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "carbaril",
+    "kowTexto": "229,1",
+    "kow": 229.1,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 4,
+      "max": 5,
+      "label": "pH 4,0 – 5,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 5,
+      "label": "pH 4,0 – 5,0"
+    }
+  },
+  {
+    "produto": "Ciantraniliprole",
+    "kowTexto": "105",
+    "kow": 105,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 5,
+      "max": 8,
+      "label": "pH 5,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 6,
+      "label": "pH 3,0 – 6,0"
+    }
+  },
+  {
+    "produto": "Ciclaniliprole",
+    "kowTexto": "501",
+    "kow": 501,
+    "tend": "Óleo emulsionável em alta concentração, considerando adição de tensoativo",
+    "faixa": 3,
+    "phHidro": {
+      "min": 5,
+      "max": 8,
+      "label": "pH 5,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 6,
+      "label": "pH 3,0 – 6,0"
+    }
+  },
+  {
+    "produto": "ciflutrina",
+    "kowTexto": "1.000.000",
+    "kow": 1000000,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "clorfluazurom",
+    "kowTexto": "630.957",
+    "kow": 630957,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 5,
+      "max": 8,
+      "label": "pH 5,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 6,
+      "label": "pH 3,0 – 6,0"
+    }
+  },
+  {
+    "produto": "Cloridrato de formetanato",
+    "kowTexto": "0,997",
+    "kow": 0.997,
+    "tend": "Tensoativo",
+    "faixa": 0,
+    "phHidro": {
+      "min": 3,
+      "max": 4,
+      "label": "pH 3,0 – 4,0"
+    },
+    "phLipo": {
+      "min": 7,
+      "max": 8,
+      "label": "pH 7,0 – 8,0"
+    }
+  },
+  {
+    "produto": "cromafenozida",
+    "kowTexto": "501,2",
+    "kow": 501.2,
+    "tend": "Óleo emulsionável em alta concentração, considerando adição de tensoativo",
+    "faixa": 3,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "Dimpropiridaz",
+    "kowTexto": "12,6",
+    "kow": 12.6,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "Esfenvalerato",
+    "kowTexto": "1.737.801",
+    "kow": 1737801,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "Espinetoram",
+    "kowTexto": "18.973",
+    "kow": 18973,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 5,
+      "max": 8,
+      "label": "pH 5,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 6,
+      "label": "pH 3,0 – 6,0"
+    }
+  },
+  {
+    "produto": "Espinosade",
+    "kowTexto": "774",
+    "kow": 774,
+    "tend": "Óleo emulsionável em alta concentração, considerando adição de tensoativo",
+    "faixa": 3,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "Espiropidion",
+    "kowTexto": "1.585",
+    "kow": 1585,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "etoprofós",
+    "kowTexto": "977",
+    "kow": 977,
+    "tend": "Óleo emulsionável em alta concentração, considerando adição de tensoativo",
+    "faixa": 3,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "fenitrotiona",
+    "kowTexto": "1.995",
+    "kow": 1995,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "fenpropatrina",
+    "kowTexto": "1.096.478",
+    "kow": 1096478,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "Flupiradifurona",
+    "kowTexto": "15,8",
+    "kow": 15.8,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "fosmete",
+    "kowTexto": "631",
+    "kow": 631,
+    "tend": "Óleo emulsionável em alta concentração, considerando adição de tensoativo",
+    "faixa": 3,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "fostiazato",
+    "kowTexto": "47,9",
+    "kow": 47.9,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "Isocicloseram",
+    "kowTexto": "100.000",
+    "kow": 100000,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "Metaflumizone",
+    "kowTexto": "39.811",
+    "kow": 39811,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "milbemectina",
+    "kowTexto": "5.011.872",
+    "kow": 5011872,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "pirimifós-metílico",
+    "kowTexto": "1.323.902",
+    "kow": 1323902,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 7,
+      "max": 8,
+      "label": "pH 7,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 4,
+      "label": "pH 3,0 – 4,0"
+    }
+  },
+  {
+    "produto": "sulfoxaflor",
+    "kowTexto": "6,34",
+    "kow": 6.34,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "tebufenozida",
+    "kowTexto": "17.783",
+    "kow": 17783,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "terbufós",
+    "kowTexto": "32.359",
+    "kow": 32359,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "Tolfenpyrad",
+    "kowTexto": "407.380",
+    "kow": 407380,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "Fluazaindolizine",
+    "kowTexto": "14,4",
+    "kow": 14.4,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 5,
+      "max": 8,
+      "label": "pH 5,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 6,
+      "label": "pH 3,0 – 6,0"
+    }
+  },
+  {
+    "produto": "Fluensulfona",
+    "kowTexto": "158",
+    "kow": 158,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "acibenzolar-S-metílico",
+    "kowTexto": "1.259",
+    "kow": 1259,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 5,
+      "label": "pH 4,0 – 5,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 5,
+      "label": "pH 4,0 – 5,0"
+    }
+  },
+  {
+    "produto": "etefom",
+    "kowTexto": "0,603",
+    "kow": 0.603,
+    "tend": "Tensoativo",
+    "faixa": 0,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "flumetralina",
+    "kowTexto": "338.844",
+    "kow": 338844,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "paclobutrazol",
+    "kowTexto": "1.288",
+    "kow": 1288,
+    "tend": "Óleo emulsionável em alta concentração + Tensoativo",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "Cloreto de clormequate",
+    "kowTexto": "0,000339",
+    "kow": 0.000339,
+    "tend": "Tensoativo",
+    "faixa": 0,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "ácido giberélico",
+    "kowTexto": "467",
+    "kow": 467,
+    "tend": "Óleo emulsionável em concentração moderada + tensoativo",
+    "faixa": 2,
+    "phHidro": {
+      "min": 7,
+      "max": 8,
+      "label": "pH 7,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 4,
+      "label": "pH 3,0 – 4,0"
+    }
+  },
+  {
+    "produto": "cianamida",
+    "kowTexto": "0,1514",
+    "kow": 0.1514,
+    "tend": "Tensoativo",
+    "faixa": 0,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "cinetina",
+    "kowTexto": "3,98",
+    "kow": 3.98,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "ácido 4-indol-3-ilbutírico",
+    "kowTexto": "13.358",
+    "kow": 13358,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "decanol",
+    "kowTexto": "37.154",
+    "kow": 37154,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "hidrazida malêica",
+    "kowTexto": "4,02",
+    "kow": 4.02,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 5,
+      "max": 8,
+      "label": "pH 5,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 6,
+      "label": "pH 3,0 – 6,0"
+    }
+  },
+  {
+    "produto": "Proexadiona cálcica",
+    "kowTexto": "0,0839",
+    "kow": 0.0839,
+    "tend": "Tensoativo",
+    "faixa": 0,
+    "phHidro": {
+      "min": 5,
+      "max": 8,
+      "label": "pH 5,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 6,
+      "label": "pH 3,0 – 6,0"
+    }
+  },
+  {
+    "produto": "2,4-DB",
+    "kowTexto": "1.476",
+    "kow": 1476,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 7,
+      "max": 8,
+      "label": "pH 7,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 4,
+      "label": "pH 3,0 – 4,0"
+    }
+  },
+  {
+    "produto": "aclonifen",
+    "kowTexto": "23.442",
+    "kow": 23442,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "acrolein",
+    "kowTexto": "1,1",
+    "kow": 1.1,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "alloxydim",
+    "kowTexto": "0,955",
+    "kow": 0.955,
+    "tend": "Tensoativo",
+    "faixa": 0,
+    "phHidro": {
+      "min": 7,
+      "max": 8,
+      "label": "pH 7,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 4,
+      "label": "pH 3,0 – 4,0"
+    }
+  },
+  {
+    "produto": "amidosulfuron",
+    "kowTexto": "1,6",
+    "kow": 1.6,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 7,
+      "max": 8,
+      "label": "pH 7,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 4,
+      "label": "pH 3,0 – 4,0"
+    }
+  },
+  {
+    "produto": "amitrole",
+    "kowTexto": "0,1072",
+    "kow": 0.1072,
+    "tend": "Tensoativo",
+    "faixa": 0,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "AMS",
+    "kowTexto": "N/A",
+    "kow": null,
+    "tend": "N/A",
+    "faixa": null,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "anilofos",
+    "kowTexto": "6.457",
+    "kow": 6457,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "azafenidin",
+    "kowTexto": "229",
+    "kow": 229,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "beflubutamid",
+    "kowTexto": "19.055",
+    "kow": 19055,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "benazolin",
+    "kowTexto": "302",
+    "kow": 302,
+    "tend": "Óleo emulsionável em concentração moderada + tensoativo",
+    "faixa": 2,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "benefin",
+    "kowTexto": "48.978",
+    "kow": 48978,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "benoxacor",
+    "kowTexto": "392",
+    "kow": 392,
+    "tend": "Óleo emulsionável em concentração moderada + tensoativo",
+    "faixa": 2,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "bensulfuron-methyl",
+    "kowTexto": "150",
+    "kow": 150,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 7,
+      "max": 8,
+      "label": "pH 7,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 4,
+      "label": "pH 3,0 – 4,0"
+    }
+  },
+  {
+    "produto": "bensulide",
+    "kowTexto": "16.500",
+    "kow": 16500,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "benzofenap",
+    "kowTexto": "48.978",
+    "kow": 48978,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "bifenox",
+    "kowTexto": "31.700",
+    "kow": 31700,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "bromoxynil",
+    "kowTexto": "100",
+    "kow": 100,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 7,
+      "max": 8,
+      "label": "pH 7,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 4,
+      "label": "pH 3,0 – 4,0"
+    }
+  },
+  {
+    "produto": "butachlor",
+    "kowTexto": "31.623",
+    "kow": 31623,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "butafenacil",
+    "kowTexto": "1.540",
+    "kow": 1540,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "butroxydim",
+    "kowTexto": "6.478",
+    "kow": 6478,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 7,
+      "max": 8,
+      "label": "pH 7,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 4,
+      "label": "pH 3,0 – 4,0"
+    }
+  },
+  {
+    "produto": "butylate",
+    "kowTexto": "14.000",
+    "kow": 14000,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "cacodylic acid",
+    "kowTexto": "0,028",
+    "kow": 0.028,
+    "tend": "Tensoativo",
+    "faixa": 0,
+    "phHidro": {
+      "min": 5,
+      "max": 8,
+      "label": "pH 5,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 6,
+      "label": "pH 3,0 – 6,0"
+    }
+  },
+  {
+    "produto": "carbetamide",
+    "kowTexto": "50,1",
+    "kow": 50.1,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "chlorotoluron",
+    "kowTexto": "2,5",
+    "kow": 2.5,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "chlorsulfuron",
+    "kowTexto": "2,13",
+    "kow": 2.13,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 7,
+      "max": 8,
+      "label": "pH 7,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 4,
+      "label": "pH 3,0 – 4,0"
+    }
+  },
+  {
+    "produto": "cinosulfuron",
+    "kowTexto": "37,8",
+    "kow": 37.8,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 5,
+      "max": 8,
+      "label": "pH 5,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 6,
+      "label": "pH 3,0 – 6,0"
+    }
+  },
+  {
+    "produto": "clopyralid",
+    "kowTexto": "0,0155",
+    "kow": 0.0155,
+    "tend": "Tensoativo",
+    "faixa": 0,
+    "phHidro": {
+      "min": 5,
+      "max": 8,
+      "label": "pH 5,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 6,
+      "label": "pH 3,0 – 6,0"
+    }
+  },
+  {
+    "produto": "cloquintocet-mexyl",
+    "kowTexto": "125.893",
+    "kow": 125893,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 7,
+      "max": 8,
+      "label": "pH 7,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 4,
+      "label": "pH 3,0 – 4,0"
+    }
+  },
+  {
+    "produto": "copper chelate",
+    "kowTexto": "N/A",
+    "kow": null,
+    "tend": "N/A",
+    "faixa": null,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "copper sulfate",
+    "kowTexto": "N/A",
+    "kow": null,
+    "tend": "N/A",
+    "faixa": null,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "cyanazine",
+    "kowTexto": "127",
+    "kow": 127,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "cycloate",
+    "kowTexto": "13.000",
+    "kow": 13000,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "cycloxydim",
+    "kowTexto": "1.999",
+    "kow": 1999,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 7,
+      "max": 8,
+      "label": "pH 7,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 4,
+      "label": "pH 3,0 – 4,0"
+    }
+  },
+  {
+    "produto": "cyprosulfamide",
+    "kowTexto": "0,158",
+    "kow": 0.158,
+    "tend": "Tensoativo",
+    "faixa": 0,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "dazomet",
+    "kowTexto": "1,4",
+    "kow": 1.4,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "DCPA",
+    "kowTexto": "25.119",
+    "kow": 25119,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "desmedipham",
+    "kowTexto": "2.455",
+    "kow": 2455,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "desmetryn",
+    "kowTexto": "240",
+    "kow": 240,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 3,
+      "max": 6,
+      "label": "pH 3,0 – 6,0"
+    },
+    "phLipo": {
+      "min": 5,
+      "max": 8,
+      "label": "pH 5,0 – 8,0"
+    }
+  },
+  {
+    "produto": "dichlobenil",
+    "kowTexto": "500",
+    "kow": 500,
+    "tend": "Óleo emulsionável em alta concentração, considerando adição de tensoativo",
+    "faixa": 3,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "dichlormid",
+    "kowTexto": "69",
+    "kow": 69,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "dichlorprop",
+    "kowTexto": "19.307",
+    "kow": 19307,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 7,
+      "max": 8,
+      "label": "pH 7,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 4,
+      "label": "pH 3,0 – 4,0"
+    }
+  },
+  {
+    "produto": "diclofop",
+    "kowTexto": "37.800",
+    "kow": 37800,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "difenzoquat",
+    "kowTexto": "28.184",
+    "kow": 28184,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 7,
+      "max": 8,
+      "label": "pH 7,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 4,
+      "label": "pH 3,0 – 4,0"
+    }
+  },
+  {
+    "produto": "diflufenzopyr",
+    "kowTexto": "2,76",
+    "kow": 2.76,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 5,
+      "max": 8,
+      "label": "pH 5,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 6,
+      "label": "pH 3,0 – 6,0"
+    }
+  },
+  {
+    "produto": "dimefuron",
+    "kowTexto": "324",
+    "kow": 324,
+    "tend": "Óleo emulsionável em concentração moderada + tensoativo",
+    "faixa": 2,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "dimethenamid",
+    "kowTexto": "141",
+    "kow": 141,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "dimethipin",
+    "kowTexto": "0,6699",
+    "kow": 0.6699,
+    "tend": "Tensoativo",
+    "faixa": 0,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "dithiopyr",
+    "kowTexto": "56.250",
+    "kow": 56250,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "DSMA",
+    "kowTexto": "10",
+    "kow": 10,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 7,
+      "max": 8,
+      "label": "pH 7,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 4,
+      "label": "pH 3,0 – 4,0"
+    }
+  },
+  {
+    "produto": "endothall",
+    "kowTexto": "7.931",
+    "kow": 7931,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 5,
+      "max": 8,
+      "label": "pH 5,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 6,
+      "label": "pH 3,0 – 6,0"
+    }
+  },
+  {
+    "produto": "EPTC",
+    "kowTexto": "1.600",
+    "kow": 1600,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "esprocarb",
+    "kowTexto": "39.811",
+    "kow": 39811,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "ethalfluralin",
+    "kowTexto": "130.000",
+    "kow": 130000,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "ethofumesate",
+    "kowTexto": "501",
+    "kow": 501,
+    "tend": "Óleo emulsionável em alta concentração, considerando adição de tensoativo",
+    "faixa": 3,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "fenchlorazole-ethyl",
+    "kowTexto": "33.113",
+    "kow": 33113,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "fenclorim",
+    "kowTexto": "14.791",
+    "kow": 14791,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "fentrazamide",
+    "kowTexto": "3.981",
+    "kow": 3981,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "flucetosulfuron",
+    "kowTexto": "11,2",
+    "kow": 11.2,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 7,
+      "max": 8,
+      "label": "pH 7,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 4,
+      "label": "pH 3,0 – 4,0"
+    }
+  },
+  {
+    "produto": "flufenacet",
+    "kowTexto": "1.600",
+    "kow": 1600,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "flufenpyr-ethyl",
+    "kowTexto": "3.090",
+    "kow": 3090,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "fluometuron",
+    "kowTexto": "242",
+    "kow": 242,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "fluoroglycofen",
+    "kowTexto": "15,1",
+    "kow": 15.1,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 5,
+      "max": 8,
+      "label": "pH 5,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 6,
+      "label": "pH 3,0 – 6,0"
+    }
+  },
+  {
+    "produto": "flupyrsulfuron-methyl-sodium",
+    "kowTexto": "0,96",
+    "kow": 0.96,
+    "tend": "Tensoativo",
+    "faixa": 0,
+    "phHidro": {
+      "min": 7,
+      "max": 8,
+      "label": "pH 7,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 4,
+      "label": "pH 3,0 – 4,0"
+    }
+  },
+  {
+    "produto": "fluridone",
+    "kowTexto": "74",
+    "kow": 74,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "flurochloridone",
+    "kowTexto": "2.291",
+    "kow": 2291,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "flurtamone",
+    "kowTexto": "11.134",
+    "kow": 11134,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "fluthiacet-methyl",
+    "kowTexto": "5.870",
+    "kow": 5870,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "fluxofenim",
+    "kowTexto": "7.943",
+    "kow": 7943,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "fosamine",
+    "kowTexto": "0,00000105",
+    "kow": 1.05e-06,
+    "tend": "Tensoativo",
+    "faixa": 0,
+    "phHidro": {
+      "min": 5,
+      "max": 8,
+      "label": "pH 5,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 6,
+      "label": "pH 3,0 – 6,0"
+    }
+  },
+  {
+    "produto": "imazosulfuron",
+    "kowTexto": "39,5",
+    "kow": 39.5,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 7,
+      "max": 8,
+      "label": "pH 7,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 4,
+      "label": "pH 3,0 – 4,0"
+    }
+  },
+  {
+    "produto": "isoproturon",
+    "kowTexto": "316",
+    "kow": 316,
+    "tend": "Óleo emulsionável em concentração moderada + tensoativo",
+    "faixa": 2,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "isoxaben",
+    "kowTexto": "1.320",
+    "kow": 1320,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 3,
+      "max": 4,
+      "label": "pH 3,0 – 4,0"
+    },
+    "phLipo": {
+      "min": 7,
+      "max": 8,
+      "label": "pH 7,0 – 8,0"
+    }
+  },
+  {
+    "produto": "maleic hydrazide",
+    "kowTexto": "0,21",
+    "kow": 0.21,
+    "tend": "Tensoativo",
+    "faixa": 0,
+    "phHidro": {
+      "min": 5,
+      "max": 8,
+      "label": "pH 5,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 6,
+      "label": "pH 3,0 – 6,0"
+    }
+  },
+  {
+    "produto": "MCPB",
+    "kowTexto": "1.535",
+    "kow": 1535,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 7,
+      "max": 8,
+      "label": "pH 7,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 4,
+      "label": "pH 3,0 – 4,0"
+    }
+  },
+  {
+    "produto": "mecoprop",
+    "kowTexto": "124",
+    "kow": 124,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 7,
+      "max": 8,
+      "label": "pH 7,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 4,
+      "label": "pH 3,0 – 4,0"
+    }
+  },
+  {
+    "produto": "mefenacet",
+    "kowTexto": "1.700",
+    "kow": 1700,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "mefenpyr-diethyl",
+    "kowTexto": "6.761",
+    "kow": 6761,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "mefluidide",
+    "kowTexto": "0,032",
+    "kow": 0.032,
+    "tend": "Tensoativo",
+    "faixa": 0,
+    "phHidro": {
+      "min": 5,
+      "max": 8,
+      "label": "pH 5,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 6,
+      "label": "pH 3,0 – 6,0"
+    }
+  },
+  {
+    "produto": "metaborate",
+    "kowTexto": "N/A",
+    "kow": null,
+    "tend": "N/A",
+    "faixa": null,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "metazachlor",
+    "kowTexto": "309",
+    "kow": 309,
+    "tend": "Óleo emulsionável em concentração moderada + tensoativo",
+    "faixa": 2,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "metham",
+    "kowTexto": "10.589",
+    "kow": 10589,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 5,
+      "max": 8,
+      "label": "pH 5,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 6,
+      "label": "pH 3,0 – 6,0"
+    }
+  },
+  {
+    "produto": "methibenzuron",
+    "kowTexto": "437",
+    "kow": 437,
+    "tend": "Óleo emulsionável em concentração moderada + tensoativo",
+    "faixa": 2,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "metoxuron",
+    "kowTexto": "39,8",
+    "kow": 39.8,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "molinate",
+    "kowTexto": "756",
+    "kow": 756,
+    "tend": "Óleo emulsionável em alta concentração, considerando adição de tensoativo",
+    "faixa": 3,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "napropamide",
+    "kowTexto": "2.100",
+    "kow": 2100,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "naptalam",
+    "kowTexto": "1,06",
+    "kow": 1.06,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 5,
+      "max": 8,
+      "label": "pH 5,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 6,
+      "label": "pH 3,0 – 6,0"
+    }
+  },
+  {
+    "produto": "norflurazon",
+    "kowTexto": "280",
+    "kow": 280,
+    "tend": "Óleo emulsionável em concentração moderada + tensoativo",
+    "faixa": 2,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "oryzalin",
+    "kowTexto": "5.420",
+    "kow": 5420,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "oxadiargyl",
+    "kowTexto": "8.913",
+    "kow": 8913,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "oxaziclomefone",
+    "kowTexto": "4,01",
+    "kow": 4.01,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "paraquat",
+    "kowTexto": "0,0000316",
+    "kow": 3.16e-05,
+    "tend": "Tensoativo",
+    "faixa": 0,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "pebulate",
+    "kowTexto": "9.600",
+    "kow": 9600,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "pelargonic acid",
+    "kowTexto": "997",
+    "kow": 997,
+    "tend": "Óleo emulsionável em alta concentração, considerando adição de tensoativo",
+    "faixa": 3,
+    "phHidro": {
+      "min": 5,
+      "max": 8,
+      "label": "pH 5,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 6,
+      "label": "pH 3,0 – 6,0"
+    }
+  },
+  {
+    "produto": "phenmedipham",
+    "kowTexto": "3.890",
+    "kow": 3890,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "picolinafen",
+    "kowTexto": "0,000023",
+    "kow": 2.3e-05,
+    "tend": "Tensoativo",
+    "faixa": 0,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "pretilachlor",
+    "kowTexto": "12.023",
+    "kow": 12023,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "primisulfuron-methyl",
+    "kowTexto": "1,15",
+    "kow": 1.15,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 5,
+      "max": 8,
+      "label": "pH 5,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 6,
+      "label": "pH 3,0 – 6,0"
+    }
+  },
+  {
+    "produto": "prodiamine",
+    "kowTexto": "12.672",
+    "kow": 12672,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "prometon",
+    "kowTexto": "411",
+    "kow": 411,
+    "tend": "Óleo emulsionável em concentração moderada + tensoativo",
+    "faixa": 2,
+    "phHidro": {
+      "min": 3,
+      "max": 6,
+      "label": "pH 3,0 – 6,0"
+    },
+    "phLipo": {
+      "min": 5,
+      "max": 8,
+      "label": "pH 5,0 – 8,0"
+    }
+  },
+  {
+    "produto": "pronamide",
+    "kowTexto": "1.570",
+    "kow": 1570,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "propachlor",
+    "kowTexto": "201",
+    "kow": 201,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "propoxycarbazone-sodium",
+    "kowTexto": "0,192",
+    "kow": 0.192,
+    "tend": "Tensoativo",
+    "faixa": 0,
+    "phHidro": {
+      "min": 5,
+      "max": 8,
+      "label": "pH 5,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 6,
+      "label": "pH 3,0 – 6,0"
+    }
+  },
+  {
+    "produto": "prosulfocarb",
+    "kowTexto": "44.668",
+    "kow": 44668,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "prosulfuron",
+    "kowTexto": "34",
+    "kow": 34,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 7,
+      "max": 8,
+      "label": "pH 7,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 4,
+      "label": "pH 3,0 – 4,0"
+    }
+  },
+  {
+    "produto": "pyrazon",
+    "kowTexto": "15,5",
+    "kow": 15.5,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "pyribenzoxim",
+    "kowTexto": "3,04",
+    "kow": 3.04,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "pyridate",
+    "kowTexto": "1.000",
+    "kow": 1000,
+    "tend": "Óleo emulsionável em alta concentração, considerando adição de tensoativo",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "rimsulfuron",
+    "kowTexto": "3,02",
+    "kow": 3.02,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 7,
+      "max": 8,
+      "label": "pH 7,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 4,
+      "label": "pH 3,0 – 4,0"
+    }
+  },
+  {
+    "produto": "sethoxydim",
+    "kowTexto": "3.946",
+    "kow": 3946,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 7,
+      "max": 8,
+      "label": "pH 7,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 4,
+      "label": "pH 3,0 – 4,0"
+    }
+  },
+  {
+    "produto": "siduron",
+    "kowTexto": "6.310",
+    "kow": 6310,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "simetryn",
+    "kowTexto": "631",
+    "kow": 631,
+    "tend": "Óleo emulsionável em alta concentração, considerando adição de tensoativo",
+    "faixa": 3,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "sodium chlorate",
+    "kowTexto": "N/A",
+    "kow": null,
+    "tend": "N/A",
+    "faixa": null,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "sulcotrione",
+    "kowTexto": "1",
+    "kow": 1,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "sulfosulfuron",
+    "kowTexto": "10",
+    "kow": 10,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 7,
+      "max": 8,
+      "label": "pH 7,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 4,
+      "label": "pH 3,0 – 4,0"
+    }
+  },
+  {
+    "produto": "tepraloxydim",
+    "kowTexto": "49,4",
+    "kow": 49.4,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 7,
+      "max": 8,
+      "label": "pH 7,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 4,
+      "label": "pH 3,0 – 4,0"
+    }
+  },
+  {
+    "produto": "terbacil",
+    "kowTexto": "78",
+    "kow": 78,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 3,
+      "max": 4,
+      "label": "pH 3,0 – 4,0"
+    },
+    "phLipo": {
+      "min": 7,
+      "max": 8,
+      "label": "pH 7,0 – 8,0"
+    }
+  },
+  {
+    "produto": "terbumeton",
+    "kowTexto": "1.097",
+    "kow": 1097,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 3,
+      "max": 6,
+      "label": "pH 3,0 – 6,0"
+    },
+    "phLipo": {
+      "min": 5,
+      "max": 8,
+      "label": "pH 5,0 – 8,0"
+    }
+  },
+  {
+    "produto": "thenylchlor",
+    "kowTexto": "3.388",
+    "kow": 3388,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "thiazopyr",
+    "kowTexto": "7.729",
+    "kow": 7729,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "thifensulfuron-methyl",
+    "kowTexto": "1,6",
+    "kow": 1.6,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 7,
+      "max": 8,
+      "label": "pH 7,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 4,
+      "label": "pH 3,0 – 4,0"
+    }
+  },
+  {
+    "produto": "topramezone",
+    "kowTexto": "33,1",
+    "kow": 33.1,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 7,
+      "max": 8,
+      "label": "pH 7,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 4,
+      "label": "pH 3,0 – 4,0"
+    }
+  },
+  {
+    "produto": "tralkoxydim",
+    "kowTexto": "126",
+    "kow": 126,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 7,
+      "max": 8,
+      "label": "pH 7,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 4,
+      "label": "pH 3,0 – 4,0"
+    }
+  },
+  {
+    "produto": "triallate",
+    "kowTexto": "34.674",
+    "kow": 34674,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  },
+  {
+    "produto": "triasulfuron",
+    "kowTexto": "0,31",
+    "kow": 0.31,
+    "tend": "Tensoativo",
+    "faixa": 0,
+    "phHidro": {
+      "min": 5,
+      "max": 8,
+      "label": "pH 5,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 6,
+      "label": "pH 3,0 – 6,0"
+    }
+  },
+  {
+    "produto": "tribenuron-methyl",
+    "kowTexto": "18,2",
+    "kow": 18.2,
+    "tend": "Óleo emulsionável em baixa concentração + tensoativo",
+    "faixa": 1,
+    "phHidro": {
+      "min": 5,
+      "max": 8,
+      "label": "pH 5,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 6,
+      "label": "pH 3,0 – 6,0"
+    }
+  },
+  {
+    "produto": "trietazine",
+    "kowTexto": "2.188",
+    "kow": 2188,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 3,
+      "max": 6,
+      "label": "pH 3,0 – 6,0"
+    },
+    "phLipo": {
+      "min": 5,
+      "max": 8,
+      "label": "pH 5,0 – 8,0"
+    }
+  },
+  {
+    "produto": "triflusulfuron-methyl",
+    "kowTexto": "737",
+    "kow": 737,
+    "tend": "Óleo emulsionável em alta concentração, considerando adição de tensoativo",
+    "faixa": 3,
+    "phHidro": {
+      "min": 7,
+      "max": 8,
+      "label": "pH 7,0 – 8,0"
+    },
+    "phLipo": {
+      "min": 3,
+      "max": 4,
+      "label": "pH 3,0 – 4,0"
+    }
+  },
+  {
+    "produto": "vernolate",
+    "kowTexto": "6.918",
+    "kow": 6918,
+    "tend": "Óleo emulsionável em alta concentração",
+    "faixa": 4,
+    "phHidro": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    },
+    "phLipo": {
+      "min": 4,
+      "max": 7,
+      "label": "pH 4,0 – 7,0"
+    }
+  }
+]

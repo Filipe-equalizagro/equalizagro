@@ -1,104 +1,66 @@
 // app/api/kow/perguntar/route.ts
+// Pergunta em texto livre pro Consultor Kow. A IA nunca recebe a base
+// inteira — só os produtos que a própria pergunta cita (no máximo 3). O que
+// não vai no prompt não pode ser extraído, por mais engenhosa que seja a
+// pergunta. Ver src/lib/kow/catalog.ts (montarSystem/produtosRelevantes).
 import { NextRequest, NextResponse } from 'next/server';
-import bcrypt from 'bcryptjs';
-import { query } from '@/lib/database';
-import { ensureBillingExemptColumn } from '@/lib/db-init';
-import { checkAccess } from '@/lib/subscriptions';
-import { semRecomendacao } from '@/lib/kow-data';
+import { produtosRelevantes, montarSystem, semRecomendacao } from '@/lib/kow/catalog';
+import { exigirAcesso, limiteExcedido, auditar } from '@/lib/kow/access';
 
-const KOW_N8N_WEBHOOK = 'https://equalizagro.app.n8n.cloud/webhook/consultor-kow';
-const KOW_ATON_KEY = process.env.KOW_ATON_KEY;
+const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
+const MODEL = process.env.KOW_MODEL || 'claude-haiku-4-5-20251001';
 
-let tablesReady = false;
-
-async function getUserIdFromToken(token: string): Promise<string | null> {
-  try {
-    const result = await query(
-      `SELECT at.user_id, at.token_hash
-       FROM equalizagro.auth_tokens at
-       JOIN equalizagro.users u ON u.id = at.user_id
-       WHERE at.expires_at > NOW() AND u.deleted_at IS NULL`,
-      []
-    );
-    for (const row of result.rows) {
-      if (await bcrypt.compare(token, row.token_hash)) return row.user_id;
-    }
-  } catch { /* ignorar */ }
-  return null;
-}
-
-/**
- * POST - Proxy do Consultor Kow pro webhook n8n (o n8n é a fonte de toda
- * a lógica: base de produtos, faixas de Kow e a IA — o front só exibe o
- * que vier). Mesmo gate de acesso do Consultor.IA: só isento ou assinatura
- * ativa/trial passam; sem nenhum dos dois, 402.
- * Body: { pergunta, sessionId }
- */
 export async function POST(request: NextRequest) {
+  const acesso = await exigirAcesso(request);
+  if ('error' in acesso) return acesso.error;
+  const { userId } = acesso;
+
+  if (limiteExcedido(userId)) {
+    return NextResponse.json({ erro: 'Muitas consultas. Aguarde um instante.' }, { status: 429 });
+  }
+
+  const body = await request.json().catch(() => ({}));
+  const pergunta = String(body?.pergunta || '').trim().slice(0, 500);
+  if (!pergunta) return NextResponse.json({ erro: 'Pergunta vazia.' }, { status: 400 });
+  if (!ANTHROPIC_API_KEY) return NextResponse.json({ erro: 'Servidor sem chave de API configurada.' }, { status: 500 });
+
+  const relevantes = produtosRelevantes(pergunta);
   try {
-    const body = await request.json();
-    const pergunta = String(body?.pergunta || '').trim().slice(0, 500);
-    const sessionId = String(body?.sessionId || '').trim();
-    const authToken = request.headers.get('authorization')?.replace('Bearer ', '');
-
-    if (!pergunta) {
-      return NextResponse.json({ success: false, message: 'Pergunta vazia.' }, { status: 400 });
-    }
-    if (!sessionId) {
-      return NextResponse.json({ success: false, message: 'sessionId é obrigatório.' }, { status: 400 });
-    }
-    if (!authToken) {
-      return NextResponse.json({ success: false, message: 'Sessão expirada. Faça login novamente.' }, { status: 401 });
-    }
-
-    if (!tablesReady) { await ensureBillingExemptColumn(); tablesReady = true; }
-    const userId = await getUserIdFromToken(authToken);
-    if (!userId) {
-      return NextResponse.json({ success: false, message: 'Sessão expirada. Faça login novamente.' }, { status: 401 });
-    }
-
-    const access = await checkAccess(userId);
-    if (!access.allowed) {
-      return NextResponse.json({
-        success: false,
-        message: 'Assine um plano para continuar usando o Consultor Kow.',
-        requiresSubscription: true,
-      }, { status: 402 });
-    }
-
-    if (!KOW_ATON_KEY) {
-      return NextResponse.json({ success: false, message: 'Servidor sem token do webhook configurado.' }, { status: 500 });
-    }
-
-    const r = await fetch(KOW_N8N_WEBHOOK, {
+    const r = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-        'X-Aton-Key': KOW_ATON_KEY,
+        'content-type': 'application/json',
+        'x-api-key': ANTHROPIC_API_KEY,
+        'anthropic-version': '2023-06-01',
       },
-      body: JSON.stringify({ pergunta, sessionId }),
+      body: JSON.stringify({
+        model: MODEL,
+        max_tokens: 500,
+        system: montarSystem(relevantes),
+        messages: [{ role: 'user', content: pergunta }],
+      }),
       signal: AbortSignal.timeout(30000),
     });
 
     if (!r.ok) {
-      console.error('[KowChat] Falha no webhook n8n:', r.status);
-      return NextResponse.json({ success: false, message: 'Falha ao consultar o Consultor Kow.' }, { status: 502 });
+      const detalhe = await r.text();
+      return NextResponse.json({ erro: 'Falha na IA.', detalhe: detalhe.slice(0, 300) }, { status: 502 });
     }
 
     const data = await r.json();
-    const resposta = semRecomendacao(String(data?.resposta || 'Não consegui gerar uma resposta. Reformule a pergunta.'));
+    let texto = (data.content || [])
+      .filter((b: { type: string }) => b.type === 'text')
+      .map((b: { text: string }) => b.text)
+      .join('\n')
+      .trim();
+    if (!texto) texto = 'Não consegui gerar uma resposta. Reformule a pergunta.';
 
-    return NextResponse.json({
-      success: true,
-      resposta,
-      tipo: data?.tipo ?? null,
-      opcoes: Array.isArray(data?.opcoes) ? data.opcoes : [],
-    });
+    auditar(userId, { rota: 'perguntar', pergunta: pergunta.slice(0, 80), produtos: relevantes.map((p) => p.produto) });
+    return NextResponse.json({ resposta: semRecomendacao(texto) });
   } catch (err) {
     if (err instanceof Error && err.name === 'TimeoutError') {
-      return NextResponse.json({ success: false, message: 'O Consultor Kow demorou muito para responder. Tente novamente.' }, { status: 504 });
+      return NextResponse.json({ erro: 'A IA demorou muito para responder. Tente novamente.' }, { status: 504 });
     }
-    console.error('[KowChat] Erro:', err);
-    return NextResponse.json({ success: false, message: 'Erro interno.' }, { status: 500 });
+    return NextResponse.json({ erro: 'Erro interno.', detalhe: err instanceof Error ? err.message : String(err) }, { status: 500 });
   }
 }
