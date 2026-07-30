@@ -90,6 +90,15 @@ export default function DashboardPage() {
   const [isExempt, setIsExempt] = useState(false);
   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
   const [portalLoading, setPortalLoading] = useState(false);
+  // Verdadeiro só logo após voltar da Stripe com pagamento aprovado, enquanto
+  // aguardamos o webhook liberar o acesso no banco — nunca mostra a tela de
+  // planos nesse meio-tempo (pareceria "voltar pro pagamento" pro cliente).
+  const [confirmingPayment, setConfirmingPayment] = useState(false);
+  // Fica true assim que detectamos a volta de um pagamento aprovado, e nunca
+  // volta a false nesta carga de página — usado só para garantir que, mesmo
+  // se o webhook atrasar além do esperado, NUNCA mostramos a tela de planos
+  // de novo (o que pareceria pedir pra pagar outra vez).
+  const [paymentJustSucceeded, setPaymentJustSucceeded] = useState(false);
 
   useEffect(() => {
     const checkSession = async () => {
@@ -127,38 +136,71 @@ export default function DashboardPage() {
   // Busca o status da assinatura assim que o userId estiver disponível
   useEffect(() => {
     if (!userId) return;
+
+    const checkAccessOnce = async (): Promise<boolean> => {
+      const res = await fetch(`/api/subscriptions/my-subscription?userId=${userId}`);
+      const data = await res.json();
+      if (data.success) {
+        setSubscription(data.subscription);
+        setHasAccess(data.hasAccess !== false);
+        setIsExempt(data.isExempt === true);
+        return data.hasAccess !== false;
+      }
+      // Checagem de acesso é uma fronteira de segurança — falha aqui
+      // bloqueia (fail-closed), nunca libera acesso de graça.
+      setHasAccess(false);
+      return false;
+    };
+
+    const stripSubscriptionParam = () => {
+      const params = new URLSearchParams(window.location.search);
+      params.delete('subscription');
+      const cleanUrl = window.location.pathname + (params.toString() ? `?${params}` : '');
+      window.history.replaceState({}, '', cleanUrl);
+    };
+
     const fetchSubscription = async () => {
       setSubscriptionLoading(true);
       try {
+        const params = new URLSearchParams(window.location.search);
+        const subscriptionParam = params.get('subscription');
+
         // Se o usuário acabou de voltar do Checkout da Stripe pelo cancel_url
         // (cancelou ou apertou "voltar"), limpa a assinatura "incomplete"
         // pendente ANTES de checar o acesso — sem isso, essa linha travada
         // bloqueava qualquer nova tentativa de assinatura por até 24h.
-        const params = new URLSearchParams(window.location.search);
-        if (params.get('subscription') === 'cancelled') {
+        if (subscriptionParam === 'cancelled') {
           await fetch('/api/subscriptions/cancel-pending', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ userId }),
           }).catch(() => {});
-          params.delete('subscription');
-          const cleanUrl = window.location.pathname + (params.toString() ? `?${params}` : '');
-          window.history.replaceState({}, '', cleanUrl);
+          stripSubscriptionParam();
         }
 
-        const res = await fetch(`/api/subscriptions/my-subscription?userId=${userId}`);
-        const data = await res.json();
-        if (data.success) {
-          setSubscription(data.subscription);
-          setHasAccess(data.hasAccess !== false);
-          setIsExempt(data.isExempt === true);
-        } else {
-          // Checagem de acesso é uma fronteira de segurança — falha aqui
-          // bloqueia (fail-closed), nunca libera acesso de graça.
-          setHasAccess(false);
+        // Pagamento aprovado: o webhook da Stripe ainda pode levar alguns
+        // segundos para liberar o acesso no banco. Uma checagem só, na hora,
+        // pode vir "sem acesso" e mostrar a tela de planos de novo — parecendo
+        // que "voltou pro pagamento". Em vez disso, insiste por até ~20s.
+        if (subscriptionParam === 'success') {
+          setPaymentJustSucceeded(true);
+          setConfirmingPayment(true);
+          const started = Date.now();
+          let liberado = false;
+          while (Date.now() - started < 20000) {
+            liberado = await checkAccessOnce();
+            if (liberado) break;
+            await new Promise(r => setTimeout(r, 1500));
+          }
+          stripSubscriptionParam();
+          setConfirmingPayment(false);
+          if (liberado) return;
+          // Mesmo sem confirmar a tempo, faz uma última checagem normal
+          // abaixo — mas NUNCA mostra a tela de planos logo após um
+          // pagamento aprovado; ver o branch de renderização mais abaixo.
         }
-      } catch {
-        setHasAccess(false);
+
+        await checkAccessOnce();
       } finally {
         setSubscriptionLoading(false);
       }
@@ -256,6 +298,18 @@ export default function DashboardPage() {
 
   if (!isAuthenticated) return null;
 
+  // Pagamento acabou de ser aprovado — o webhook da Stripe ainda pode estar
+  // liberando o acesso no banco. Mostra "confirmando", nunca a tela de
+  // planos, enquanto isso.
+  if (confirmingPayment) {
+    return (
+      <div className="db-loading">
+        <div className="db-loading__spinner" />
+        <p>Confirmando seu pagamento...</p>
+      </div>
+    );
+  }
+
   // Aguarda a checagem de acesso antes de decidir entre painel e bloqueio —
   // evita um flash do dashboard completo para quem vai ser bloqueado.
   if (subscriptionLoading) {
@@ -263,6 +317,22 @@ export default function DashboardPage() {
       <div className="db-loading">
         <div className="db-loading__spinner" />
         <p>Carregando painel...</p>
+      </div>
+    );
+  }
+
+  // Caso raríssimo: o pagamento foi aprovado, mas mesmo depois de ~20s
+  // insistindo o acesso ainda não apareceu liberado no banco (webhook
+  // atrasado). NUNCA mostra a tela de planos aqui — pareceria pedir pra
+  // pagar de novo. Em vez disso, pede pra atualizar em instantes.
+  if (hasAccess === false && paymentJustSucceeded) {
+    return (
+      <div className="db-loading">
+        <p>
+          Seu pagamento foi aprovado e estamos liberando seu acesso — isso pode levar mais alguns instantes.
+          <br />
+          Atualize a página em breve. Se persistir, fale com o suporte.
+        </p>
       </div>
     );
   }
