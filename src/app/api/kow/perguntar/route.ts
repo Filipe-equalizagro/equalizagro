@@ -43,8 +43,13 @@ export async function POST(request: NextRequest) {
     });
 
     if (!r.ok) {
+      // O corpo do erro da Anthropic fica só no log do servidor — nunca no
+      // corpo devolvido ao navegador. Ele pode ecoar de volta parte do que
+      // enviamos (incluindo o prompt de sistema com a tabela de produtos),
+      // e isso é visível na aba de rede do DevTools de qualquer cliente.
       const detalhe = await r.text();
-      return NextResponse.json({ erro: 'Falha na IA.', detalhe: detalhe.slice(0, 300) }, { status: 502 });
+      console.error('[KowPerguntar] Falha na IA:', r.status, detalhe.slice(0, 500));
+      return NextResponse.json({ erro: 'Falha na IA. Tente novamente.' }, { status: 502 });
     }
 
     const data = await r.json();
@@ -61,6 +66,7 @@ export async function POST(request: NextRequest) {
     if (err instanceof Error && err.name === 'TimeoutError') {
       return NextResponse.json({ erro: 'A IA demorou muito para responder. Tente novamente.' }, { status: 504 });
     }
-    return NextResponse.json({ erro: 'Erro interno.', detalhe: err instanceof Error ? err.message : String(err) }, { status: 500 });
+    console.error('[KowPerguntar] Erro interno:', err);
+    return NextResponse.json({ erro: 'Erro interno. Tente novamente.' }, { status: 500 });
   }
 }

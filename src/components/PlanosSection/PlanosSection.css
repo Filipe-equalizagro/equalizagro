@@ -60,6 +60,31 @@
   line-height: 1.6;
 }
 
+.planos-hero__features {
+  list-style: none;
+  margin: 1.75rem auto 0;
+  padding: 0;
+  max-width: 640px;
+  text-align: left;
+}
+.planos-hero__features li {
+  display: flex;
+  align-items: baseline;
+  gap: 0.45rem;
+  font-size: 0.88rem;
+  color: #374151;
+  line-height: 1.85;
+  border-bottom: 1px dashed rgba(0, 0, 0, 0.08);
+  padding: 0.15rem 0;
+}
+.planos-hero__features li:last-child { border-bottom: none; }
+.planos-hero__features li svg {
+  color: #1a5f3a;
+  flex-shrink: 0;
+  position: relative;
+  top: 2px;
+}
+
 /* ── Recursos (o que você ganha) ── */
 .planos-features {
   display: grid;
@@ -162,15 +187,6 @@
   gap: 1.5rem;
   margin-bottom: 1.75rem;
 }
-.planos-cards--single {
-  grid-template-columns: 1fr;
-  justify-items: center;
-}
-.planos-cards--single .planos-card {
-  width: 100%;
-  max-width: 360px;
-}
-
 .planos-card {
   position: relative;
   border: 2px solid #e5e7eb;
@@ -190,6 +206,11 @@
 }
 .planos-card--highlight { border-color: #c9a420; }
 .planos-card--highlight.planos-card--selected { border-color: #1a5f3a; }
+.planos-card--disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+.planos-card--disabled:hover { border-color: #e5e7eb; transform: none; }
 
 .planos-card__tag {
   position: absolute;
@@ -239,6 +260,15 @@
 .planos-card__total {
   font-size: 0.78rem;
   color: #6b7280;
+  margin-bottom: 0.2rem;
+}
+.planos-card__total:last-of-type { margin-bottom: 0.5rem; }
+
+.planos-card__savings {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #92730f;
   margin-bottom: 0.5rem;
 }
 

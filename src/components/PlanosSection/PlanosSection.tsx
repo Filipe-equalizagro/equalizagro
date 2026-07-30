@@ -77,6 +77,8 @@ export default function PlanosSection({ userId, onSkip }: PlanosSectionProps) {
 
   const selectedPlanData = plans.find(p => p.id === selectedPlan) || null;
   const isAnualSelected = selectedPlanData?.name === 'Anual';
+  const mensalPlan = plans.find(p => p.name === 'Mensal');
+  const formatBRL = (v: number) => v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
   return (
     <div className="planos-page">
@@ -87,13 +89,23 @@ export default function PlanosSection({ userId, onSkip }: PlanosSectionProps) {
           <a href="/" className="planos-hero__logo">
             <img src="/images/go2apply-logo-colorido.png" alt="go2apply" />
           </a>
-          <h1 className="planos-hero__title">
-            Bem-vindo ao <span>go2apply</span>
-          </h1>
+          <h1 className="planos-hero__title">Bem-vindo!</h1>
           <p className="planos-hero__subtitle">
-            A plataforma da Equalizagro que une inteligência artificial e ferramentas técnicas
-            para transformar a forma como você prepara e aplica suas caldas de pulverização.
+            Mais de 10 anos de pesquisa disponíveis em tempo integral para otimizar seu trabalho e ajudar a converter pulverizações em aplicações!
           </p>
+          <ul className="planos-hero__features">
+            <li><Check size={14} /> Formação de caldas, com ordem e metodologia</li>
+            <li><Check size={14} /> Alertas de incompatibilidade</li>
+            <li><Check size={14} /> Kow, sugestão de adjuvantes e pH de calda para mais de 400 ingredientes ativos</li>
+            <li><Check size={14} /> Dimensionamento de espectro de gotas e condições ambientais</li>
+            <li><Check size={14} /> Determinação de Delta T</li>
+            <li><Check size={14} /> Cálculos avançados de pressão e vazão</li>
+            <li><Check size={14} /> Calibração de fluxômetro</li>
+            <li><Check size={14} /> Calibração de aeronaves em solo</li>
+            <li><Check size={14} /> Avaliações de uniformidade e desgaste</li>
+            <li><Check size={14} /> Geração de relatórios em todas as ferramentas</li>
+            <li><Check size={14} /> Comunidade exclusiva para suporte técnico via Telegram</li>
+          </ul>
         </div>
 
         {/* ── Planos ── */}
@@ -102,26 +114,27 @@ export default function PlanosSection({ userId, onSkip }: PlanosSectionProps) {
             <span className="planos-choice__badge">
               {paymentMethod === 'card' ? '7 dias grátis em qualquer plano' : 'Pagamento à vista via boleto'}
             </span>
-            <h2>Escolha seu plano para começar</h2>
-            <p>Acesso ilimitado ao Consultor.IA e a todas as ferramentas de pulverização.</p>
+            <h2>Escolha seu plano para começar:</h2>
+            <p>Acesso ilimitado a todas as ferramentas!</p>
           </div>
 
           {loading ? (
             <div className="planos-choice__loading"><div className="planos-choice__spinner" /></div>
           ) : (
             <>
-              <div className={`planos-cards${paymentMethod === 'boleto' ? ' planos-cards--single' : ''}`}>
-                {plans
-                  .filter((plan) => paymentMethod !== 'boleto' || plan.name === 'Anual')
-                  .map((plan) => {
+              <div className="planos-cards">
+                {plans.map((plan) => {
                   const isAnual = plan.name === 'Anual';
                   const isBoletoOneTime = paymentMethod === 'boleto' && plan.boleto_is_one_time;
                   const displayPrice = paymentMethod === 'boleto' ? plan.boleto_price ?? Number(plan.price) : Number(plan.price);
+                  const isDisabled = paymentMethod === 'boleto' && !isAnual;
                   return (
                     <div
                       key={plan.id}
-                      className={`planos-card${selectedPlan === plan.id ? ' planos-card--selected' : ''}${isAnual ? ' planos-card--highlight' : ''}`}
+                      className={`planos-card${selectedPlan === plan.id ? ' planos-card--selected' : ''}${isAnual ? ' planos-card--highlight' : ''}${isDisabled ? ' planos-card--disabled' : ''}`}
+                      title={isDisabled ? 'Boleto disponível apenas no plano Anual' : undefined}
                       onClick={() => {
+                        if (isDisabled) return;
                         setSelectedPlan(plan.id);
                         if (!isAnual) setPaymentMethod('card');
                       }}
@@ -133,25 +146,29 @@ export default function PlanosSection({ userId, onSkip }: PlanosSectionProps) {
                       <span className="planos-card__name">{plan.name}</span>
                       <div className="planos-card__price">
                         <span className="planos-card__currency">R$</span>
-                        <span className="planos-card__value">{displayPrice.toFixed(2)}</span>
+                        <span className="planos-card__value">{formatBRL(displayPrice)}</span>
                         {!isBoletoOneTime && <span className="planos-card__period">/mês</span>}
                       </div>
                       {isBoletoOneTime ? (
                         <span className="planos-card__total">Pagamento único — 12 meses de acesso</span>
                       ) : isAnual ? (
-                        <span className="planos-card__total">
-                          Compromisso de 12x — R$ {(displayPrice * 12).toFixed(2)} ao ano
-                        </span>
+                        <>
+                          <span className="planos-card__total">Renovação anual</span>
+                          <span className="planos-card__total">R$ {formatBRL(displayPrice * 12)}/ano em 12x</span>
+                          {mensalPlan && (
+                            <span className="planos-card__savings">
+                              Economize R$ {formatBRL((Number(mensalPlan.price) - displayPrice) * 12)}!
+                            </span>
+                          )}
+                        </>
                       ) : (
-                        <span className="planos-card__total">Cobrado mensalmente</span>
+                        <span className="planos-card__total">Renovação mensal</span>
                       )}
                       <ul className="planos-card__list">
-                        <li><Check size={14} /> Consultor.IA sem limites</li>
-                        <li><Check size={14} /> Todas as ferramentas de pulverização</li>
+                        <li><Check size={14} /> Sem limites de uso</li>
                         {paymentMethod === 'card' && (
                           <li><Check size={14} /> {plan.trial_days} dias grátis para testar</li>
                         )}
-                        <li><Check size={14} /> {isAnual ? 'Renovação automática após 12 meses' : 'Cancele quando quiser'}</li>
                       </ul>
                     </div>
                   );

@@ -86,6 +86,8 @@ export default function SubscriptionModal({ isOpen, onClose, userId }: Subscript
 
   const selectedPlanData = plans.find(p => p.id === selectedPlan) || null;
   const isAnualSelected = selectedPlanData?.name === 'Anual';
+  const mensalPlan = plans.find(p => p.name === 'Mensal');
+  const formatBRL = (v: number) => v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
   return (
     <div className="sub-modal-overlay" onClick={onClose}>
@@ -107,18 +109,19 @@ export default function SubscriptionModal({ isOpen, onClose, userId }: Subscript
           <div className="sub-modal__loading"><div className="sub-modal__spinner" /></div>
         ) : (
           <>
-            <div className={`sub-plans${paymentMethod === 'boleto' ? ' sub-plans--single' : ''}`}>
-              {plans
-                .filter(plan => paymentMethod !== 'boleto' || plan.name === 'Anual')
-                .map(plan => {
+            <div className="sub-plans">
+              {plans.map(plan => {
                 const isAnual = plan.name === 'Anual';
                 const isBoletoOneTime = paymentMethod === 'boleto' && plan.boleto_is_one_time;
                 const displayPrice = paymentMethod === 'boleto' ? plan.boleto_price ?? Number(plan.price) : Number(plan.price);
+                const isDisabled = paymentMethod === 'boleto' && !isAnual;
                 return (
                   <div
                     key={plan.id}
-                    className={`sub-plan${selectedPlan === plan.id ? ' sub-plan--selected' : ''}${isAnual ? ' sub-plan--highlight' : ''}`}
+                    className={`sub-plan${selectedPlan === plan.id ? ' sub-plan--selected' : ''}${isAnual ? ' sub-plan--highlight' : ''}${isDisabled ? ' sub-plan--disabled' : ''}`}
+                    title={isDisabled ? 'Boleto disponível apenas no plano Anual' : undefined}
                     onClick={() => {
+                      if (isDisabled) return;
                       setSelectedPlan(plan.id);
                       // Boleto só existe para o Anual — volta pro cartão ao escolher Mensal
                       if (!isAnual) setPaymentMethod('card');
@@ -131,26 +134,27 @@ export default function SubscriptionModal({ isOpen, onClose, userId }: Subscript
                     <span className="sub-plan__name">{plan.name}</span>
                     <div className="sub-plan__price">
                       <span className="sub-plan__currency">R$</span>
-                      <span className="sub-plan__value">{displayPrice.toFixed(2)}</span>
+                      <span className="sub-plan__value">{formatBRL(displayPrice)}</span>
                       {!isBoletoOneTime && <span className="sub-plan__period">/mês</span>}
                     </div>
                     {isBoletoOneTime ? (
                       <span className="sub-plan__total">Pagamento único — 12 meses de acesso</span>
                     ) : isAnual ? (
-                      <span className="sub-plan__total">
-                        Compromisso de 12x — R$ {(displayPrice * 12).toFixed(2)} ao ano
-                      </span>
+                      <>
+                        <span className="sub-plan__total">Renovação anual</span>
+                        <span className="sub-plan__total">R$ {formatBRL(displayPrice * 12)}/ano em 12x</span>
+                        {mensalPlan && (
+                          <span className="sub-plan__savings">
+                            Economize R$ {formatBRL((Number(mensalPlan.price) - displayPrice) * 12)}!
+                          </span>
+                        )}
+                      </>
                     ) : (
-                      <span className="sub-plan__total">Cobrado mensalmente</span>
+                      <span className="sub-plan__total">Renovação mensal</span>
                     )}
                     <span className="sub-plan__trial">
-                      {paymentMethod === 'card'
-                        ? isAnual
-                          ? `${plan.trial_days} dias grátis, renovação automática após 12 meses`
-                          : `${plan.trial_days} dias grátis, cancele quando quiser`
-                        : isAnual
-                        ? 'Renovação automática após 12 meses'
-                        : 'Cancele quando quiser'}
+                      Sem limites de uso
+                      {paymentMethod === 'card' ? ` · ${plan.trial_days} dias grátis para testar` : ''}
                     </span>
                   </div>
                 );

@@ -52,14 +52,14 @@ const ALL_TOOLS = [
   },
   {
     id: 'consultorKow',
-    title: 'Consultor Kow',
-    shortTitle: 'Consultor Kow',
-    description: 'Consulta o Kow e a tendência de adjuvante de cada produto, com busca, calculadora e IA.',
+    title: 'pH e Kow',
+    shortTitle: 'pH e Kow',
+    description: 'O que você precisa para posicionar adjuvantes e faixa de pH de calda para cada princípio ativo.',
     icon: Droplet,
     href: '/consultor-kow',
     accent: '#2ba198',
     accentBg: 'rgba(43, 161, 152, 0.12)',
-    tag: 'Consultor Kow',
+    tag: 'pH e Kow',
     adminOnly: false,
   },
 ];

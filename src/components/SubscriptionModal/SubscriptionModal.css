@@ -88,15 +88,6 @@
   gap: 1rem;
   margin-bottom: 1.25rem;
 }
-.sub-plans--single {
-  grid-template-columns: 1fr;
-  justify-items: center;
-}
-.sub-plans--single .sub-plan {
-  width: 100%;
-  max-width: 320px;
-}
-
 .sub-plan {
   position: relative;
   border: 2px solid #e5e7eb;
@@ -116,6 +107,11 @@
 }
 .sub-plan--highlight { border-color: #c9a420; }
 .sub-plan--highlight.sub-plan--selected { border-color: #1a5f3a; }
+.sub-plan--disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+.sub-plan--disabled:hover { border-color: #e5e7eb; transform: none; }
 
 .sub-plan__tag {
   position: absolute;
@@ -162,7 +158,8 @@
 .sub-plan__value { font-size: 1.7rem; font-weight: 800; color: #1a5f3a; }
 .sub-plan__period { font-size: 0.8rem; color: #6b7280; margin-left: 2px; }
 
-.sub-plan__total { font-size: 0.72rem; color: #6b7280; }
+.sub-plan__total { display: block; font-size: 0.72rem; color: #6b7280; }
+.sub-plan__savings { display: block; font-size: 0.72rem; color: #92730f; font-weight: 700; margin-top: 0.1rem; }
 .sub-plan__trial { font-size: 0.72rem; color: #92730f; font-weight: 600; margin-top: 0.2rem; }
 
 .sub-modal__payment-hint {

@@ -7,7 +7,22 @@ import bcrypt from 'bcryptjs';
 import { query } from '@/lib/database';
 import { checkAccess } from '@/lib/subscriptions';
 
+/* Cache em memória do resultado token -> userId. Resolver o token exige
+   comparar (via bcrypt, deliberadamente lento) contra cada auth_token ativo
+   no banco — com o autocompletar do Kow disparando uma chamada a cada tecla
+   digitada, repetir essa varredura em toda requisição deixava a busca visivelmente
+   lenta (segundos por letra, com dezenas de sessões ativas no banco). O token
+   em si já é o segredo da sessão, então cacheá-lo em memória do servidor por
+   alguns minutos não abre brecha nenhuma — só evita refazer o mesmo trabalho
+   caro dezenas de vezes por segundo. */
+const TOKEN_CACHE_TTL_MS = 5 * 60_000;
+const tokenCache = new Map<string, { userId: string | null; expiresAt: number }>();
+
 export async function getUserIdFromToken(token: string): Promise<string | null> {
+  const cached = tokenCache.get(token);
+  if (cached && cached.expiresAt > Date.now()) return cached.userId;
+
+  let userId: string | null = null;
   try {
     const result = await query(
       `SELECT at.user_id, at.token_hash
@@ -17,10 +32,13 @@ export async function getUserIdFromToken(token: string): Promise<string | null> 
       []
     );
     for (const row of result.rows) {
-      if (await bcrypt.compare(token, row.token_hash)) return row.user_id;
+      if (await bcrypt.compare(token, row.token_hash)) { userId = row.user_id; break; }
     }
   } catch { /* ignorar */ }
-  return null;
+
+  tokenCache.set(token, { userId, expiresAt: Date.now() + TOKEN_CACHE_TTL_MS });
+  if (tokenCache.size > 2000) tokenCache.clear();
+  return userId;
 }
 
 /**
