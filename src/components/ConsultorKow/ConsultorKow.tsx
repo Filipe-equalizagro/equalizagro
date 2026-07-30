@@ -240,7 +240,7 @@ export default function ConsultorKow() {
     return (
       <div className="kow-tool__loading">
         <div className="kow-tool__loading-spinner" />
-        <span className="kow-tool__eyebrow">go2apply kow</span>
+        <img src="/images/go2apply-logo-colorido.png" alt="go2apply" className="kow-tool__logo" />
         <p className="kow-tool__muted">Carregando…</p>
       </div>
     );
@@ -255,8 +255,8 @@ export default function ConsultorKow() {
       <div className="kow-tool__scroll">
         <div className="kow-tool__wrap">
           <header>
-            <div className="kow-tool__eyebrow">go2apply kow</div>
-            <p className="kow-tool__lede">Consulte o Kow (coeficiente de partição octanol-água), a tendência de resposta com adjuvantes e pH de calda para cada produto. Pergunte em texto livre ou clique em um produto.</p>
+            <img src="/images/go2apply-logo-colorido.png" alt="go2apply" className="kow-tool__logo" />
+            <p className="kow-tool__lede">Consulte o Kow (coeficiente de partição octanol-água), a tendência de resposta com adjuvantes e pH de calda para cada ingrediente ativo. Pergunte em texto livre ou clique em um produto.</p>
           </header>
 
           {accessMessage && (
@@ -403,7 +403,7 @@ export default function ConsultorKow() {
             <p>*Não se trata de recomendação agronômica e, sim, tendência de resposta, para subsidiar a construção de recomendações de adjuvantes, compatibilidade e pH de calda.</p>
             <p>**A recomendação deve ser feita por técnico capacitado, avaliando formulação, objetivo e cultura.</p>
             <p>***O Kow pode variar com o pH e outros fatores, o pH alvo com a mistura e cultura, além da formulação, por isso devem ser vistos sempre como tendência e não como números absolutos.</p>
-            <p className="kow-tool__foot-brand">go2apply</p>
+            git add src/components/ConsultorKow/ConsultorKow.tsx src/components/ConsultorKow/ConsultorKow.css
           </div>
         </div>
       </div>
