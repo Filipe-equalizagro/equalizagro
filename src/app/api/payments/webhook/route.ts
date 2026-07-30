@@ -38,11 +38,24 @@ async function syncSubscriptionFromStripe(subscription: Stripe.Subscription): Pr
     return;
   }
 
+  // IMPORTANTE: casa com UMA linha só (a "incomplete" mais recente), nunca
+  // "WHERE user_id = ... AND plan_id = ... AND stripe_subscription_id IS NULL"
+  // sem mais nada — como o cliente pode ter várias tentativas antigas
+  // (incomplete/canceled) acumuladas pra esse mesmo plano, uma UPDATE sem
+  // essa restrição tentava gravar o MESMO stripe_subscription_id em todas de
+  // uma vez, e a segunda gravação sempre batia no índice único de
+  // stripe_subscription_id — derrubando o webhook inteiro com erro 500 e
+  // travando o cliente sem acesso, mesmo com o pagamento/trial aprovado.
   const byMetadata = await query(
     `UPDATE equalizagro.user_subscriptions
      SET stripe_subscription_id = $1, stripe_customer_id = $2, status = $3,
          trial_end = $4, current_period_end = $5, cancel_at_period_end = $6, updated_at = NOW()
-     WHERE user_id = $7 AND plan_id = $8 AND stripe_subscription_id IS NULL
+     WHERE id = (
+       SELECT id FROM equalizagro.user_subscriptions
+       WHERE user_id = $7 AND plan_id = $8 AND stripe_subscription_id IS NULL AND status = 'incomplete'
+       ORDER BY created_at DESC
+       LIMIT 1
+     )
      RETURNING id`,
     [subscription.id, customerId, subscription.status, trialEnd, currentPeriodEnd, subscription.cancel_at_period_end, userId, planId]
   );
@@ -129,10 +142,18 @@ export async function POST(request: NextRequest) {
         const userId = session.metadata?.userId;
         const planId = session.metadata?.planId;
         if (userId && planId && session.subscription) {
+          // Mesma correção da nota acima em syncSubscriptionFromStripe: só UMA
+          // linha (a "incomplete" mais recente), nunca todas as tentativas
+          // antigas do mesmo user_id+plan_id de uma vez.
           await query(
             `UPDATE equalizagro.user_subscriptions
              SET stripe_subscription_id = $1, stripe_customer_id = $2, updated_at = NOW()
-             WHERE user_id = $3 AND plan_id = $4 AND stripe_subscription_id IS NULL`,
+             WHERE id = (
+               SELECT id FROM equalizagro.user_subscriptions
+               WHERE user_id = $3 AND plan_id = $4 AND stripe_subscription_id IS NULL AND status = 'incomplete'
+               ORDER BY created_at DESC
+               LIMIT 1
+             )`,
             [session.subscription, session.customer || null, userId, planId]
           );
         }
