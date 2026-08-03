@@ -20,6 +20,7 @@ export const EXEMPT_EMAILS = [
   'theodoroschneider@equalizagro.com',
   'otavio.costa@equalizagro.com',
   'samira.fredi@equalizagro.com',
+  'tobias.stefanello@gmail.com',
   // Admin
   'adriel@equalizagro.com',
   'suporte@equalizagro.com',
