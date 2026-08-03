@@ -4,8 +4,10 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import {
   Brain, Calculator, Droplet, Users, ShieldCheck,
-  Home, LogOut, ChevronRight, Menu, X, MoveHorizontal, Settings,
+  Home, LogOut, ChevronRight, Menu, X, MoveHorizontal, Settings, MessageCircle,
 } from 'lucide-react';
+
+const SUPPORT_WHATSAPP_URL = 'https://api.whatsapp.com/send/?phone=555533432606&text=Ol%C3%A1!+Preciso+de+ajuda+com+o+go2apply.&type=phone_number&app_absent=0';
 import { verifySession, logout } from '@/lib/auth';
 import SubscriptionModal from '@/components/SubscriptionModal/SubscriptionModal';
 import PlanosSection from '@/components/PlanosSection/PlanosSection';
@@ -410,6 +412,19 @@ export default function DashboardPage() {
             </span>
             <span className="db-sidebar__item-label">Site Equalizagro</span>
           </Link>
+
+          <a
+            href={SUPPORT_WHATSAPP_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="db-sidebar__item db-sidebar__item--muted"
+            title="Falar com o suporte no WhatsApp"
+          >
+            <span className="db-sidebar__item-icon">
+              <MessageCircle size={17} />
+            </span>
+            <span className="db-sidebar__item-label">Suporte</span>
+          </a>
 
           <div className="db-sidebar__divider" />
 
