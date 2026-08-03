@@ -129,7 +129,7 @@ export interface User {
   phone: string | null;
   full_name: string;
   password_hash: string;
-  role: 'admin' | 'client' | 'support';
+  role: 'admin' | 'client' | 'team' | 'partner';
   auth_status: 'pending' | 'verified' | 'suspended' | 'inactive';
   two_factor_enabled: boolean;
   two_factor_secret: string | null;

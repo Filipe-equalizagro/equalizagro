@@ -128,7 +128,8 @@
   -webkit-appearance: none; appearance: none;
 }
 .adm-role--admin   { background: rgba(91,33,182,0.1);  color: #5b21b6; border-color: rgba(91,33,182,0.2); }
-.adm-role--support { background: rgba(26,95,58,0.1);   color: #1a5f3a; border-color: rgba(26,95,58,0.2); }
+.adm-role--team    { background: rgba(26,95,58,0.1);   color: #1a5f3a; border-color: rgba(26,95,58,0.2); }
+.adm-role--partner { background: rgba(212,175,55,0.15); color: #92720f; border-color: rgba(212,175,55,0.3); }
 .adm-role--client  { background: #f3f4f6; color: #374151; border-color: #e5e7eb; }
 .adm-status--verified  { background: rgba(22,163,74,0.1);  color: #16a34a; border-color: rgba(22,163,74,0.2); }
 .adm-status--pending   { background: rgba(245,158,11,0.1); color: #d97706; border-color: rgba(245,158,11,0.2); }

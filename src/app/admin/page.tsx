@@ -24,7 +24,7 @@ interface User {
   company_name: string | null;
 }
 
-const ROLE_LABELS: Record<string, string> = { admin: 'Admin', support: 'Equipe', client: 'Cliente' };
+const ROLE_LABELS: Record<string, string> = { admin: 'Admin', team: 'Equipe', partner: 'Parceiro', client: 'Cliente' };
 const STATUS_LABELS: Record<string, string> = { verified: 'Verificado', pending: 'Pendente', suspended: 'Suspenso', inactive: 'Inativo' };
 
 export default function AdminPage() {
@@ -277,7 +277,8 @@ export default function AdminPage() {
               <select className="adm-filter-select" value={filterRole} onChange={e => setFilterRole(e.target.value)}>
                 <option value="">Todos os roles</option>
                 <option value="admin">Admin</option>
-                <option value="support">Equipe</option>
+                <option value="team">Equipe</option>
+                <option value="partner">Parceiro</option>
                 <option value="client">Cliente</option>
               </select>
               <select className="adm-filter-select" value={filterStatus} onChange={e => setFilterStatus(e.target.value)}>
@@ -332,7 +333,8 @@ export default function AdminPage() {
                               disabled={saving === u.id}
                             >
                               <option value="client">Cliente</option>
-                              <option value="support">Equipe</option>
+                              <option value="team">Equipe</option>
+                              <option value="partner">Parceiro</option>
                               <option value="admin">Admin</option>
                             </select>
                             <ChevronDown size={12} className="adm-select-arrow" />
@@ -597,7 +599,8 @@ export default function AdminPage() {
                   <label>Role</label>
                   <select value={form.role} onChange={e => setField('role', e.target.value)} className="adm-input adm-select">
                     <option value="client">Cliente</option>
-                    <option value="support">Equipe</option>
+                    <option value="team">Equipe</option>
+                    <option value="partner">Parceiro</option>
                     <option value="admin">Admin</option>
                   </select>
                 </div>

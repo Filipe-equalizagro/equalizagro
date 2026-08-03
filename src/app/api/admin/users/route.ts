@@ -44,7 +44,7 @@ function badRequest(msg: string) {
 }
 
 // Valores válidos conforme o schema do banco
-const VALID_ROLES   = ['admin', 'client', 'support'];
+const VALID_ROLES   = ['admin', 'client', 'team', 'partner'];
 const VALID_STATUS  = ['pending', 'verified', 'suspended', 'inactive'];
 
 // ── GET — lista todos os usuários ─────────────────────────────────────────────

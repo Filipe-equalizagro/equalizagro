@@ -32,21 +32,37 @@ export type AccessCheck = {
   exempt: boolean;
 };
 
+// Categorias de "role" que têm acesso liberado automaticamente ao mudar o
+// status no painel admin — Equipe, Parceiros e Administradores. 'support' é
+// mantido como alias por compatibilidade com contas antigas (o painel admin
+// usava esse valor antes de existir a categoria "Parceiro"). Cliente NÃO
+// entra aqui de propósito — precisa de assinatura ou de billing_exempt.
+const ROLES_WITH_FREE_ACCESS = new Set(['team', 'support', 'partner', 'admin']);
+
 /**
- * Gate central de acesso ao Consultor.IA e ao Consultor Kow: só existem duas
- * portas de entrada — isento (equipe/admin) ou assinatura ativa/trial
- * (mensal ou anual). Não há mais crédito avulso comprado como caminho de
- * acesso — sem isenção e sem assinatura, o acesso é sempre negado.
+ * Gate central de acesso ao Consultor.IA e ao Consultor Kow: existem três
+ * portas de entrada — role de acesso liberado (equipe/parceiro/admin),
+ * isenção manual de cobrança (billing_exempt, ver billing-exempt.ts) ou
+ * assinatura ativa/trial (mensal ou anual). Não há mais crédito avulso
+ * comprado como caminho de acesso.
+ *
+ * O acesso por role é calculado na hora (nunca gravado em billing_exempt):
+ * essa coluna é reconciliada por e-mail em ensureBillingExemptColumn() a
+ * cada request, então gravar a isenção nela por causa do role seria
+ * desfeito automaticamente na primeira chamada seguinte. Mudar o role no
+ * painel admin já basta — o acesso reflete o valor atual, sempre.
  */
 export async function checkAccess(userId: string): Promise<AccessCheck> {
   const result = await query(
-    `SELECT billing_exempt FROM equalizagro.users WHERE id = $1`,
+    `SELECT billing_exempt, role FROM equalizagro.users WHERE id = $1`,
     [userId]
   );
   if (result.rows.length === 0) return { allowed: false, unlimited: false, exempt: false };
 
-  const { billing_exempt } = result.rows[0];
-  if (billing_exempt) return { allowed: true, unlimited: true, exempt: true };
+  const { billing_exempt, role } = result.rows[0];
+  if (billing_exempt || ROLES_WITH_FREE_ACCESS.has(role)) {
+    return { allowed: true, unlimited: true, exempt: true };
+  }
 
   const subscribed = await hasActiveSubscription(userId);
   if (subscribed) return { allowed: true, unlimited: true, exempt: false };
