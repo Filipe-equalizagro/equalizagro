@@ -8,16 +8,22 @@ import { getBoletoPrice } from '@/lib/boleto-pricing';
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://www.equalizagro.com';
 
-// Cupom de lançamento — 30% off por 12 meses, só para o plano Anual pago por
-// assinatura recorrente (cartão). Não se aplica ao boleto anual — este é um
-// pagamento único e o cupom usa duração "repeating" (por ciclo de fatura),
-// incompatível com um checkout de modo "payment".
+// Cupom de lançamento — 30% off, só para o plano Anual. O cliente digita o
+// mesmo código (GO2APPLY30OFF) em qualquer forma de pagamento, mas por baixo
+// dos panos usamos DOIS cupons Stripe diferentes: a assinatura recorrente
+// (cartão) usa duração "repeating" (30% em cada uma das primeiras 12
+// cobranças); o boleto é pagamento único, então usa um cupom separado com
+// duração "once" (30% aplicado uma única vez, no valor cheio do ano). Um
+// código promocional na Stripe é sempre amarrado a UM cupom só — por isso
+// não dá pra reaproveitar o mesmo objeto de cupom entre os dois modos.
 const LAUNCH_PROMO_CODE = 'GO2APPLY30OFF';
 const LAUNCH_PROMO_ELIGIBLE_PLAN = 'Anual';
+const LAUNCH_PROMO_CODE_BOLETO_INTERNAL = 'GO2APPLY30OFF_BOLETO'; // nunca digitado pelo cliente, só uso interno
 
 /**
  * Busca (ou cria, na primeira vez) o cupom + código promocional de lançamento
- * na Stripe. Idempotente — reutiliza se já existir em vez de duplicar.
+ * na Stripe, para a assinatura recorrente via cartão. Idempotente — reutiliza
+ * se já existir em vez de duplicar.
  */
 async function getOrCreateLaunchPromotionCodeId(): Promise<string> {
   const stripe = getStripe();
@@ -35,6 +41,30 @@ async function getOrCreateLaunchPromotionCodeId(): Promise<string> {
   const promotionCode = await stripe.promotionCodes.create({
     promotion: { type: 'coupon', coupon: coupon.id },
     code: LAUNCH_PROMO_CODE,
+  });
+
+  return promotionCode.id;
+}
+
+/**
+ * Mesma ideia, mas para o boleto anual (pagamento único) — cupom com
+ * duration "once", aplicado uma vez só sobre o valor cheio do ano.
+ */
+async function getOrCreateBoletoPromotionCodeId(): Promise<string> {
+  const stripe = getStripe();
+
+  const existing = await stripe.promotionCodes.list({ code: LAUNCH_PROMO_CODE_BOLETO_INTERNAL, limit: 1 });
+  if (existing.data.length > 0) return existing.data[0].id;
+
+  const coupon = await stripe.coupons.create({
+    name: 'Lançamento 30% OFF — Anual (boleto)',
+    percent_off: 30,
+    duration: 'once',
+  });
+
+  const promotionCode = await stripe.promotionCodes.create({
+    promotion: { type: 'coupon', coupon: coupon.id },
+    code: LAUNCH_PROMO_CODE_BOLETO_INTERNAL,
   });
 
   return promotionCode.id;
@@ -101,18 +131,23 @@ export async function POST(request: NextRequest) {
       throw new ApiError(409, 'Usuário já possui uma assinatura em andamento');
     }
 
-    // Anual pago via boleto é um caso especial: pagamento único, sem trial,
-    // sem cupom (ver comentário no topo do arquivo).
+    // Anual pago via boleto é um caso especial: pagamento único, sem trial
+    // (cupom próprio, ver comentário no topo do arquivo).
     const isAnnualBoletoOneTime = isBoleto && plan.name === 'Anual';
 
-    // Cupom de lançamento — só válido para o plano Anual recorrente (cartão)
+    // Cupom de lançamento — só válido para o plano Anual, em qualquer forma de
+    // pagamento. O código digitado é sempre o mesmo (LAUNCH_PROMO_CODE); qual
+    // cupom Stripe é usado por baixo dos panos depende de ser cartão (recorrente)
+    // ou boleto (pagamento único) — ver comentário no topo do arquivo.
     let promotionCodeId: string | null = null;
     const trimmedPromo = typeof promoCode === 'string' ? promoCode.trim().toUpperCase() : '';
     if (trimmedPromo) {
-      if (trimmedPromo !== LAUNCH_PROMO_CODE || plan.name !== LAUNCH_PROMO_ELIGIBLE_PLAN || isAnnualBoletoOneTime) {
+      if (trimmedPromo !== LAUNCH_PROMO_CODE || plan.name !== LAUNCH_PROMO_ELIGIBLE_PLAN) {
         throw new ApiError(400, 'Código promocional inválido para este plano/forma de pagamento');
       }
-      promotionCodeId = await getOrCreateLaunchPromotionCodeId();
+      promotionCodeId = isAnnualBoletoOneTime
+        ? await getOrCreateBoletoPromotionCodeId()
+        : await getOrCreateLaunchPromotionCodeId();
     }
 
     const stripe = getStripe();
@@ -131,6 +166,7 @@ export async function POST(request: NextRequest) {
       const session = await stripe.checkout.sessions.create({
         mode: 'payment',
         payment_method_types: ['boleto'],
+        ...(promotionCodeId ? { discounts: [{ promotion_code: promotionCodeId }] } : {}),
         customer_email: user.email,
         line_items: [
           {

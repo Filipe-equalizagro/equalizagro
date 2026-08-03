@@ -192,7 +192,7 @@ export default function SubscriptionModal({ isOpen, onClose, userId }: Subscript
               ) : null}
             </div>
 
-            {isAnualSelected && paymentMethod === 'card' && (
+            {isAnualSelected && (
               <div className="sub-modal__promo">
                 <label htmlFor="sub-promo-code">Código promocional (opcional)</label>
                 <input

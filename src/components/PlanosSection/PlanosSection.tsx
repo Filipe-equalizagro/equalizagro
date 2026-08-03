@@ -206,7 +206,7 @@ export default function PlanosSection({ userId, onSkip }: PlanosSectionProps) {
                 ) : null}
               </div>
 
-              {isAnualSelected && paymentMethod === 'card' && (
+              {isAnualSelected && (
                 <div className="planos-choice__promo">
                   <label htmlFor="promo-code">Código promocional (opcional)</label>
                   <input
