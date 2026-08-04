@@ -163,6 +163,19 @@ export async function ensureBillingExemptColumn(): Promise<void> {
 }
 
 /**
+ * `role` é um ENUM nativo do Postgres (`equalizagro.user_role`), criado
+ * originalmente só com 'admin' | 'client' | 'support'. Ao adicionar as
+ * categorias 'team' e 'partner' no código, o enum no banco não acompanhou
+ * sozinho — gravar esses valores falha com "invalid input value for enum"
+ * até que o tipo seja alterado. `ADD VALUE IF NOT EXISTS` é idempotente e
+ * seguro de rodar em toda invocação, como as demais funções deste arquivo.
+ */
+export async function ensureUserRoleEnumValues(): Promise<void> {
+  await safeDDL(`ALTER TYPE equalizagro.user_role ADD VALUE IF NOT EXISTS 'team'`);
+  await safeDDL(`ALTER TYPE equalizagro.user_role ADD VALUE IF NOT EXISTS 'partner'`);
+}
+
+/**
  * Guarda quando e qual versão dos Termos de Uso / Política de Privacidade
  * o usuário aceitou no cadastro — serve de prova do consentimento (a própria
  * cláusula 1.4 dos Termos exige que o aceite seja registrado no cadastro).

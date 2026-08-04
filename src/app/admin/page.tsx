@@ -40,6 +40,7 @@ export default function AdminPage() {
   const [filterRole, setFilterRole] = useState('');
   const [filterStatus, setFilterStatus] = useState('');
   const [saving, setSaving]       = useState<string | null>(null);
+  const [usersError, setUsersError] = useState('');
   const [confirmDelete, setConfirmDelete] = useState<User | null>(null);
   const [resetPassUser, setResetPassUser] = useState<User | null>(null);
   const [viewUsageUser, setViewUsageUser] = useState<User | null>(null);
@@ -119,13 +120,18 @@ export default function AdminPage() {
 
   const updateUser = async (userId: string, patch: Record<string, string>) => {
     setSaving(userId);
+    setUsersError('');
     try {
-      await fetch('/api/admin/users', {
+      const res = await fetch('/api/admin/users', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({ userId, ...patch }),
       });
+      const data = await res.json();
+      if (!data.success) setUsersError(data.message || 'Não foi possível atualizar o usuário');
       await loadUsers();
+    } catch {
+      setUsersError('Erro de conexão ao atualizar o usuário');
     } finally { setSaving(null); }
   };
 
@@ -263,6 +269,9 @@ export default function AdminPage() {
         {/* ── Tab: Usuários ── */}
         {tab === 'users' && (
           <div className="adm-panel">
+            {usersError && (
+              <div className="adm-alert"><AlertCircle size={15}/>{usersError}</div>
+            )}
             {/* Filtros */}
             <div className="adm-filters">
               <div className="adm-search-wrap">

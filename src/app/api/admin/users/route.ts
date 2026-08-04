@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { query } from '@/lib/database';
+import { ensureUserRoleEnumValues } from '@/lib/db-init';
 import bcrypt from 'bcryptjs';
 
 
@@ -93,6 +94,7 @@ export async function POST(request: NextRequest) {
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return badRequest('Email inválido');
   if (password.length < 6) return badRequest('Senha deve ter no mínimo 6 caracteres');
   if (!VALID_ROLES.includes(role)) return badRequest('Role inválido');
+  await ensureUserRoleEnumValues();
 
   try {
     const passwordHash = await bcrypt.hash(password, 12);
@@ -190,6 +192,9 @@ export async function PATCH(request: NextRequest) {
   }
   if (role !== undefined) {
     if (!VALID_ROLES.includes(role)) return badRequest(`role inválido. Valores: ${VALID_ROLES.join(', ')}`);
+    // Garante que o enum do banco aceite 'team'/'partner' antes de gravar —
+    // ver comentário em ensureUserRoleEnumValues (db-init.ts).
+    await ensureUserRoleEnumValues();
     updates.push(`role = $${idx++}`);
     params.push(role);
   }

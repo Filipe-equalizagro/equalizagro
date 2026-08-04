@@ -2,7 +2,7 @@
 import { NextRequest } from 'next/server';
 import { ApiError, apiResponse, apiError, validateEmail, validatePassword, getClientIp } from '@/lib/api-utils';
 import { query } from '@/lib/database';
-import { ensureBillingExemptColumn, ensureTermsAcceptanceColumns } from '@/lib/db-init';
+import { ensureBillingExemptColumn, ensureTermsAcceptanceColumns, ensureUserRoleEnumValues } from '@/lib/db-init';
 import { sendVerificationEmail } from '@/lib/email';
 import { isExemptEmail } from '@/lib/billing-exempt';
 import bcrypt from 'bcryptjs';
@@ -134,6 +134,7 @@ export async function POST(request: NextRequest) {
       if (!callerIsAdmin) {
         throw new ApiError(403, 'Somente administradores podem criar contas de equipe');
       }
+      await ensureUserRoleEnumValues();
       userRole = 'team';
     }
 
