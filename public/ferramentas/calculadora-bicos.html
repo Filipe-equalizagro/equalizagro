@@ -2388,7 +2388,7 @@
     }
 
     // ── Relatório PDF ─────────────────────────────────────────────
-    function emitirRelatorio() {
+    async function emitirRelatorio() {
         // Coleta dados
         const cliente  = document.getElementById('fl-cliente').value  || '—';
         const equip    = document.getElementById('fl-equip').value    || '—';
@@ -2448,18 +2448,12 @@
         div.innerHTML = `
         <div style="font-family:Arial,sans-serif;max-width:800px;margin:0 auto;padding:20px;">
 
-            // Logo URL placeholder (substituída por base64 em _printPDF)
-    var LOGO_URL = '/images/go2apply-logo-colorido.png';
-
-    function _pdfHdr(title) {
-        return '<div style="display:flex;align-items:center;gap:16px;border-bottom:3px solid #1a5f3a;padding-bottom:14px;margin-bottom:18px;">' +
-            '<img src="' + LOGO_URL + '" alt="go2apply" style="height:52px;width:auto;">' +
-            '<div>' +
-            '<div style="font-size:19px;font-weight:700;color:#1f2937;">' + title + '</div>' +
-            '' +
-            '<div style="font-size:11px;color:#9ca3af;margin-top:3px;">Emitido: ' + new Date().toLocaleString('pt-BR') + '</div>' +
-            '</div></div>';
-    }
+            <div style="display:flex;align-items:center;gap:16px;border-bottom:3px solid #16a34a;padding-bottom:12px;margin-bottom:16px;">
+                <img src="${LOGO_URL}" alt="go2apply" style="height:48px;width:auto;">
+                <div>
+                    <div style="font-size:18px;font-weight:700;color:#1f2937;">Relatório de Calibração de Fluxômetro</div>
+                </div>
+            </div>
 
             <!-- Identificação -->
             <table style="width:100%;border-collapse:collapse;margin-bottom:14px;">
@@ -2525,7 +2519,11 @@
         </div>
         <div style="text-align:center;font-size:10px;color:#9ca3af;padding:10px;border-top:1px solid #e5e7eb;margin-top:16px;"></div>`;
 
-        _downloadPDF(div.innerHTML, 'relatorio-fluxometro.pdf');
+        const logo = await _fetchLogo();
+        const htmlFinal = logo
+            ? div.innerHTML.replace(/src="\/images\/go2apply-logo-colorido\.png"/g, 'src="' + logo + '"')
+            : div.innerHTML;
+        _downloadPDF(htmlFinal, 'relatorio-fluxometro.pdf');
     }
 
     function convGrid(items, activeIdx) {
