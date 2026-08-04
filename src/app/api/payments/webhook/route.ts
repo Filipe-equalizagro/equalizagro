@@ -116,6 +116,37 @@ export async function POST(request: NextRequest) {
       return apiResponse({ success: true, message: 'Assinatura sincronizada' });
     }
 
+    // Falha na validação do cartão (CVC errado, recusa do emissor, etc.) —
+    // isso pode chegar DEPOIS do customer.subscription.created já ter
+    // liberado o trial (a criação da assinatura com trial de R$0 não espera
+    // a validação do cartão terminar). Revoga a linha mais recente em
+    // trialing/incomplete desse cliente — nunca deixa uma falha de cartão
+    // sem efeito no acesso.
+    if (event.type === 'setup_intent.setup_failed') {
+      const setupIntent = event.data.object as Stripe.SetupIntent;
+      const customerId = typeof setupIntent.customer === 'string' ? setupIntent.customer : setupIntent.customer?.id;
+      if (customerId) {
+        const revoked = await query(
+          `UPDATE equalizagro.user_subscriptions
+           SET status = 'canceled', updated_at = NOW()
+           WHERE id = (
+             SELECT id FROM equalizagro.user_subscriptions
+             WHERE stripe_customer_id = $1 AND status IN ('trialing', 'incomplete')
+             ORDER BY updated_at DESC
+             LIMIT 1
+           )
+           RETURNING id`,
+          [customerId]
+        );
+        if (revoked.rows.length > 0) {
+          console.error(
+            `[StripeWebhook] Cartão falhou na validação (${setupIntent.last_setup_error?.code}) para customer=${customerId} — acesso revogado.`
+          );
+        }
+      }
+      return apiResponse({ success: true, message: 'Falha na validação do cartão processada' });
+    }
+
     if (event.type === 'customer.subscription.deleted') {
       const subscription = event.data.object as Stripe.Subscription;
       await query(
