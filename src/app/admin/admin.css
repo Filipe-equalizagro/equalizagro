@@ -117,7 +117,10 @@
 .adm-small   { color: #6b7280; font-size: 0.8rem; }
 .adm-credits { font-weight: 600; color: #1a5f3a; }
 
-/* Role select */
+/* Role select — largura fixa (não baseada no texto selecionado) para que a
+   seta fique sempre na mesma posição, independente da opção escolhida
+   ("Cliente" tem 7 letras, "Admin" só 5 — sem largura mínima, cada badge
+   ficava com um tamanho diferente e a seta desalinhava). */
 .adm-select-wrap { position: relative; display: inline-flex; align-items: center; }
 .adm-select-arrow { position: absolute; right: 0.4rem; pointer-events: none; color: #9ca3af; }
 .adm-role-select,
@@ -126,7 +129,10 @@
   border-radius: 6px; font-size: 0.78rem; font-weight: 600;
   border: 1.5px solid transparent; cursor: pointer; font-family: inherit;
   -webkit-appearance: none; appearance: none;
+  text-align: left;
 }
+.adm-role-select   { min-width: 6.7rem; }
+.adm-status-select { min-width: 7.4rem; }
 .adm-role--admin   { background: rgba(91,33,182,0.1);  color: #5b21b6; border-color: rgba(91,33,182,0.2); }
 .adm-role--team    { background: rgba(26,95,58,0.1);   color: #1a5f3a; border-color: rgba(26,95,58,0.2); }
 .adm-role--partner { background: rgba(212,175,55,0.15); color: #92720f; border-color: rgba(212,175,55,0.3); }
