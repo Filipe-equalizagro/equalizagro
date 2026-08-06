@@ -219,7 +219,7 @@ export default function AdminPage() {
 
   const filtered = users.filter(u => {
     const q = search.toLowerCase();
-    const matchQ = !q || u.full_name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q);
+    const matchQ = !q || u.full_name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q) || (u.phone || '').toLowerCase().includes(q);
     const matchRole   = !filterRole   || u.role === filterRole;
     const matchStatus = !filterStatus || u.auth_status === filterStatus;
     return matchQ && matchRole && matchStatus;
@@ -278,7 +278,7 @@ export default function AdminPage() {
                 <Search size={16} className="adm-search-icon" />
                 <input
                   className="adm-search"
-                  placeholder="Buscar por nome ou email…"
+                  placeholder="Buscar por nome, email ou telefone…"
                   value={search}
                   onChange={e => setSearch(e.target.value)}
                 />
@@ -314,6 +314,7 @@ export default function AdminPage() {
                     <tr>
                       <th>Nome</th>
                       <th>Email</th>
+                      <th>Telefone</th>
                       <th>Empresa</th>
                       <th>Role</th>
                       <th>Status</th>
@@ -332,6 +333,7 @@ export default function AdminPage() {
                           </div>
                         </td>
                         <td className="adm-email">{u.email}</td>
+                        <td className="adm-small">{u.phone || '—'}</td>
                         <td className="adm-small">{u.company_name || '—'}</td>
                         <td>
                           <div className="adm-select-wrap">
