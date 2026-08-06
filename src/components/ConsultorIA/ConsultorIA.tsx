@@ -227,9 +227,7 @@ function createWelcomeAssistantMessages(): Message[] {
     {
       id: '1',
       role: 'assistant',
-      content: `Olá! Sou a **Formação de Caldas**, estou aqui para ajudar a converter nosso banco de dados em caldas de qualidade.
-
-ℹ️ Dicas de uso:
+      content: `ℹ️ Dicas de uso:
 
 
 • Para reiniciar ou refazer a qualquer momento, escreva reiniciar
