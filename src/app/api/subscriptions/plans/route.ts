@@ -4,9 +4,12 @@ import { apiResponse, apiError } from '@/lib/api-utils';
 import { query } from '@/lib/database';
 import { ensureSubscriptionTables } from '@/lib/db-init';
 import { getBoletoPrice } from '@/lib/boleto-pricing';
+import { hasEverHadTrial } from '@/lib/subscriptions';
 
 /**
  * GET - Buscar planos de assinatura disponíveis (Mensal, Anual)
+ * Query params: userId? — se informado, também devolve se essa pessoa já
+ * teve um trial antes (pra tela de planos não prometer "grátis" de novo).
  */
 export async function GET(request: NextRequest) {
   try {
@@ -20,8 +23,12 @@ export async function GET(request: NextRequest) {
       []
     );
 
+    const userId = new URL(request.url).searchParams.get('userId');
+    const hadTrialBefore = userId ? await hasEverHadTrial(userId) : false;
+
     return apiResponse({
       success: true,
+      hadTrialBefore,
       plans: result.rows.map((plan: any) => ({
         ...plan,
         boleto_price: getBoletoPrice(plan.name) ?? null,

@@ -5,6 +5,7 @@ import { query } from '@/lib/database';
 import { ensureSubscriptionTables } from '@/lib/db-init';
 import { getStripe } from '@/lib/stripe';
 import { getBoletoPrice } from '@/lib/boleto-pricing';
+import { hasEverHadTrial } from '@/lib/subscriptions';
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://www.equalizagro.com';
 
@@ -190,6 +191,14 @@ export async function POST(request: NextRequest) {
       // chega aqui, pois é sempre pagamento único e só existe para o Anual.
       const unitAmount = Math.round(Number(plan.price) * 100);
 
+      // Nunca conceder um SEGUNDO período grátis pra mesma pessoa — se ela já
+      // teve um trial antes (em qualquer plano), mesmo que tenha cancelado ou
+      // o cartão tenha recusado a cobrança depois, a nova assinatura já
+      // começa cobrando de verdade. Sem isso, cancelar e assinar de novo
+      // reiniciaria os 7 dias grátis indefinidamente.
+      const alreadyHadTrial = await hasEverHadTrial(userId);
+      const trialDays = alreadyHadTrial ? 0 : plan.trial_days;
+
       const session = await stripe.checkout.sessions.create({
         mode: 'subscription',
         payment_method_types: ['card'],
@@ -213,16 +222,15 @@ export async function POST(request: NextRequest) {
             quantity: 1,
           },
         ],
-        subscription_data: {
-          trial_period_days: plan.trial_days,
-          metadata: { userId, planId },
-        },
+        ...(trialDays > 0
+          ? { subscription_data: { trial_period_days: trialDays, metadata: { userId, planId } } }
+          : { subscription_data: { metadata: { userId, planId } } }),
         metadata: { userId, planId },
         success_url: `${APP_URL}/go2apply?subscription=success`,
         cancel_url: `${APP_URL}/go2apply?subscription=cancelled`,
       });
       checkoutUrl = session.url;
-      trialDaysApplied = plan.trial_days;
+      trialDaysApplied = trialDays;
     }
 
     // Registra a assinatura como "incomplete" — o webhook promove para trialing/active

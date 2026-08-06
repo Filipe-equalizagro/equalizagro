@@ -24,6 +24,26 @@ export async function hasActiveSubscription(userId: string): Promise<boolean> {
   }
 }
 
+/**
+ * Já teve algum trial concedido antes (em qualquer plano, ativo ou não)?
+ * Usado para nunca conceder um segundo período grátis pra mesma pessoa —
+ * sem isso, cancelar e assinar de novo (ou simplesmente deixar o cartão
+ * recusar a cobrança pós-trial) reiniciaria os 7 dias grátis indefinidamente.
+ */
+export async function hasEverHadTrial(userId: string): Promise<boolean> {
+  try {
+    const result = await query(
+      `SELECT 1 FROM equalizagro.user_subscriptions
+       WHERE user_id = $1 AND trial_end IS NOT NULL
+       LIMIT 1`,
+      [userId]
+    );
+    return result.rows.length > 0;
+  } catch {
+    return false;
+  }
+}
+
 export type AccessCheck = {
   allowed: boolean;
   /** true quando o acesso é ilimitado (isento ou assinante) — não descontar crédito */

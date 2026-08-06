@@ -31,6 +31,7 @@ export default function SubscriptionModal({ isOpen, onClose, userId }: Subscript
   const [error, setError] = useState('');
   const [promoCode, setPromoCode] = useState('');
   const [paymentMethod, setPaymentMethod] = useState<'card' | 'boleto'>('card');
+  const [hadTrialBefore, setHadTrialBefore] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
@@ -44,10 +45,11 @@ export default function SubscriptionModal({ isOpen, onClose, userId }: Subscript
   const fetchPlans = async () => {
     setLoading(true);
     try {
-      const response = await fetch('/api/subscriptions/plans');
+      const response = await fetch(`/api/subscriptions/plans?userId=${userId}`);
       const data = await response.json();
       if (data.success) {
         setPlans(data.plans);
+        setHadTrialBefore(!!data.hadTrialBefore);
         // Pré-seleciona o Anual (melhor custo-benefício) se existir
         const anual = data.plans.find((p: SubscriptionPlan) => p.name === 'Anual');
         setSelectedPlan(anual?.id || data.plans[0]?.id || null);
@@ -97,7 +99,13 @@ export default function SubscriptionModal({ isOpen, onClose, userId }: Subscript
         </button>
 
         <div className="sub-modal__badge">
-          <span>{paymentMethod === 'card' ? '7 dias grátis em qualquer plano' : 'Pagamento à vista via boleto'}</span>
+          <span>
+            {paymentMethod === 'boleto'
+              ? 'Pagamento à vista via boleto'
+              : hadTrialBefore
+              ? 'Assinatura com cobrança imediata'
+              : '7 dias grátis em qualquer plano'}
+          </span>
         </div>
 
         <h2 className="sub-modal__title">Assine e tenha acesso ilimitado</h2>
@@ -154,7 +162,7 @@ export default function SubscriptionModal({ isOpen, onClose, userId }: Subscript
                     )}
                     <span className="sub-plan__trial">
                       Sem limites de uso
-                      {paymentMethod === 'card' ? ` · ${plan.trial_days} dias grátis para testar` : ''}
+                      {paymentMethod === 'card' && !hadTrialBefore ? ` · ${plan.trial_days} dias grátis para testar` : ''}
                     </span>
                   </div>
                 );
@@ -214,16 +222,20 @@ export default function SubscriptionModal({ isOpen, onClose, userId }: Subscript
             >
               {subscribing
                 ? 'Redirecionando...'
-                : paymentMethod === 'card'
-                ? 'Começar meus 7 dias grátis'
-                : 'Gerar boleto anual'}
+                : paymentMethod === 'boleto'
+                ? 'Gerar boleto anual'
+                : hadTrialBefore
+                ? 'Assinar agora'
+                : 'Começar meus 7 dias grátis'}
             </button>
             <p className="sub-modal__fineprint">
-              {paymentMethod === 'card'
-                ? isAnualSelected
-                  ? 'Cartão solicitado agora, cobrança só após o período grátis. Compromisso de 12 meses, renovação automática.'
-                  : 'Cartão solicitado agora, cobrança só após o período grátis. Cancele quando quiser.'
-                : 'O boleto cobre os 12 meses de acesso — pagamento único, sem recorrência mensal.'}
+              {paymentMethod === 'boleto'
+                ? 'O boleto cobre os 12 meses de acesso — pagamento único, sem recorrência mensal.'
+                : hadTrialBefore
+                ? 'Como você já usou o período grátis antes, esta assinatura já começa cobrando. Compromisso conforme o plano escolhido.'
+                : isAnualSelected
+                ? 'Cartão solicitado agora, cobrança só após o período grátis. Compromisso de 12 meses, renovação automática.'
+                : 'Cartão solicitado agora, cobrança só após o período grátis. Cancele quando quiser.'}
             </p>
           </>
         )}

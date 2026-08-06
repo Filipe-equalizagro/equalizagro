@@ -30,6 +30,7 @@ export default function PlanosSection({ userId, onSkip }: PlanosSectionProps) {
   const [error, setError] = useState('');
   const [promoCode, setPromoCode] = useState('');
   const [paymentMethod, setPaymentMethod] = useState<'card' | 'boleto'>('card');
+  const [hadTrialBefore, setHadTrialBefore] = useState(false);
 
   useEffect(() => {
     fetchPlans();
@@ -37,10 +38,11 @@ export default function PlanosSection({ userId, onSkip }: PlanosSectionProps) {
 
   const fetchPlans = async () => {
     try {
-      const response = await fetch('/api/subscriptions/plans');
+      const response = await fetch(`/api/subscriptions/plans?userId=${userId}`);
       const data = await response.json();
       if (data.success) {
         setPlans(data.plans);
+        setHadTrialBefore(!!data.hadTrialBefore);
         // Pré-seleciona o Anual (melhor custo-benefício) se existir
         const anual = data.plans.find((p: SubscriptionPlan) => p.name === 'Anual');
         setSelectedPlan(anual?.id || data.plans[0]?.id || null);
@@ -112,7 +114,11 @@ export default function PlanosSection({ userId, onSkip }: PlanosSectionProps) {
         <div className="planos-choice">
           <div className="planos-choice__header">
             <span className="planos-choice__badge">
-              {paymentMethod === 'card' ? '7 dias grátis em qualquer plano' : 'Pagamento à vista via boleto'}
+              {paymentMethod === 'boleto'
+                ? 'Pagamento à vista via boleto'
+                : hadTrialBefore
+                ? 'Assinatura com cobrança imediata'
+                : '7 dias grátis em qualquer plano'}
             </span>
             <h2>Escolha seu plano para começar:</h2>
             <p>Acesso ilimitado a todas as ferramentas!</p>
@@ -166,7 +172,7 @@ export default function PlanosSection({ userId, onSkip }: PlanosSectionProps) {
                       )}
                       <ul className="planos-card__list">
                         <li><Check size={14} /> Sem limites de uso</li>
-                        {paymentMethod === 'card' && (
+                        {paymentMethod === 'card' && !hadTrialBefore && (
                           <li><Check size={14} /> {plan.trial_days} dias grátis para testar</li>
                         )}
                       </ul>
@@ -228,14 +234,18 @@ export default function PlanosSection({ userId, onSkip }: PlanosSectionProps) {
               >
                 {subscribing
                   ? 'Redirecionando...'
-                  : paymentMethod === 'card'
-                  ? 'Começar meus 7 dias grátis'
-                  : 'Gerar boleto anual'}
+                  : paymentMethod === 'boleto'
+                  ? 'Gerar boleto anual'
+                  : hadTrialBefore
+                  ? 'Assinar agora'
+                  : 'Começar meus 7 dias grátis'}
               </button>
               <p className="planos-choice__fineprint">
-                {paymentMethod === 'card'
-                  ? 'Pagamento processado com segurança pela Stripe. Cartão solicitado agora, cobrança só após o período grátis.'
-                  : 'Pagamento processado com segurança pela Stripe. O boleto cobre os 12 meses de acesso — pagamento único, sem recorrência mensal.'}
+                {paymentMethod === 'boleto'
+                  ? 'Pagamento processado com segurança pela Stripe. O boleto cobre os 12 meses de acesso — pagamento único, sem recorrência mensal.'
+                  : hadTrialBefore
+                  ? 'Pagamento processado com segurança pela Stripe. Como você já usou o período grátis antes, esta assinatura já começa cobrando.'
+                  : 'Pagamento processado com segurança pela Stripe. Cartão solicitado agora, cobrança só após o período grátis.'}
               </p>
               {onSkip && (
                 <button className="planos-choice__skip" onClick={onSkip}>
