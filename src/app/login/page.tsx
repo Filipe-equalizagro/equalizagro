@@ -8,7 +8,7 @@ import './login.css';
 // Slides do painel de imagem — alternam automaticamente e o usuário
 // pode escolher manualmente pelos indicadores (dots).
 const LOGIN_SLIDES = [
-  { src: '/images/laptop_consultoria_taskbar_clean_880x727.png', alt: 'Consultor.IA — go2apply' },
+  { src: '/images/laptop_consultoria_taskbar_clean_880x727.png', alt: 'Formação de Caldas — go2apply' },
   { src: '/images/laptop_dmv_taskbar_clean_880x727.png', alt: 'DMV — go2apply' },
 ];
 

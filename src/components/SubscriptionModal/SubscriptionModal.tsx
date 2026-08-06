@@ -110,7 +110,7 @@ export default function SubscriptionModal({ isOpen, onClose, userId }: Subscript
 
         <h2 className="sub-modal__title">Assine e tenha acesso ilimitado</h2>
         <p className="sub-modal__subtitle">
-          Consultor.IA, Pulverização e Consultor Kow, sem limites.
+          Formação de Caldas, Pulverização e Consultor Kow, sem limites.
         </p>
 
         {loading ? (

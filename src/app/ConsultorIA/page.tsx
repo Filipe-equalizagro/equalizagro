@@ -7,10 +7,10 @@ const MAINTENANCE = false;
 
 export const metadata = {
   title: MAINTENANCE
-    ? 'Consultor.IA — Em Manutenção | Equalizagro'
-    : 'Consultor.IA - Equalizagro',
+    ? 'Formação de Caldas — Em Manutenção | Equalizagro'
+    : 'Formação de Caldas - Equalizagro',
   description: MAINTENANCE
-    ? 'O Consultor.IA está temporariamente em manutenção. Voltaremos em breve.'
+    ? 'A Formação de Caldas está temporariamente em manutenção. Voltaremos em breve.'
     : 'IA especializada em aplicação de defensivos e manejo agrícola',
 };
 
@@ -50,7 +50,7 @@ export default function ConsultorIAPage() {
         }}>🔧</div>
 
         <h1 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#1f2937', margin: '0 0 0.75rem', lineHeight: 1.25 }}>
-          Consultor.IA em Manutenção
+          Formação de Caldas em Manutenção
         </h1>
 
         <p style={{ fontSize: '0.95rem', color: '#6b7280', lineHeight: 1.65, margin: '0 0 2rem' }}>

@@ -13,7 +13,7 @@ type Step = 'form' | 'verify' | 'plan' | 'done';
 
 // Slides do painel de imagem — mesmo carrossel usado na tela de login.
 const CADASTRO_SLIDES = [
-  { src: '/images/laptop_consultoria_taskbar_clean_880x727.png', alt: 'Consultor.IA — go2apply' },
+  { src: '/images/laptop_consultoria_taskbar_clean_880x727.png', alt: 'Formação de Caldas — go2apply' },
   { src: '/images/laptop_dmv_taskbar_clean_880x727.png', alt: 'DMV — go2apply' },
 ];
 

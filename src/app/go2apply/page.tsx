@@ -30,8 +30,8 @@ const COMPACT_BREAK   = 100; // abaixo disto → modo compacto (só ícones)
 const ALL_TOOLS = [
   {
     id: 'consultor',
-    title: 'Consultor.IA',
-    shortTitle: 'Consultor.IA',
+    title: 'Formação de Caldas',
+    shortTitle: 'Formação de Caldas',
     description: 'Ordem de mistura, metodologia e alertas de incompatibilidade para formar caldas com qualidade.',
     icon: Brain,
     href: '/ConsultorIA',
@@ -553,7 +553,7 @@ export default function DashboardPage() {
                       ? `Próxima cobrança em ${new Date(subscription.currentPeriodEnd).toLocaleDateString('pt-BR')}. `
                       : ''}
                     {subscription.cancelAtPeriodEnd && 'Cancelamento agendado — acesso continua até o fim do período. '}
-                    Acesso ilimitado ao Consultor.IA e às ferramentas.
+                    Acesso ilimitado à Formação de Caldas e às ferramentas.
                   </p>
                 </div>
                 <button
@@ -569,14 +569,14 @@ export default function DashboardPage() {
               <div className="db-sub-card db-sub-card--active">
                 <div className="db-sub-card__text">
                   <h3>Acesso liberado — Equipe Equalizagro</h3>
-                  <p>Acesso ilimitado ao Consultor.IA e a todas as ferramentas, sem custo.</p>
+                  <p>Acesso ilimitado à Formação de Caldas e a todas as ferramentas, sem custo.</p>
                 </div>
               </div>
             ) : (
               <div className="db-sub-card db-sub-card--cta">
                 <div className="db-sub-card__text">
                   <h3>Desbloqueie acesso ilimitado</h3>
-                  <p>Consultor.IA, Pulverização e Consultor Kow, sem limites. 7 dias grátis.</p>
+                  <p>Formação de Caldas, Pulverização e Consultor Kow, sem limites. 7 dias grátis.</p>
                 </div>
                 <button className="db-sub-card__manage" onClick={() => setShowSubscriptionModal(true)}>
                   Ver planos

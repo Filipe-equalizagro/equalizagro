@@ -111,7 +111,7 @@ export async function POST(request: NextRequest) {
     if (!access.allowed) {
       return NextResponse.json({
         success: false,
-        message: 'Assine um plano para continuar usando o Consultor.IA.',
+        message: 'Assine um plano para continuar usando a Formação de Caldas.',
         requiresSubscription: true,
       }, { status: 402 });
     }

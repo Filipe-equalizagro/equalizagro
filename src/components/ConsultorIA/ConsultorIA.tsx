@@ -227,7 +227,7 @@ function createWelcomeAssistantMessages(): Message[] {
     {
       id: '1',
       role: 'assistant',
-      content: `Olá! Sou o **Consultor.IA**, estou aqui para ajudar a converter nosso banco de dados em caldas de qualidade.
+      content: `Olá! Sou a **Formação de Caldas**, estou aqui para ajudar a converter nosso banco de dados em caldas de qualidade.
 
 ℹ️ Dicas de uso:
 
@@ -1315,7 +1315,7 @@ export default function ConsultorIA() {
     const rows = source
       .filter(m => m.id !== '1') // nunca exportar a mensagem de boas-vindas
       .map(m => {
-        const who = m.role === 'user' ? userName_ : 'Consultor.IA';
+        const who = m.role === 'user' ? userName_ : 'Formação de Caldas';
         const time = m.timestamp.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
         const content = m.content
           .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
@@ -1331,7 +1331,7 @@ export default function ConsultorIA() {
 
     const html = `<!DOCTYPE html><html lang="pt-BR"><head>
       <meta charset="UTF-8">
-      <title>${title} — Consultor.IA Equalizagro</title>
+      <title>${title} — Formação de Caldas Equalizagro</title>
       <style>
         body { font-family: Arial, sans-serif; font-size: 13px; color: #1a1a1a; margin: 0; padding: 24px 32px; }
         .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #1a5f3a; padding-bottom: 12px; margin-bottom: 24px; }
@@ -1386,7 +1386,7 @@ export default function ConsultorIA() {
     return (
       <div className="consultor-loading">
         <div className="consultor-loading__spinner"></div>
-        <p>Carregando Consultor.IA...</p>
+        <p>Carregando Formação de Caldas...</p>
       </div>
     );
   }
@@ -1400,7 +1400,7 @@ export default function ConsultorIA() {
           <a href="/go2apply" className="consultor__logo">
             <img
               src="/images/go2apply-logo-branco.png"
-              alt="Consultor.IA"
+              alt="Formação de Caldas"
               className="header__logo-image"
             />
           </a>
@@ -1423,7 +1423,7 @@ export default function ConsultorIA() {
               {planData?.fullName || userName || 'Minha conta'}
             </span>
             <span className="consultor__sidebar-account-plan">
-              {planData?.planName ? `Plano ${planData.planName}` : 'Consultor.IA'}
+              {planData?.planName ? `Plano ${planData.planName}` : 'Formação de Caldas'}
             </span>
           </div>
         </div>
@@ -1627,7 +1627,7 @@ export default function ConsultorIA() {
             </>
           ) : (
             <>
-              <h1 className="consultor__title">Consultor.IA</h1>
+              <h1 className="consultor__title">Formação de Caldas</h1>
               <button
                 onClick={enterSelectionMode}
                 className="consultor__export-button"
@@ -1657,7 +1657,7 @@ export default function ConsultorIA() {
                 <div className="consultor__empty-icon" style={{ color: '#1a5f3a', display: 'flex', justifyContent: 'center' }}>
                   <Leaf size={48} strokeWidth={1.5} />
                 </div>
-                <h2 className="consultor__empty-title">Bem-vindo ao Consultor.IA</h2>
+                <h2 className="consultor__empty-title">Bem-vindo à Formação de Caldas</h2>
                 <p className="consultor__empty-description">
                   Faça perguntas sobre aplicação de defensivos, manejo de plantas daninhas,
                   consultoria agrícola e muito mais!
@@ -1779,7 +1779,7 @@ export default function ConsultorIA() {
             </button>
           </form>
           <p className="consultor__disclaimer">
-            Consultor.IA pode cometer erros. Sempre verifique informações críticas antes de implementar.
+            Formação de Caldas pode cometer erros. Sempre verifique informações críticas antes de implementar.
             <br />
             
           </p>

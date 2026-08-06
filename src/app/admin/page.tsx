@@ -445,7 +445,7 @@ export default function AdminPage() {
                 <div className="adm-metrics-section">
                   <div className="adm-metrics-title">
                     <img src="/images/go2apply-logo-colorido.png" alt="go2apply" style={{ height: 18, width: 'auto' }} />
-                    <span>Consultor.IA</span>
+                    <span>Formação de Caldas</span>
                   </div>
 
                   <div className="adm-metrics-cards">
