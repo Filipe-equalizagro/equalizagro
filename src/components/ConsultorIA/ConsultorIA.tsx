@@ -229,9 +229,10 @@ function createWelcomeAssistantMessages(): Message[] {
       role: 'assistant',
       content: `Olá! Sou o **Consultor.IA**, estou aqui para ajudar a converter nosso banco de dados em caldas de qualidade.
 
-ℹ️ **Dicas de uso:**
+ℹ️ Dicas de uso:
 
-• Para reiniciar ou refazer a qualquer momento, escreva **reiniciar**
+
+• Para reiniciar ou refazer a qualquer momento, escreva reiniciar
 
 • Após confirmar os produtos, farei algumas perguntas rápidas — é parte do protocolo
 
@@ -239,8 +240,11 @@ function createWelcomeAssistantMessages(): Message[] {
 
 • Informe os produtos que você pretende misturar e as respectivas doses. Lembre de utilizar sempre a marca comercial, ou uma marca referência.
 
+
 ProdutoA 1,0 l/ha
+
 ProdutoB 0,5 l/ha
+
 ...`,
       timestamp: ts,
     },

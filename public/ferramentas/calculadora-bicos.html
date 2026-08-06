@@ -1099,7 +1099,7 @@
             <div class="field-group">
                 <label>Orifício ISO (GPM a 40 PSI)</label>
                 <input type="number" id="iso-gpm" placeholder="Ex: 0.2" step="0.01" oninput="calcISO()">
-                <small style="font-size:11px;color:#6b7280;margin-top:4px;display:block;">Código ISO da ponta — ponta 02 = 0.2 GPM</small>
+                <small style="font-size:11px;color:#6b7280;margin-top:4px;display:block;">Exemplo: 110015 = 110° de ângulo e 0,15 GPM a 40 PSI</small>
             </div>
         </div>
 
@@ -1131,8 +1131,8 @@
         </div>
 
         <div class="card">
-            <h2>Converter Ponta para ISO</h2>
-            <p class="hint">Informe a vazão e a pressão de qualquer ponta para obter seu código ISO (GPM a 40 PSI).</p>
+            <h2>Encontrar GPM a 40 PSI (equiparação ISO)</h2>
+            <p class="hint">Se a ponta em uso não for ISO, ou estiver em dúvida, informe uma referência de pressão e vazão, coletada ou de catálogo. Esta referência deve ser usada acima para cálculo, a ponta seguindo o padrão ISO ou não, é uma equiparação.</p>
             <div class="field-group">
                 <label>Vazão medida (L/min)</label>
                 <input type="number" id="conv-vazao" placeholder="Ex: 0.76" step="0.001" oninput="calcConvISO()">
@@ -2375,8 +2375,7 @@
             `<tr><td style="padding:7px 10px;color:#6b7280;">Delta T obtido</td>
              <td style="padding:7px 10px;font-weight:700;font-size:26px;color:${corTxt};">${dt.toFixed(1)}°C</td></tr>` +
             `<tr style="background:${corBg};"><td style="padding:7px 10px;color:#6b7280;">Condição</td>
-             <td style="padding:7px 10px;font-weight:700;color:${corTxt};">${cond}</td></tr>` +
-            _row('Recomendação', rec, false);
+             <td style="padding:7px 10px;font-weight:700;color:${corTxt};">${cond}</td></tr>`;
 
         await _printPDF(
             _pdfHdr('Relatório — Delta T') +
@@ -2960,7 +2959,7 @@
             <div style="display:flex;align-items:center;gap:16px;border-bottom:3px solid #16a34a;padding-bottom:12px;margin-bottom:16px;">
                 <img src="${LOGO_URL}" alt="go2apply" style="height:48px;width:auto;">
                 <div>
-                    <div style="font-size:18px;font-weight:700;color:#1f2937;">Relatório de Desgaste de Pontas</div>
+                    <div style="font-size:18px;font-weight:700;color:#1f2937;">Relatório de Distribuição de Vazão</div>
                     
                 </div>
             </div>
@@ -3061,7 +3060,7 @@
         const htmlFinal = logo
             ? div.innerHTML.replace(/src="\/images\/go2apply-logo-colorido\.png"/g, 'src="' + logo + '"')
             : div.innerHTML;
-        _downloadPDF(htmlFinal, 'relatorio-desgaste.pdf');
+        _downloadPDF(htmlFinal, 'relatorio-distribuicao-vazao.pdf');
     }
 
     // ══════════════════════════════════════════════════════════════
