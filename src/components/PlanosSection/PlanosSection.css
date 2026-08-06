@@ -413,6 +413,19 @@
 }
 .planos-choice__skip:hover { color: #374151; }
 
+.planos-choice__support {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  margin: 0.85rem 0 0;
+  color: #1a5f3a;
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+.planos-choice__support:hover { text-decoration: underline; }
+
 @media (max-width: 860px) {
   .planos-features { grid-template-columns: repeat(2, 1fr); }
 }

@@ -2,8 +2,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { X, Check } from 'lucide-react';
+import { X, Check, MessageCircle } from 'lucide-react';
 import './SubscriptionModal.css';
+
+const SUPPORT_WHATSAPP_URL = 'https://api.whatsapp.com/send/?phone=555533432606&text=Ol%C3%A1!+Estou+com+uma+d%C3%BAvida+sobre+os+planos+do+go2apply.&type=phone_number&app_absent=0';
 
 interface SubscriptionPlan {
   id: string;
@@ -198,6 +200,15 @@ export default function SubscriptionModal({ isOpen, onClose, userId }: Subscript
                   No boleto não há período grátis — o valor cobre os 12 meses de acesso, cobrado à vista.
                 </p>
               ) : null}
+              <a
+                href={SUPPORT_WHATSAPP_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="sub-modal__support"
+              >
+                <MessageCircle size={14} />
+                Dúvidas sobre os planos ou formas de pagamento? Fale com o suporte
+              </a>
             </div>
 
             {isAnualSelected && (

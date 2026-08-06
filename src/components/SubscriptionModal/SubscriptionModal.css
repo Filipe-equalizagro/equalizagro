@@ -214,6 +214,18 @@
   color: #92730f;
   margin: 0.5rem 0 0;
 }
+.sub-modal__support {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  margin: 0.6rem 0 0;
+  color: #1a5f3a;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+.sub-modal__support:hover { text-decoration: underline; }
 
 .sub-modal__promo {
   margin: 0 0 1rem;
