@@ -169,6 +169,11 @@ export async function POST(request: NextRequest) {
         payment_method_types: ['boleto'],
         ...(promotionCodeId ? { discounts: [{ promotion_code: promotionCodeId }] } : {}),
         customer_email: user.email,
+        // Pede o CPF na tela de pagamento — a Stripe já sabe validar o formato
+        // certo pra cada país a partir do endereço de cobrança informado.
+        // `required: 'if_supported'` é o que de fato TORNA obrigatório (o
+        // padrão da Stripe é só exibir o campo, sem bloquear o checkout).
+        tax_id_collection: { enabled: true, required: 'if_supported' },
         line_items: [
           {
             price_data: {
@@ -206,6 +211,8 @@ export async function POST(request: NextRequest) {
         customer_email: user.email,
         // Exige coletar o cartão mesmo o valor devido hoje sendo R$0 (trial)
         payment_method_collection: 'always',
+        // Pede o CPF na tela de pagamento — mesma lógica do boleto acima.
+        tax_id_collection: { enabled: true, required: 'if_supported' },
         line_items: [
           {
             price_data: {
