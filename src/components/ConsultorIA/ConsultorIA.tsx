@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useMemo } from 'react';
-import { Send, Plus, Menu, X, LogOut, Trash2, Archive, Search, User, Pencil, Leaf, FileDown, ThumbsDown, Copy, Check } from 'lucide-react';
+import { Send, Plus, Menu, X, LogOut, Trash2, Archive, Search, User, Pencil, Leaf, FileDown, ThumbsDown, Copy, Check, Paperclip, RotateCcw } from 'lucide-react';
 import { getAuthToken, getUserId, logout, verifySession } from '@/lib/auth';
 import './ConsultorIA.css';
 
@@ -25,9 +25,13 @@ function formatMessageContent(content: string): string {
 
   // Converter **texto** em negrito
   formatted = formatted.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-  
-  // Converter *texto* em itálico
-  formatted = formatted.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+
+  // Converter *texto* (padrão WhatsApp) também em negrito — não itálico.
+  // O backend do n8n emite esse padrão nas respostas (inclusive nas de
+  // leitura de foto), e o time de backend decidiu manter esse jeito de
+  // escrever porque as mensagens já foram revisadas pelo agrônomo do
+  // cliente — o front só converte pra negrito na hora de exibir.
+  formatted = formatted.replace(/\*([^*\n]+)\*/g, '<strong>$1</strong>');
   
   // Detectar linhas que são itens de tabela (começam e terminam com |)
   const lines = formatted.split('\n');
@@ -194,11 +198,54 @@ function FormattedMessage({ content, role, onOptionClick }: { content: string; r
   );
 }
 
+// ── Envio de foto para leitura de produtos ──────────────────────────────
+// Formatos aceitos pelo backend (n8n) — qualquer outro é rejeitado antes
+// de gastar upload.
+const ACCEPTED_IMAGE_MIMES = ['image/jpeg', 'image/png', 'image/webp'];
+const MAX_IMAGES_PER_MESSAGE = 3;
+// Lado maior em pixels — é a resolução em que o modelo de visão trabalha;
+// mandar mais que isso só piora o upload, não melhora a leitura.
+const IMAGE_MAX_SIDE = 1568;
+const IMAGE_JPEG_QUALITY = 0.8;
+
+/**
+ * Redimensiona e comprime uma foto antes do envio. Sempre normaliza para
+ * JPEG (mesmo se a entrada for PNG/HEIC) — simplifica porque o front nunca
+ * precisa mapear tipo de entrada. `imageOrientation: 'from-image'` resolve
+ * o flag EXIF de rotação: sem isso, foto tirada com o celular deitado
+ * chegaria girada 90°.
+ */
+async function comprimirImagem(file: File): Promise<{ data: string; mime: string }> {
+  const bitmap = await createImageBitmap(file, { imageOrientation: 'from-image' });
+
+  const escala = Math.min(1, IMAGE_MAX_SIDE / Math.max(bitmap.width, bitmap.height));
+  const largura = Math.round(bitmap.width * escala);
+  const altura = Math.round(bitmap.height * escala);
+
+  const canvas = document.createElement('canvas');
+  canvas.width = largura;
+  canvas.height = altura;
+
+  const ctx = canvas.getContext('2d');
+  if (!ctx) throw new Error('canvas 2d indisponível');
+  ctx.drawImage(bitmap, 0, 0, largura, altura);
+  bitmap.close();
+
+  const dataUrl = canvas.toDataURL('image/jpeg', IMAGE_JPEG_QUALITY);
+
+  return {
+    data: dataUrl.split(',')[1], // base64 CRU, sem o prefixo data:image/jpeg;base64,
+    mime: 'image/jpeg',
+  };
+}
+
 interface Message {
   id: string;
   role: 'user' | 'assistant';
   content: string;
   timestamp: Date;
+  /** Data URLs (data:image/jpeg;base64,...) das fotos anexadas a esta mensagem, se houver */
+  images?: string[];
 }
 
 interface Conversation {
@@ -295,6 +342,14 @@ export default function ConsultorIA() {
   const [dislikedMessageIds, setDislikedMessageIds] = useState<Set<string>>(new Set());
   // Modo de seleção de mensagens para exportar apenas as escolhidas
   const [selectionMode, setSelectionMode] = useState<boolean>(false);
+
+  // ── Envio de foto ──────────────────────────────────────────────────
+  const imageInputRef = useRef<HTMLInputElement>(null);
+  const [isSendingImage, setIsSendingImage] = useState(false);
+  const [imageSendError, setImageSendError] = useState<string | null>(null);
+  // Guarda a última foto já comprimida — permite "tentar novamente" sem
+  // pedir pro produtor escolher a foto de novo se o envio falhar.
+  const lastFailedImagesRef = useRef<{ data: string; mime: string }[] | null>(null);
   const [selectedMessageIds, setSelectedMessageIds] = useState<Set<string>>(new Set());
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -965,6 +1020,136 @@ export default function ConsultorIA() {
     }
   };
 
+  // Manda pro backend as imagens já comprimidas. Separado do envio de texto
+  // de propósito — foto e texto na mesma mensagem hoje é ignorado pelo
+  // backend (o backend usa a foto e descarta o texto), então a interface
+  // nunca deve misturar os dois.
+  const submitImages = async (compressed: { data: string; mime: string }[]) => {
+    const currentMessages = [...messagesRef.current];
+    const convId = currentConversationIdRef.current;
+
+    setIsSending(true);
+    setIsSendingImage(true);
+    setImageSendError(null);
+
+    const controller = new AbortController();
+    // 90s, não os 30s padrão — leitura de foto demora de 8 a 25s, e cortar
+    // cedo demais viraria um erro falso no meio de uma leitura legítima.
+    const timeoutId = setTimeout(() => controller.abort(), 90000);
+
+    try {
+      const response = await fetch('/api/consultor/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${getAuthToken()}`,
+        },
+        body: JSON.stringify({
+          message: '',
+          contextId: gptContextId,
+          conversationId: convId,
+          userName: planData?.fullName || 'Usuário',
+          imagens: compressed,
+        }),
+        signal: controller.signal,
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        if (data.contextId) setGptContextId(data.contextId);
+
+        const savedByRoute = Boolean(data.savedConversationId);
+        if (savedByRoute && data.savedConversationId !== currentConversationIdRef.current) {
+          const newDbId = data.savedConversationId as string;
+          const oldId = currentConversationIdRef.current;
+          setCurrentConversationId(newDbId);
+          setConversations(prev => prev.map(c => (c.id === oldId ? { ...c, id: newDbId } : c)));
+        }
+
+        const aiMessage: Message = {
+          id: (Date.now() + 1).toString(),
+          role: 'assistant',
+          content: data.response,
+          timestamp: new Date(),
+        };
+        const finalMessages = [...currentMessages, aiMessage];
+        setMessages(finalMessages);
+        if (convId) saveToLocalStorage(convId, finalMessages);
+        lastFailedImagesRef.current = null;
+      } else {
+        throw new Error(data.message || 'Não foi possível ler a foto.');
+      }
+    } catch (error) {
+      const isTimeout = error instanceof Error && error.name === 'AbortError';
+      lastFailedImagesRef.current = compressed;
+      setImageSendError(
+        isTimeout
+          ? 'A leitura da foto demorou demais. Tente novamente.'
+          : 'Não foi possível enviar a foto. Tente novamente.'
+      );
+    } finally {
+      clearTimeout(timeoutId);
+      setIsSending(false);
+      setIsSendingImage(false);
+    }
+  };
+
+  // Ponto de entrada: usuário escolheu foto(s) no seletor de arquivo.
+  const sendImageMessage = async (files: File[]) => {
+    if (isSendingRef.current) return;
+
+    const validFiles = files
+      .filter(f => ACCEPTED_IMAGE_MIMES.includes(f.type))
+      .slice(0, MAX_IMAGES_PER_MESSAGE);
+
+    if (validFiles.length === 0) {
+      setImageSendError('Formato de imagem não aceito. Envie JPEG, PNG ou WebP.');
+      return;
+    }
+
+    setImageSendError(null);
+    setIsSendingImage(true);
+
+    try {
+      const compressed = await Promise.all(validFiles.map(comprimirImagem));
+      const previewUrls = compressed.map(c => `data:${c.mime};base64,${c.data}`);
+
+      // A foto aparece na conversa IMEDIATAMENTE, antes da resposta chegar —
+      // o produtor precisa ver que ela foi enviada, mesmo que a leitura
+      // ainda demore vários segundos.
+      const userMessage: Message = {
+        id: Date.now().toString(),
+        role: 'user',
+        content: '',
+        images: previewUrls,
+        timestamp: new Date(),
+      };
+      const currentMessages = [...messagesRef.current, userMessage];
+      setMessages(currentMessages);
+      const convId = currentConversationIdRef.current;
+      if (convId) saveToLocalStorage(convId, currentMessages);
+
+      await submitImages(compressed);
+    } catch (err) {
+      setImageSendError('Não foi possível preparar a foto. Tente novamente.');
+      setIsSendingImage(false);
+    }
+  };
+
+  // "Tentar novamente" após falha — reenvia a MESMA foto já comprimida,
+  // sem pedir pro produtor escolher de novo.
+  const retryImageSend = async () => {
+    if (!lastFailedImagesRef.current) return;
+    await submitImages(lastFailedImagesRef.current);
+  };
+
+  const handleImageInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files ? Array.from(e.target.files) : [];
+    e.target.value = ''; // permite escolher o mesmo arquivo de novo depois
+    if (files.length > 0) sendImageMessage(files);
+  };
+
   const handleNewChat = async () => {
     setSidebarOpen(false); // fecha o sidebar no celular
     const newConv = await createNewConversation();
@@ -1318,7 +1503,7 @@ export default function ConsultorIA() {
         const content = m.content
           .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
           .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
-          .replace(/\*([^*]+)\*/g, '<em>$1</em>')
+          .replace(/\*([^*\n]+)\*/g, '<strong>$1</strong>')
           .replace(/\n/g, '<br>');
         return `
           <div class="msg msg--${m.role}">
@@ -1684,11 +1869,20 @@ export default function ConsultorIA() {
                     )}
                   </div>
                   <div className="consultor__message-content">
-                    <FormattedMessage
-                      content={message.content}
-                      role={message.role}
-                      onOptionClick={selectionMode ? undefined : sendQuickReply}
-                    />
+                    {message.images && message.images.length > 0 && (
+                      <div className="consultor__message-images">
+                        {message.images.map((src, idx) => (
+                          <img key={idx} src={src} alt="Foto enviada" className="consultor__message-image" />
+                        ))}
+                      </div>
+                    )}
+                    {message.content && (
+                      <FormattedMessage
+                        content={message.content}
+                        role={message.role}
+                        onOptionClick={selectionMode ? undefined : sendQuickReply}
+                      />
+                    )}
                     <span className="consultor__message-time">
                       {message.timestamp.toLocaleTimeString('pt-BR', {
                         hour: '2-digit',
@@ -1731,6 +1925,31 @@ export default function ConsultorIA() {
                     <span></span>
                     <span></span>
                   </div>
+                  {isSendingImage && (
+                    <p className="consultor__message-text" style={{ color: '#6b7280', fontSize: '0.82rem' }}>
+                      Lendo a foto…
+                    </p>
+                  )}
+                </div>
+              </div>
+            )}
+            {imageSendError && !isSending && (
+              <div className="consultor__message consultor__message--assistant">
+                <div className="consultor__message-avatar">
+                  <img src="/images/Equalizagro-gota-logo.png" alt="Consultor IA" className="consultor__message-avatar-image" />
+                </div>
+                <div className="consultor__message-content">
+                  <p className="consultor__message-text" style={{ color: '#b91c1c' }}>{imageSendError}</p>
+                  {lastFailedImagesRef.current && (
+                    <button
+                      type="button"
+                      className="consultor__msg-action-btn"
+                      onClick={retryImageSend}
+                      style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem', width: 'auto', padding: '0.3rem 0.6rem' }}
+                    >
+                      <RotateCcw size={14} /> Tentar novamente
+                    </button>
+                  )}
                 </div>
               </div>
             )}
@@ -1747,6 +1966,24 @@ export default function ConsultorIA() {
             }} 
             className="consultor__input-form"
           >
+            <input
+              ref={imageInputRef}
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              multiple
+              onChange={handleImageInputChange}
+              style={{ display: 'none' }}
+            />
+            <button
+              type="button"
+              className="consultor__send-button consultor__attach-button"
+              onClick={() => imageInputRef.current?.click()}
+              disabled={isSending}
+              aria-label="Enviar foto"
+              title="Enviar foto da listinha ou da embalagem"
+            >
+              <Paperclip size={20} />
+            </button>
             <textarea
               ref={textareaRef}
               value={inputValue}

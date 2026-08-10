@@ -4,7 +4,39 @@ import bcrypt from 'bcryptjs';
 import { ensureConversationTables, ensureBillingExemptColumn } from '@/lib/db-init';
 import { checkAccess } from '@/lib/subscriptions';
 
-const N8N_WEBHOOK = 'https://equalizagro.app.n8n.cloud/webhook/consultor-caldas';
+// Configurável via env — permite apontar para o webhook de DEV (com leitura
+// de foto) sem mexer em código. Enquanto o backend de produção não tiver essa
+// leitura, CONSULTOR_WEBHOOK_URL deve ficar apontando pro endpoint "-dev" (ver
+// spec_frontend_envio_de_imagem.md, seção 12 — a virada é decisão do backend).
+const N8N_WEBHOOK = process.env.CONSULTOR_WEBHOOK_URL || 'https://equalizagro.app.n8n.cloud/webhook/consultor-caldas';
+
+// Formatos e limites aceitos pelo backend de leitura de foto — validar aqui
+// evita gastar uma chamada ao n8n com algo que ele já ia rejeitar.
+const ACCEPTED_IMAGE_MIMES = new Set(['image/jpeg', 'image/png', 'image/webp']);
+const MAX_IMAGES = 3;
+const MAX_IMAGE_BASE64_LENGTH = 8 * 1024 * 1024; // ~7,5 MB, com margem
+
+interface ImagemInput {
+  data: string;
+  mime: string;
+}
+
+function validarImagens(imagens: unknown): { ok: true; value: ImagemInput[] } | { ok: false; message: string } {
+  if (!Array.isArray(imagens)) return { ok: false, message: 'Campo "imagens" inválido.' };
+  if (imagens.length > MAX_IMAGES) return { ok: false, message: `Envie no máximo ${MAX_IMAGES} fotos por mensagem.` };
+  for (const img of imagens) {
+    if (!img || typeof img.data !== 'string' || typeof img.mime !== 'string') {
+      return { ok: false, message: 'Foto inválida.' };
+    }
+    if (!ACCEPTED_IMAGE_MIMES.has(img.mime)) {
+      return { ok: false, message: 'Formato de imagem não aceito. Envie JPEG, PNG ou WebP.' };
+    }
+    if (img.data.length > MAX_IMAGE_BASE64_LENGTH) {
+      return { ok: false, message: 'Foto muito grande. Tente novamente com uma foto menor.' };
+    }
+  }
+  return { ok: true, value: imagens as ImagemInput[] };
+}
 
 // Guard por instância serverless — evita rodar ALTER TABLE em toda invocação
 let tablesReady = false;
@@ -84,10 +116,24 @@ async function saveMessages(userId: string, convId: string, userMsg: string, aiM
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { message, contextId, conversationId, token } = body;
+    const { message, contextId, conversationId, token, imagens } = body;
 
-    if (!message?.trim()) {
+    // Mensagem só é obrigatória quando não há foto — envio de foto é um
+    // fluxo separado, sem legenda (ver spec_frontend_envio_de_imagem.md,
+    // seção 9: o backend usa a foto e ignora o texto se os dois vierem
+    // juntos, então a interface nunca deve combinar os dois).
+    const temImagens = Array.isArray(imagens) && imagens.length > 0;
+    if (!temImagens && !message?.trim()) {
       return NextResponse.json({ success: false, message: 'Mensagem obrigatória' }, { status: 400 });
+    }
+
+    let imagensValidadas: ImagemInput[] | undefined;
+    if (temImagens) {
+      const validacao = validarImagens(imagens);
+      if (!validacao.ok) {
+        return NextResponse.json({ success: false, message: validacao.message }, { status: 400 });
+      }
+      imagensValidadas = validacao.value;
     }
 
     const sessionId = contextId || `eq_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
@@ -130,7 +176,13 @@ export async function POST(request: NextRequest) {
     const n8nRes = await fetch(N8N_WEBHOOK, {
       method: 'POST',
       headers: n8nHeaders,
-      body: JSON.stringify({ chatInput: message, sessionId }),
+      body: JSON.stringify({
+        chatInput: message || '',
+        sessionId,
+        ...(imagensValidadas ? { imagens: imagensValidadas } : {}),
+      }),
+      // Leitura de foto demora mais (8–25s) que uma resposta de texto — 120s
+      // já cobre isso com margem, sem precisar de um timeout separado.
       signal: AbortSignal.timeout(120000),
     });
 
@@ -145,12 +197,16 @@ export async function POST(request: NextRequest) {
     // ── Sempre salvar no banco (o route é a fonte da verdade) ──────────
     // O componente NÃO salva mais — apenas exibe. Isso garante que toda
     // interação com o n8n seja registrada independente do estado do frontend.
+    // Não guardamos a foto em si (só o n8n precisa dela) — só um texto
+    // indicativo, pra o histórico/exportação não ficar com uma linha vazia.
+    const messageParaSalvar = temImagens ? '📷 Foto enviada' : message;
+
     let savedConversationId: string | null = null;
     try {
       // upsertConversation: se conversationId for UUID válido do usuário, usa ele;
       // caso contrário cria nova conversa com o título da primeira mensagem.
-      const convId = await upsertConversation(userId, conversationId, message);
-      await saveMessages(userId, convId, message, responseText);
+      const convId = await upsertConversation(userId, conversationId, messageParaSalvar);
+      await saveMessages(userId, convId, messageParaSalvar, responseText);
       savedConversationId = convId;
       console.log('[Chat] Salvo — userId:', userId, 'convId:', convId);
     } catch (e) {

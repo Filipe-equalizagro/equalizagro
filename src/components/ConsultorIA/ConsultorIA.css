@@ -849,6 +849,20 @@
   max-width: 65%;
 }
 
+.consultor__message-images {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0 0.4rem;
+}
+.consultor__message-image {
+  width: 140px;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+}
+
 .consultor__message-text {
   margin: 0;
   padding: 0.2rem 0.4rem;
@@ -1298,6 +1312,17 @@
 .consultor__send-button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.consultor__attach-button {
+  background: #f3f4f6;
+  color: #4b5563;
+  box-shadow: none;
+}
+.consultor__attach-button:hover:not(:disabled) {
+  background: #e5e7eb;
+  box-shadow: none;
+  transform: none;
 }
 
 .consultor__disclaimer {
