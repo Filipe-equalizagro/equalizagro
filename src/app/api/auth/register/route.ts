@@ -1,8 +1,8 @@
 // app/api/auth/register/route.ts
 import { NextRequest } from 'next/server';
-import { ApiError, apiResponse, apiError, validateEmail, validatePassword, getClientIp } from '@/lib/api-utils';
+import { ApiError, apiResponse, apiError, validateEmail, validatePassword, validateCPF, getClientIp } from '@/lib/api-utils';
 import { query } from '@/lib/database';
-import { ensureBillingExemptColumn, ensureTermsAcceptanceColumns, ensureUserRoleEnumValues } from '@/lib/db-init';
+import { ensureBillingExemptColumn, ensureTermsAcceptanceColumns, ensureUserRoleEnumValues, ensureCpfColumn } from '@/lib/db-init';
 import { sendVerificationEmail } from '@/lib/email';
 import { isExemptEmail } from '@/lib/billing-exempt';
 import bcrypt from 'bcryptjs';
@@ -14,11 +14,20 @@ const TERMS_VERSION = '2026-07-24';
 
 export async function POST(request: NextRequest) {
   try {
-    const { email, password, name, phone, cargo, regiao, interesse, comoConheceu, role, termsAccepted } = await request.json();
+    const { email, password, name, phone, cpf, cargo, regiao, interesse, comoConheceu, role, termsAccepted } = await request.json();
 
     // Validações
     if (!email || !password || !name || !phone) {
       throw new ApiError(400, 'Email, senha, nome e telefone são obrigatórios');
+    }
+
+    // CPF só é exigido no cadastro de cliente — impede que a mesma pessoa
+    // crie várias contas/trials com o mesmo documento. Conta de equipe é
+    // criada só por um admin já autenticado, então esse risco não existe.
+    const cpfDigits = cpf ? String(cpf).replace(/\D/g, '') : '';
+    if (role !== 'team') {
+      if (!cpfDigits) throw new ApiError(400, 'CPF é obrigatório');
+      if (!validateCPF(cpfDigits)) throw new ApiError(400, 'CPF inválido');
     }
 
     // Cadastro de cliente (não equipe) exige aceite explícito dos Termos de
@@ -57,6 +66,25 @@ export async function POST(request: NextRequest) {
 
     if (existingUser.rows.length > 0) {
       throw new ApiError(409, 'Este email já está cadastrado');
+    }
+
+    // Verificar se esse CPF já tem uma conta ativa — evita que a mesma pessoa
+    // crie contas com emails diferentes só para repetir o período de teste.
+    await ensureCpfColumn();
+    if (cpfDigits) {
+      try {
+        const existingCpf = await query(
+          'SELECT id FROM equalizagro.users WHERE cpf = $1 AND deleted_at IS NULL',
+          [cpfDigits]
+        );
+        if (existingCpf.rows.length > 0) {
+          throw new ApiError(409, 'Este CPF já está associado a uma conta existente');
+        }
+      } catch (err) {
+        if (err instanceof ApiError) throw err;
+        console.error('[Register] Erro ao verificar CPF:', err);
+        throw new ApiError(500, 'Erro ao verificar disponibilidade do CPF');
+      }
     }
 
     // Verificar se existe uma conta EXCLUÍDA (soft delete) com esse email —
@@ -158,11 +186,12 @@ export async function POST(request: NextRequest) {
                billing_exempt = $6,
                terms_accepted_at = $7,
                terms_version = $8,
+               cpf = $9,
                deleted_at = NULL,
                updated_at = NOW()
-           WHERE id = $9
+           WHERE id = $10
            RETURNING id`,
-          [phone, name, passwordHash, emailVerificationToken, userRole, billingExempt, termsAcceptedAt, termsAcceptedAt ? TERMS_VERSION : null, deletedUserId]
+          [phone, name, passwordHash, emailVerificationToken, userRole, billingExempt, termsAcceptedAt, termsAcceptedAt ? TERMS_VERSION : null, cpfDigits || null, deletedUserId]
         );
       } else {
         result = await query(
@@ -177,10 +206,11 @@ export async function POST(request: NextRequest) {
             auth_status,
             billing_exempt,
             terms_accepted_at,
-            terms_version
-          ) VALUES ($1, $2, $3, $4, $5, NOW() + INTERVAL '24 hours', $6, 'pending', $7, $8, $9)
+            terms_version,
+            cpf
+          ) VALUES ($1, $2, $3, $4, $5, NOW() + INTERVAL '24 hours', $6, 'pending', $7, $8, $9, $10)
           RETURNING id`,
-          [email.toLowerCase(), phone, name, passwordHash, emailVerificationToken, userRole, billingExempt, termsAcceptedAt, termsAcceptedAt ? TERMS_VERSION : null]
+          [email.toLowerCase(), phone, name, passwordHash, emailVerificationToken, userRole, billingExempt, termsAcceptedAt, termsAcceptedAt ? TERMS_VERSION : null, cpfDigits || null]
         );
       }
     } catch (err) {

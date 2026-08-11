@@ -3,9 +3,10 @@
 import { useState, useEffect, useRef } from 'react';
 import {
   Mail, Lock, User, Phone, AlertCircle,
-  Briefcase, MapPin, CheckCircle,
+  Briefcase, MapPin, CheckCircle, IdCard,
 } from 'lucide-react';
 import { registerUser, verifyEmailToken, verifySession, loginWithCredentials } from '@/lib/auth';
+import { validateCPF, formatCPF } from '@/lib/validators';
 import PlanosSection from '@/components/PlanosSection/PlanosSection';
 import '../login/login.css';
 
@@ -51,7 +52,7 @@ export default function CadastroPage() {
   const slideTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const [form, setForm] = useState({
-    name: '', email: '', phone: '',
+    name: '', email: '', phone: '', cpf: '',
     password: '', confirmPassword: '',
     cargo: '', regiao: '', interesse: '',
   });
@@ -160,6 +161,7 @@ export default function CadastroPage() {
     return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`;
   };
 
+
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     const errs: Record<string, string> = {};
@@ -167,6 +169,8 @@ export default function CadastroPage() {
     if (!form.email)   errs.email   = 'Email obrigatório';
     if (!form.phone || form.phone.replace(/\D/g, '').length < 10)
       errs.phone = 'Telefone inválido';
+    if (!form.cpf || !validateCPF(form.cpf))
+      errs.cpf = 'CPF inválido';
     if (!form.password || form.password.length < 6)
       errs.password = 'Mínimo 6 caracteres';
     if (form.password !== form.confirmPassword)
@@ -180,6 +184,7 @@ export default function CadastroPage() {
       const r = await registerUser({
         name: form.name, email: form.email,
         phone: form.phone.replace(/\D/g, ''),
+        cpf: form.cpf.replace(/\D/g, ''),
         password: form.password,
         termsAccepted: true,
         cargo: form.cargo || undefined,
@@ -382,6 +387,20 @@ export default function CadastroPage() {
                       autoComplete="tel" />
                   </div>
                   {errors.phone && <p className="lp-err"><AlertCircle size={14} />{errors.phone}</p>}
+                </div>
+
+                <div className="lp-field">
+                  <label>CPF</label>
+                  <div className="lp-input-wrap">
+                    <IdCard size={17} className="lp-icon" />
+                    <input type="text" value={form.cpf}
+                      onChange={e => set('cpf', formatCPF(e.target.value))}
+                      placeholder="000.000.000-00"
+                      inputMode="numeric"
+                      className={errors.cpf ? 'lp-input lp-input--err' : 'lp-input'}
+                      autoComplete="off" />
+                  </div>
+                  {errors.cpf && <p className="lp-err"><AlertCircle size={14} />{errors.cpf}</p>}
                 </div>
 
                 <div className="lp-field">

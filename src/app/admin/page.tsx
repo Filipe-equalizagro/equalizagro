@@ -5,9 +5,10 @@ import {
   Users, UserPlus, LogOut, RefreshCw, Search,
   CheckCircle, XCircle, ShieldCheck, ChevronDown,
   AlertCircle, Eye, EyeOff, Trash2, KeyRound, BarChart2,
-  Activity,
+  Activity, Download, IdCard,
 } from 'lucide-react';
 import { verifySession, logout, getAuthToken } from '@/lib/auth';
+import { validateCPF, formatCPF } from '@/lib/validators';
 import './admin.css';
 
 interface User {
@@ -15,6 +16,7 @@ interface User {
   full_name: string;
   email: string;
   phone: string;
+  cpf: string | null;
   role: string;
   auth_status: string;
   email_verified: boolean;
@@ -56,7 +58,7 @@ export default function AdminPage() {
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [formSuccess, setFormSuccess] = useState('');
   const [form, setForm] = useState({
-    name: '', email: '', phone: '', password: '',
+    name: '', email: '', phone: '', cpf: '', password: '',
     role: 'client', company_name: '',
   });
 
@@ -102,6 +104,32 @@ export default function AdminPage() {
     } catch { /* ignorar */ }
     finally { setLoadingUsers(false); }
   }, []);
+
+  // Exporta a lista filtrada como CSV (igual ao botão "Exportar" da Stripe) —
+  // útil para conferir CPFs/telefones fora do painel, ex. numa planilha.
+  const exportUsersCsv = () => {
+    const headers = ['Nome', 'Email', 'Telefone', 'CPF', 'Empresa', 'Role', 'Status', 'Créditos', 'Cadastro'];
+    const rows = filtered.map(u => [
+      u.full_name,
+      u.email,
+      u.phone || '',
+      u.cpf ? formatCPF(u.cpf) : '',
+      u.company_name || '',
+      ROLE_LABELS[u.role] || u.role,
+      STATUS_LABELS[u.auth_status] || u.auth_status,
+      String(u.credits_balance ?? 0),
+      new Date(u.created_at).toLocaleDateString('pt-BR'),
+    ]);
+    const escapeCsv = (v: string) => `"${v.replace(/"/g, '""')}"`;
+    const csv = [headers, ...rows].map(r => r.map(escapeCsv).join(';')).join('\r\n');
+    const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `usuarios-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
 
   const loadUserUsage = async (user: User) => {
     setViewUsageUser(user);
@@ -193,6 +221,7 @@ export default function AdminPage() {
     if (!form.name)    errs.name    = 'Nome obrigatório';
     if (!form.email)   errs.email   = 'Email obrigatório';
     if (!form.phone || form.phone.replace(/\D/g,'').length < 10) errs.phone = 'Telefone inválido';
+    if (!form.cpf || !validateCPF(form.cpf)) errs.cpf = 'CPF inválido';
     if (!form.password || form.password.length < 6) errs.password = 'Mínimo 6 caracteres';
     if (Object.keys(errs).length) { setFormErrors(errs); return; }
 
@@ -202,12 +231,12 @@ export default function AdminPage() {
       const r = await fetch('/api/admin/users', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ ...form, phone: form.phone.replace(/\D/g,'') }),
+        body: JSON.stringify({ ...form, phone: form.phone.replace(/\D/g,''), cpf: form.cpf.replace(/\D/g,'') }),
       });
       const d = await r.json();
       if (d.success) {
         setFormSuccess(`Usuário "${form.name}" criado com sucesso!`);
-        setForm({ name:'', email:'', phone:'', password:'', role:'client', company_name:'' });
+        setForm({ name:'', email:'', phone:'', cpf:'', password:'', role:'client', company_name:'' });
         loadUsers();
       } else {
         setFormErrors({ submit: d.message || 'Erro ao criar usuário' });
@@ -219,7 +248,7 @@ export default function AdminPage() {
 
   const filtered = users.filter(u => {
     const q = search.toLowerCase();
-    const matchQ = !q || u.full_name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q) || (u.phone || '').toLowerCase().includes(q);
+    const matchQ = !q || u.full_name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q) || (u.phone || '').toLowerCase().includes(q) || (u.cpf || '').toLowerCase().includes(q);
     const matchRole   = !filterRole   || u.role === filterRole;
     const matchStatus = !filterStatus || u.auth_status === filterStatus;
     return matchQ && matchRole && matchStatus;
@@ -300,6 +329,9 @@ export default function AdminPage() {
               <button className="adm-refresh" onClick={loadUsers} disabled={loadingUsers}>
                 <RefreshCw size={15} className={loadingUsers ? 'adm-spin' : ''} />
               </button>
+              <button className="adm-refresh" onClick={exportUsersCsv} disabled={!filtered.length} title="Exportar CSV">
+                <Download size={15} />
+              </button>
             </div>
 
             {/* Tabela */}
@@ -315,6 +347,7 @@ export default function AdminPage() {
                       <th>Nome</th>
                       <th>Email</th>
                       <th>Telefone</th>
+                      <th>CPF</th>
                       <th>Empresa</th>
                       <th>Role</th>
                       <th>Status</th>
@@ -334,6 +367,7 @@ export default function AdminPage() {
                         </td>
                         <td className="adm-email">{u.email}</td>
                         <td className="adm-small">{u.phone || '—'}</td>
+                        <td className="adm-small">{u.cpf ? formatCPF(u.cpf) : '—'}</td>
                         <td className="adm-small">{u.company_name || '—'}</td>
                         <td>
                           <div className="adm-select-wrap">
@@ -590,6 +624,15 @@ export default function AdminPage() {
                     onChange={e => setField('phone', formatPhone(e.target.value))}
                     className={formErrors.phone ? 'adm-input adm-input--err' : 'adm-input'} />
                   {formErrors.phone && <p className="adm-field-err"><AlertCircle size={13}/>{formErrors.phone}</p>}
+                </div>
+
+                <div className="adm-field">
+                  <label>CPF</label>
+                  <input type="text" value={form.cpf} placeholder="000.000.000-00"
+                    inputMode="numeric"
+                    onChange={e => setField('cpf', formatCPF(e.target.value))}
+                    className={formErrors.cpf ? 'adm-input adm-input--err' : 'adm-input'} />
+                  {formErrors.cpf && <p className="adm-field-err"><AlertCircle size={13}/>{formErrors.cpf}</p>}
                 </div>
 
                 <div className="adm-field">

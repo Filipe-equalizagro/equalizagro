@@ -46,6 +46,8 @@ export function validateEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
+export { validateCPF } from './validators';
+
 export function validatePassword(password: string): boolean {
   // Mínimo 8 caracteres
   if (password.length < 8) return false;

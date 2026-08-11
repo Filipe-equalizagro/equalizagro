@@ -72,6 +72,9 @@ export interface RegisterData {
   name: string;
   email: string;
   phone: string;
+  // Obrigatório para cadastro de cliente (evita múltiplas contas/trials com
+  // o mesmo CPF); dispensado para 'team', que é criado só por um admin.
+  cpf?: string;
   password: string;
   // Aceite dos Termos de Uso e Política de Privacidade — obrigatório para
   // cadastro de cliente (role client/undefined), dispensado para equipe.

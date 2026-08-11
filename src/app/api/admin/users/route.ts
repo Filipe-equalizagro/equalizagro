@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { query } from '@/lib/database';
-import { ensureUserRoleEnumValues } from '@/lib/db-init';
+import { ensureUserRoleEnumValues, ensureCpfColumn } from '@/lib/db-init';
+import { validateCPF } from '@/lib/validators';
 import bcrypt from 'bcryptjs';
 
 
@@ -53,12 +54,14 @@ export async function GET(request: NextRequest) {
   if (!(await verifyAdminToken(request))) return forbidden();
 
   try {
+    await ensureCpfColumn();
     const result = await query(
       `SELECT
          id,
          full_name,
          email,
          phone,
+         cpf,
          COALESCE(role::text, 'client')       AS role,
          COALESCE(auth_status::text, 'pending') AS auth_status,
          COALESCE(email_verified, false)       AS email_verified,
@@ -86,15 +89,18 @@ export async function POST(request: NextRequest) {
   try { body = await request.json(); }
   catch { return badRequest('Body inválido'); }
 
-  const { name, email, phone, password, role = 'client', company_name } = body;
+  const { name, email, phone, cpf, password, role = 'client', company_name } = body;
 
-  if (!name || !email || !phone || !password) {
-    return badRequest('Nome, email, telefone e senha são obrigatórios');
+  if (!name || !email || !phone || !cpf || !password) {
+    return badRequest('Nome, email, telefone, CPF e senha são obrigatórios');
   }
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return badRequest('Email inválido');
+  const cpfDigits = String(cpf).replace(/\D/g, '');
+  if (!validateCPF(cpfDigits)) return badRequest('CPF inválido');
   if (password.length < 6) return badRequest('Senha deve ter no mínimo 6 caracteres');
   if (!VALID_ROLES.includes(role)) return badRequest('Role inválido');
   await ensureUserRoleEnumValues();
+  await ensureCpfColumn();
 
   try {
     const passwordHash = await bcrypt.hash(password, 12);
@@ -108,6 +114,15 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: false, message: 'Email já cadastrado' }, { status: 409 });
     }
 
+    // Mesmo CPF não pode estar associado a outra conta ativa
+    const activeCpf = await query(
+      'SELECT id FROM equalizagro.users WHERE cpf = $1 AND deleted_at IS NULL',
+      [cpfDigits]
+    );
+    if (activeCpf.rows.length > 0) {
+      return NextResponse.json({ success: false, message: 'CPF já associado a outra conta' }, { status: 409 });
+    }
+
     // Verifica se existe registro soft-deleted com esse email → restaura em vez de inserir
     const deleted = await query(
       'SELECT id FROM equalizagro.users WHERE LOWER(email) = LOWER($1) AND deleted_at IS NOT NULL',
@@ -118,11 +133,11 @@ export async function POST(request: NextRequest) {
       const result = await query(
         `UPDATE equalizagro.users
          SET full_name=$1, phone=$2, password_hash=$3, email_verified=true,
-             auth_status='verified', role=$4, company_name=$5,
+             auth_status='verified', role=$4, company_name=$5, cpf=$6,
              deleted_at=NULL, updated_at=NOW()
-         WHERE id=$6
+         WHERE id=$7
          RETURNING id, full_name, email, role::text AS role, auth_status::text AS auth_status, created_at`,
-        [name, phone, passwordHash, role, company_name || null, deleted.rows[0].id]
+        [name, phone, passwordHash, role, company_name || null, cpfDigits, deleted.rows[0].id]
       );
       return NextResponse.json({ success: true, user: result.rows[0] }, { status: 201 });
     }
@@ -130,10 +145,10 @@ export async function POST(request: NextRequest) {
     // Nenhum registro existente → INSERT normal
     const result = await query(
       `INSERT INTO equalizagro.users
-         (email, phone, full_name, password_hash, email_verified, auth_status, role, company_name)
-       VALUES ($1, $2, $3, $4, true, 'verified', $5, $6)
+         (email, phone, full_name, password_hash, email_verified, auth_status, role, company_name, cpf)
+       VALUES ($1, $2, $3, $4, true, 'verified', $5, $6, $7)
        RETURNING id, full_name, email, role::text AS role, auth_status::text AS auth_status, created_at`,
-      [email.toLowerCase(), phone, name, passwordHash, role, company_name || null]
+      [email.toLowerCase(), phone, name, passwordHash, role, company_name || null, cpfDigits]
     );
 
     return NextResponse.json({ success: true, user: result.rows[0] }, { status: 201 });

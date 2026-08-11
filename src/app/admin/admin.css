@@ -41,7 +41,9 @@
 .adm-logout:hover { border-color: #ef4444; color: #ef4444; }
 
 /* ── Body ── */
-.adm-body { flex: 1; max-width: 1280px; width: 100%; margin: 0 auto; padding: 1.5rem 1.5rem 3rem; }
+/* Largura maior que o padrão anterior (1280px): com telefone + CPF na
+   tabela, 1280px deixava as colunas apertadas mesmo em telas grandes. */
+.adm-body { flex: 1; max-width: 1520px; width: 100%; margin: 0 auto; padding: 1.5rem 1.5rem 3rem; }
 
 /* ── Tabs ── */
 .adm-tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; }
@@ -420,10 +422,15 @@
   .adm-body { padding: 1rem; }
   .adm-form-grid { grid-template-columns: 1fr; }
   .adm-topbar-center { display: none; }
+  /* Nome, Email, Telefone, CPF, Empresa, Role, Status, Créditos, Cadastro, Ações.
+     Em telas pequenas, esconde Telefone(3), CPF(4) e Créditos(8) — ficam
+     visíveis via "Ver uso"/scroll horizontal quando precisar. */
   .adm-table th:nth-child(3),
   .adm-table td:nth-child(3),
-  .adm-table th:nth-child(7),
-  .adm-table td:nth-child(7) { display: none; }
+  .adm-table th:nth-child(4),
+  .adm-table td:nth-child(4),
+  .adm-table th:nth-child(8),
+  .adm-table td:nth-child(8) { display: none; }
 }
 
 /* ── Top 10 usuários ── */

@@ -185,6 +185,21 @@ export async function ensureTermsAcceptanceColumns(): Promise<void> {
   await query(`ALTER TABLE equalizagro.users ADD COLUMN IF NOT EXISTS terms_version TEXT`, []);
 }
 
+/**
+ * CPF (só dígitos) — usado para impedir que a mesma pessoa crie várias contas
+ * com emails diferentes só para ganhar vários trials grátis. O índice único é
+ * parcial (ignora NULL e contas soft-deleted) para não travar cadastros
+ * antigos sem CPF nem impedir reaproveitar o CPF de uma conta já excluída.
+ */
+export async function ensureCpfColumn(): Promise<void> {
+  await query(`ALTER TABLE equalizagro.users ADD COLUMN IF NOT EXISTS cpf TEXT`, []);
+  await safeDDL(`
+    CREATE UNIQUE INDEX IF NOT EXISTS idx_users_cpf_active
+    ON equalizagro.users(cpf)
+    WHERE cpf IS NOT NULL AND deleted_at IS NULL
+  `);
+}
+
 // Executa um statement DDL isoladamente — um erro não aborta os demais.
 // Isso é crucial: se um único ALTER/CREATE falhar, o resto do schema ainda
 // é garantido, evitando que TODA operação de conversa falhe em cascata.
