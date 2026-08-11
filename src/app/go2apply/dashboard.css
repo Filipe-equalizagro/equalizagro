@@ -665,10 +665,12 @@
   transition: box-shadow 0.22s ease, transform 0.22s ease, border-color 0.22s ease;
   box-shadow: 0 1px 3px rgba(0,0,0,0.04);
   overflow: hidden;
-  /* Mobile: horizontal list style */
-  flex-direction: row;
-  align-items: center;
-  padding: 1.125rem 1.25rem;
+  /* Vertical em qualquer tamanho de tela — o layout horizontal antigo
+     espremia a descrição numa coluna fina demais em celulares estreitos
+     quando o texto era longo (ex.: Formação de Caldas). */
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 1.25rem;
   -webkit-tap-highlight-color: transparent;
   position: relative;
 }
@@ -687,8 +689,10 @@
 .db-card__header {
   flex-shrink: 0;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
+  justify-content: space-between;
+  width: 100%;
   gap: 0.5rem;
 }
 
@@ -734,7 +738,10 @@
 
 .db-card__footer {
   flex-shrink: 0;
-  padding-left: 0.25rem;
+  padding-left: 0;
+  padding-top: 0.625rem;
+  border-top: 1px solid rgba(0,0,0,0.055);
+  width: 100%;
 }
 
 .db-card__action {
@@ -783,25 +790,8 @@
     grid-template-columns: repeat(2, 1fr);
   }
 
-  /* Switch cards to vertical style on 2-col grid */
   .db-card {
-    flex-direction: column;
-    align-items: flex-start;
     padding: 1.5rem;
-  }
-
-  .db-card__header {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-  }
-
-  .db-card__footer {
-    padding-left: 0;
-    padding-top: 0.625rem;
-    border-top: 1px solid rgba(0,0,0,0.055);
-    width: 100%;
   }
 }
 
