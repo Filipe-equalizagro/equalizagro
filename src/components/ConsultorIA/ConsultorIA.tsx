@@ -1025,7 +1025,6 @@ export default function ConsultorIA() {
   // backend (o backend usa a foto e descarta o texto), então a interface
   // nunca deve misturar os dois.
   const submitImages = async (compressed: { data: string; mime: string }[]) => {
-    const currentMessages = [...messagesRef.current];
     const convId = currentConversationIdRef.current;
 
     setIsSending(true);
@@ -1073,9 +1072,17 @@ export default function ConsultorIA() {
           content: data.response,
           timestamp: new Date(),
         };
-        const finalMessages = [...currentMessages, aiMessage];
-        setMessages(finalMessages);
-        if (convId) saveToLocalStorage(convId, finalMessages);
+        // Atualização funcional: no envio de foto, submitImages roda logo em
+        // seguida do setMessages que acrescenta a mensagem com a imagem
+        // (sem o setTimeout usado no envio de texto), então messagesRef.current
+        // ainda não tinha sido sincronizado se lêssemos um snapshot aqui —
+        // a foto era perdida quando a resposta chegava. `prev` sempre reflete
+        // o estado mais atual, foto incluída.
+        setMessages(prev => {
+          const finalMessages = [...prev, aiMessage];
+          if (convId) saveToLocalStorage(convId, finalMessages);
+          return finalMessages;
+        });
         lastFailedImagesRef.current = null;
       } else {
         throw new Error(data.message || 'Não foi possível ler a foto.');
@@ -1650,9 +1657,11 @@ export default function ConsultorIA() {
             {isLoadingConversations ? (
               <div className="consultor__conversations-loading">
                 <div className="consultor__typing-indicator" style={{ justifyContent: 'center' }}>
-                  <span></span>
-                  <span></span>
-                  <span></span>
+                  <span className="consultor__typing-dots">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                  </span>
                 </div>
               </div>
             ) : filteredConversations.map(conversation => (
@@ -1829,9 +1838,11 @@ export default function ConsultorIA() {
             {isLoadingMessages ? (
               <div className="consultor__empty-state">
                 <div className="consultor__typing-indicator" style={{ justifyContent: 'center' }}>
-                  <span></span>
-                  <span></span>
-                  <span></span>
+                  <span className="consultor__typing-dots">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                  </span>
                 </div>
                 <p className="consultor__empty-description">Carregando conversa...</p>
               </div>
@@ -1920,15 +1931,27 @@ export default function ConsultorIA() {
                   <img src="/images/Equalizagro-gota-logo.png" alt="Consultor IA" className="consultor__message-avatar-image" />
                 </div>
                 <div className="consultor__message-content">
-                  <div className="consultor__typing-indicator">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                  </div>
-                  {isSendingImage && (
-                    <p className="consultor__message-text" style={{ color: '#6b7280', fontSize: '0.82rem' }}>
-                      Lendo a foto…
-                    </p>
+                  {isSendingImage ? (
+                    // Um único balão (pontinhos + texto lado a lado, mesma bolha)
+                    // em vez de dois elementos separados — a leitura de foto
+                    // demora mais, então o produtor precisa de uma mensagem
+                    // clara de que a foto está sendo analisada, não só pontinhos.
+                    <div className="consultor__typing-indicator">
+                      <span className="consultor__typing-dots">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                      </span>
+                      <span className="consultor__typing-label">Analisando a foto…</span>
+                    </div>
+                  ) : (
+                    <div className="consultor__typing-indicator">
+                      <span className="consultor__typing-dots">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                      </span>
+                    </div>
                   )}
                 </div>
               </div>

@@ -919,7 +919,13 @@
   align-items: center;
 }
 
-.consultor__typing-indicator span {
+.consultor__typing-dots {
+  display: inline-flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.consultor__typing-dots span {
   width: 8px;
   height: 8px;
   background: #1a5f3a;
@@ -927,12 +933,20 @@
   animation: bounceSubtle 1.4s infinite;
 }
 
-.consultor__typing-indicator span:nth-child(2) {
+.consultor__typing-dots span:nth-child(2) {
   animation-delay: 0.2s;
 }
 
-.consultor__typing-indicator span:nth-child(3) {
+.consultor__typing-dots span:nth-child(3) {
   animation-delay: 0.4s;
+}
+
+/* Variante com texto ao lado dos pontinhos (leitura de foto) — um único
+   balão, em vez de dois elementos soltos desalinhados. */
+.consultor__typing-label {
+  font-size: 0.82rem;
+  color: #4b5563;
+  white-space: nowrap;
 }
 
 /* ==================== FORMATAÇÃO DE MENSAGENS ==================== */
@@ -1116,7 +1130,7 @@
   border: none;
 }
 
-.consultor__conversations-loading .consultor__typing-indicator span {
+.consultor__conversations-loading .consultor__typing-dots span {
   background: rgba(255, 255, 255, 0.7);
 }
 
