@@ -99,7 +99,7 @@ export function produtosRelevantes(pergunta: string): Produto[] {
 export function montarSystem(relevantes: Produto[] = []): string {
   const tabela = relevantes.length
     ? relevantes.map((p) =>
-        `${p.produto} | Kow: ${p.kowTexto} | Tendência de adjuvante: ${p.tend} | Tendência de pH da calda (hidrofílico — soluções/suspensões): ${fmtPh(p.phHidro)} | Tendência de pH da calda (lipofílico — emulsões): ${fmtPh(p.phLipo)}`
+        `${p.produto} | Kow: ${p.kowTexto} | Tendência de adjuvante: ${p.tend} | Tendência de melhor faixa para pH em calda (hidrofílico — soluções/suspensões): ${fmtPh(p.phHidro)} | Tendência de melhor faixa para pH em calda (lipofílico — emulsões): ${fmtPh(p.phLipo)}`
       ).join('\n')
     : '(nenhum produto identificado nesta pergunta)';
   const formTabela = FORMULACOES.map((f) => `${f.codigo} (${f.nome}) → ${f.categoria}`).join('\n');
@@ -109,12 +109,12 @@ ESCOPO — você SÓ pode tratar destes assuntos:
 a) O Kow e a Tendência de adjuvante de um produto cadastrado na base.
 b) A classificação de um valor de Kow informado pelo usuário, pela régua de faixas.
 c) Explicar de forma simples o que é Kow (coeficiente de partição octanol-água) e a diferença entre hidrofílico e lipofílico.
-d) A Tendência de pH da calda de um produto cadastrado (faixa de pH ideal, quando disponível).
-e) Qual tendência de pH da calda se aplica a uma formulação específica (ex.: "EC", "SC"), usando a tabela de formulações abaixo: Soluções e Suspensões usam a tendência hidrofílica; Emulsões usam a lipofílica.
+d) A Tendência de melhor faixa para pH em calda de um produto cadastrado (faixa de pH ideal, quando disponível).
+e) Qual tendência de melhor faixa para pH em calda se aplica a uma formulação específica (ex.: "EC", "SC"), usando a tabela de formulações abaixo: Soluções e Suspensões usam a tendência hidrofílica; Emulsões usam a lipofílica.
 Qualquer outro assunto está FORA DE ESCOPO.
 
 DADOS DISPONÍVEIS PARA ESTA PERGUNTA (única fonte de verdade — NUNCA invente valores de Kow ou de pH):
-Produto | Kow | Tendência de adjuvante | Tendência de pH da calda (hidrofílico) | Tendência de pH da calda (lipofílico)
+Produto | Kow | Tendência de adjuvante | Tendência de melhor faixa para pH em calda (hidrofílico) | Tendência de melhor faixa para pH em calda (lipofílico)
 ${tabela}
 
 TABELA DE FORMULAÇÕES (código → categoria; Soluções/Suspensões = hidrofílico, Emulsões = lipofílico):
@@ -131,8 +131,8 @@ REGRAS OBRIGATÓRIAS:
 1. NUNCA use a palavra "recomendação", "recomendar", "recomendado" nem variações. Use SEMPRE "Tendência de adjuvante".
 2. Produto presente nos dados acima: informe o Kow exatamente como consta e a Tendência de adjuvante GRAVADA para ele (não recalcule pela régua).
 3. Se o usuário informar um valor de Kow, classifique pela régua.
-4. Sobre a Tendência de pH da calda: informe exatamente o que está nos dados. "Estável/não-ionizável" significa que o produto não responde a variações de pH da calda. "N/A" significa que não há dado disponível — diga isso claramente, sem inventar uma faixa.
-5. Se o usuário mencionar uma formulação (ex.: "EC", "SC", "concentrado emulsionável"), identifique a categoria pela tabela de formulações e responda com a tendência de pH correspondente (hidrofílico ou lipofílico) daquele produto.
+4. Sobre a Tendência de melhor faixa para pH em calda: informe exatamente o que está nos dados. "Estável/não-ionizável" significa que o produto não responde a variações de pH da calda. "N/A" significa que não há dado disponível — diga isso claramente, sem inventar uma faixa.
+5. Se o usuário mencionar uma formulação (ex.: "EC", "SC", "concentrado emulsionável"), identifique a categoria pela tabela de formulações e responda com a tendência de melhor faixa para pH correspondente (hidrofílico ou lipofílico) daquele produto.
 6. Se não houver produto nos dados acima e o usuário perguntou por um produto: responda "Não localizei esse produto. Confirme a grafia do nome, ou informe o Kow para eu classificar pela régua." Não afirme que o produto não existe — você só recebeu os dados desta consulta.
 7. Nunca invente valores de Kow.
 8. FORA DE ESCOPO: responda exatamente com "Só respondo sobre Kow e tendência de adjuvante dos produtos cadastrados. Reformule a pergunta dentro desse escopo." e nada mais.

@@ -1876,14 +1876,14 @@
     "tend": "Tensoativo",
     "faixa": 0,
     "phHidro": {
-      "min": 5,
-      "max": 8,
-      "label": "pH 5,0 – 8,0"
+      "min": 3.5,
+      "max": 6.0,
+      "label": "pH 3,5 – 6,0"
     },
     "phLipo": {
-      "min": 3,
-      "max": 6,
-      "label": "pH 3,0 – 6,0"
+      "min": 3.5,
+      "max": 6.0,
+      "label": "pH 3,5 – 6,0"
     }
   },
   {
@@ -3236,14 +3236,14 @@
     "tend": "Tensoativo",
     "faixa": 0,
     "phHidro": {
-      "min": 5,
-      "max": 8,
-      "label": "pH 5,0 – 8,0"
+      "min": 3.5,
+      "max": 6.0,
+      "label": "pH 3,5 – 6,0"
     },
     "phLipo": {
-      "min": 3,
-      "max": 6,
-      "label": "pH 3,0 – 6,0"
+      "min": 3.5,
+      "max": 6.0,
+      "label": "pH 3,5 – 6,0"
     }
   },
   {

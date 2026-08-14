@@ -58,21 +58,6 @@ function esc(s: string): string {
   return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
-const QUIZ = [
-  { q: 'Na tecnologia de aplicação, qual a principal função de um adjuvante tensoativo na calda?',
-    opts: ['Reduzir a tensão superficial e melhorar o espalhamento da gota', 'Aumentar o pH da calda', 'Elevar a densidade da água', 'Resfriar a calda'], correct: 0 },
-  { q: 'Na pulverização, o que mais aumenta o risco de deriva?',
-    opts: ['Gotas muito finas', 'Gotas mais grossas', 'Menor velocidade do vento', 'Barra mais baixa'], correct: 0 },
-  { q: 'O Kow (coeficiente de partição octanol-água) indica principalmente o quê de uma molécula?',
-    opts: ['A afinidade por óleo vs. água (lipofilia/hidrofilia)', 'A cor do produto', 'O prazo de validade', 'A densidade da calda'], correct: 0 },
-];
-
-function formatKow(v: number): string {
-  if (!isFinite(v)) return '—';
-  const dec = Math.abs(v) >= 1 ? 2 : 6;
-  return v.toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: dec });
-}
-
 function PhRow({ label, band, color }: { label: string; band: PhBand | 'estavel' | null; color: string }) {
   if (band === 'estavel') {
     return <div className="kow-tool__ph-row"><div className="kow-tool__ph-row-label">{label}</div><p className="kow-tool__ph-estavel">Estável / não-ionizável em toda a faixa avaliada.</p></div>;
@@ -107,12 +92,6 @@ export default function ConsultorKow() {
   const [aiError, setAiError] = useState(false);
   const [isAsking, setIsAsking] = useState(false);
   const [accessMessage, setAccessMessage] = useState<string | null>(null);
-
-  const [quiz] = useState(() => QUIZ[Math.floor(Math.random() * QUIZ.length)]);
-  const [quizPassed, setQuizPassed] = useState(false);
-  const [quizWrongIdx, setQuizWrongIdx] = useState<number | null>(null);
-  const [logValue, setLogValue] = useState('');
-  const [logResult, setLogResult] = useState<string | null>(null);
 
   useEffect(() => {
     const check = async () => {
@@ -224,18 +203,6 @@ export default function ConsultorKow() {
   const formulacaoAtual = FORMULACOES.find((f) => f.codigo === formulacao);
   const temPh = produto ? (produto.phHidro != null || produto.phLipo != null) : false;
 
-  function checkQuiz(idx: number) {
-    if (idx === quiz.correct) setQuizPassed(true);
-    else setQuizWrongIdx(idx);
-  }
-
-  function calcLog() {
-    const raw = logValue.trim().replace(',', '.');
-    const x = parseFloat(raw);
-    if (isNaN(x)) { setLogResult('Informe um log Kow válido (ex.: 3,7).'); return; }
-    setLogResult(formatKow(Math.pow(10, x)));
-  }
-
   if (isLoading) {
     return (
       <div className="kow-tool__loading">
@@ -335,7 +302,7 @@ export default function ConsultorKow() {
               )}
               {temPh && (
                 <div className="kow-tool__ph-section">
-                  <div className="kow-tool__field-label">Tendência de pH da calda</div>
+                  <div className="kow-tool__field-label">Tendência de melhor faixa para pH em calda</div>
                   <div className="kow-tool__form-select-row">
                     <label htmlFor="formulacaoSelect">Formulação</label>
                     <select id="formulacaoSelect" value={formulacao} onChange={(e) => setFormulacao(e.target.value)}>
@@ -350,7 +317,7 @@ export default function ConsultorKow() {
                     </select>
                   </div>
                   {!formulacaoAtual ? (
-                    <p className="kow-tool__ph-estavel">Selecione uma formulação para ver a tendência de pH da calda.</p>
+                    <p className="kow-tool__ph-estavel">Selecione uma formulação para ver a tendência de melhor faixa para pH em calda.</p>
                   ) : (
                     <>
                       <PhRow
@@ -366,44 +333,10 @@ export default function ConsultorKow() {
             </div>
           )}
 
-          <div className="kow-tool__card">
-            <h2>Cálculo: log Kow &rarr; Kow</h2>
-            <p className="kow-tool__hint">Responda à pergunta abaixo para liberar a calculadora.</p>
-            {!quizPassed ? (
-              <div>
-                <p className="kow-tool__quiz-q">{quiz.q}</p>
-                <div className="kow-tool__quiz-opts">
-                  {quiz.opts.map((op, idx) => (
-                    <button key={idx} type="button" className={`kow-tool__quiz-opt${quizWrongIdx === idx ? ' kow-tool__quiz-opt--wrong' : ''}`} onClick={() => checkQuiz(idx)}>
-                      {op}
-                    </button>
-                  ))}
-                </div>
-                {quizWrongIdx !== null && <p className="kow-tool__quiz-msg kow-tool__quiz-msg--err">Resposta incorreta. Tente novamente.</p>}
-              </div>
-            ) : (
-              <div>
-                <div className="kow-tool__calc-row">
-                  <input type="text" inputMode="decimal" placeholder="Ex.: 3,7" autoComplete="off" value={logValue}
-                    onChange={(e) => setLogValue(e.target.value)}
-                    onKeyDown={(e) => { if (e.key === 'Enter') calcLog(); }} />
-                  <button className="kow-tool__btn" onClick={calcLog}>Calcular</button>
-                </div>
-                {logResult !== null && (
-                  <div className="kow-tool__calc-out">
-                    <div className="kow-tool__field-label" style={{ marginTop: 6 }}>Kow</div>
-                    <p className="kow-tool__kow-val">{logResult}</p>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-
           <div className="kow-tool__note">
             <p>*Não se trata de recomendação agronômica e, sim, tendência de resposta, para subsidiar a construção de recomendações de adjuvantes, compatibilidade e pH de calda.</p>
             <p>**A recomendação deve ser feita por técnico capacitado, avaliando formulação, objetivo e cultura.</p>
             <p>***O Kow pode variar com o pH e outros fatores, o pH alvo com a mistura e cultura, além da formulação, por isso devem ser vistos sempre como tendência e não como números absolutos.</p>
-            git add src/components/ConsultorKow/ConsultorKow.tsx src/components/ConsultorKow/ConsultorKow.css
           </div>
         </div>
       </div>

@@ -59,16 +59,15 @@ header { margin-bottom: 28px; }
 }
 .kow-tool__hint { color: var(--kow-muted); font-size: 13px; margin: 0 0 16px; }
 
-.kow-tool__ask-row, .kow-tool__calc-row { display: flex; gap: 10px; flex-wrap: wrap; }
-.kow-tool__ask-row input, .kow-tool__calc-row input {
+.kow-tool__ask-row { display: flex; gap: 10px; flex-wrap: wrap; }
+.kow-tool__ask-row input {
   flex: 1 1 240px; min-width: 0;
   font-family: 'Inter', sans-serif; font-size: 15px; color: var(--kow-ink);
   background: #F6F8F5; border: 1.5px solid var(--kow-line); border-radius: 10px;
   padding: 13px 14px; outline: none; transition: border-color .15s, background .15s;
 }
-.kow-tool__ask-row input:focus, .kow-tool__calc-row input:focus { border-color: var(--kow-primary-2); background: #fff; }
-.kow-tool__ask-row input::placeholder, .kow-tool__calc-row input::placeholder { color: #8b988f; }
-.kow-tool__calc-row input { font-family: 'JetBrains Mono', monospace; flex: 1 1 160px; }
+.kow-tool__ask-row input:focus { border-color: var(--kow-primary-2); background: #fff; }
+.kow-tool__ask-row input::placeholder { color: #8b988f; }
 
 .kow-tool__btn {
   font-family: 'Space Grotesk', sans-serif; cursor: pointer;
@@ -144,20 +143,6 @@ header { margin-bottom: 28px; }
   background: #F6F8F5; border: 1.5px solid var(--kow-line); border-radius: 8px; padding: 8px 10px; outline: none;
 }
 .kow-tool__form-select-row select:focus { border-color: var(--kow-primary-2); background: #fff; }
-
-.kow-tool__calc-out { margin-top: 16px; animation: kowRise .25s ease; }
-
-.kow-tool__quiz-q { font-size: 15px; font-weight: 500; margin: 4px 0 12px; color: var(--kow-ink); line-height: 1.45; }
-.kow-tool__quiz-opts { display: flex; flex-direction: column; gap: 8px; }
-.kow-tool__quiz-opt {
-  text-align: left; background: #F6F8F5; border: 1.5px solid var(--kow-line); border-radius: 10px;
-  padding: 12px 14px; font-family: 'Inter', sans-serif; font-size: 14px; color: var(--kow-ink);
-  transition: .12s; cursor: pointer;
-}
-.kow-tool__quiz-opt:hover { border-color: var(--kow-primary-2); background: #fff; }
-.kow-tool__quiz-opt--wrong { border-color: #C98B82; background: #FBEFEC; color: #8f3a2e; }
-.kow-tool__quiz-msg { font-size: 13px; margin-top: 11px; min-height: 16px; }
-.kow-tool__quiz-msg--err { color: #a23b2f; }
 
 .kow-tool__note { color: var(--kow-muted); font-size: 10.5px; line-height: 1.4; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--kow-line); }
 .kow-tool__note p { margin: 0 0 4px; }
