@@ -1,7 +1,9 @@
 // app/api/kow/sugestoes/route.ts
 // Sugestões do autocompletar do Consultor Kow — devolve SÓ nomes, no máximo
-// 8, e exige 2+ caracteres. Sem Kow, sem tendência, sem pH: digitar uma letra
-// não vaza nenhum dado do produto.
+// 8, a partir de 1 caractere (era 2 — a UX pedia a sugestão já na 1ª letra).
+// Sem Kow, sem tendência, sem pH: digitar uma letra não vaza dado nenhum de
+// produto, só o nome; o limitador de taxa e a auditoria seguem cobrindo
+// enumeração ("a", "b", "c"...).
 import { NextRequest, NextResponse } from 'next/server';
 import { PRODUTOS, normalizar } from '@/lib/kow/catalog';
 import { exigirAcesso, limiteExcedido, auditar } from '@/lib/kow/access';
@@ -19,7 +21,7 @@ export async function GET(request: NextRequest) {
 
   const { searchParams } = new URL(request.url);
   const q = normalizar(searchParams.get('q')).slice(0, 60);
-  if (q.length < 2) return NextResponse.json({ nomes: [] });
+  if (q.length < 1) return NextResponse.json({ nomes: [] });
 
   const nomes = PRODUTOS
     .filter((p) => normalizar(p.produto).includes(q))

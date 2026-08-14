@@ -146,13 +146,15 @@ export default function ConsultorKow() {
 
   function scheduleSuggest(value: string) {
     if (sugTimerRef.current) clearTimeout(sugTimerRef.current);
-    sugTimerRef.current = setTimeout(() => buscarSugestoes(value), 180);
+    // Debounce curto: só evita disparar uma chamada por tecla digitada rápido
+    // demais — a sugestão precisa parecer instantânea, já na 1ª letra.
+    sugTimerRef.current = setTimeout(() => buscarSugestoes(value), 80);
   }
 
   async function buscarSugestoes(value: string) {
     const query = value.trim();
     setSugActive(-1);
-    if (query.length < 2) { hideSuggest(); return; }
+    if (query.length < 1) { hideSuggest(); return; }
     const seq = ++sugSeqRef.current;
     const { ok, data } = await kowFetch(`/api/kow/sugestoes?q=${encodeURIComponent(query)}`);
     if (seq !== sugSeqRef.current) return;
