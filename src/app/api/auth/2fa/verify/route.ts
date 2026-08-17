@@ -2,8 +2,9 @@
 import { NextRequest } from 'next/server';
 import { ApiError, apiResponse, apiError, getClientIp, getUserAgent } from '@/lib/api-utils';
 import { query } from '@/lib/database';
+import { ensureTokenVersionColumn } from '@/lib/db-init';
+import { signSessionToken } from '@/lib/jwt';
 import bcrypt from 'bcryptjs';
-import crypto from 'crypto';
 import speakeasy from 'speakeasy';
 
 export async function POST(request: NextRequest) {
@@ -18,6 +19,8 @@ export async function POST(request: NextRequest) {
       throw new ApiError(400, 'Código 2FA deve ter 6 dígitos');
     }
 
+    await ensureTokenVersionColumn();
+
     const ip = getClientIp(request);
     const userAgent = getUserAgent(request);
 
@@ -26,7 +29,7 @@ export async function POST(request: NextRequest) {
     try {
       sessionResult = await query(
         `SELECT tfs.*, u.id as user_id, u.email, u.full_name, u.credits_balance,
-                u.two_factor_enabled, u.two_factor_secret
+                u.two_factor_enabled, u.two_factor_secret, u.token_version
          FROM equalizagro.two_factor_sessions tfs
          JOIN equalizagro.users u ON u.id = tfs.user_id
          WHERE tfs.id = $1 AND tfs.verified_at IS NULL`,
@@ -148,31 +151,13 @@ export async function POST(request: NextRequest) {
       console.warn('[2FA] Erro ao registrar no audit:', error.message);
     }
 
-    // Gerar token de sessão
+    // Gerar token de sessão (JWT — ver lib/session.ts)
     let sessionToken;
-    let tokenHash;
     try {
-      sessionToken = crypto.randomBytes(32).toString('hex');
-      tokenHash = await bcrypt.hash(sessionToken, 10);
+      sessionToken = await signSessionToken({ sub: session.user_id, tv: Number(session.token_version ?? 1) });
     } catch (err) {
       console.error('[2FA] Erro ao gerar token:', err);
       throw new ApiError(500, 'Erro ao gerar token de sessão');
-    }
-
-    try {
-      await query(
-        `INSERT INTO equalizagro.auth_tokens (
-          user_id,
-          token_hash,
-          ip_address,
-          user_agent,
-          expires_at
-        ) VALUES ($1, $2, $3, $4, NOW() + INTERVAL '7 days')`,
-        [session.user_id, tokenHash, ip, userAgent]
-      );
-    } catch (err) {
-      console.error('[2FA] Erro ao salvar token de sessão:', err);
-      throw new ApiError(500, 'Erro ao criar sessão');
     }
 
     console.log(`[2FA] Verificação bem-sucedida: ${session.email}`);

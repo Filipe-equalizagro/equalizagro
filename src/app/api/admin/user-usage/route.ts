@@ -1,34 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { query } from '@/lib/database';
-import bcrypt from 'bcryptjs';
-
-async function verifyAdminToken(request: NextRequest): Promise<boolean> {
-  const authHeader = request.headers.get('authorization');
-  const token = authHeader?.startsWith('Bearer ') ? authHeader.substring(7) : null;
-  if (!token) return false;
-  try {
-    const result = await query(
-      `SELECT at.token_hash
-       FROM equalizagro.auth_tokens at
-       JOIN equalizagro.users u ON u.id = at.user_id
-       WHERE at.expires_at > NOW()
-         AND u.role = 'admin'
-         AND u.deleted_at IS NULL`,
-      []
-    );
-    for (const row of result.rows) {
-      if (await bcrypt.compare(token, row.token_hash)) return true;
-    }
-  } catch { /* ignorar */ }
-  return false;
-}
+import { requireAdminSession } from '@/lib/session';
 
 /**
  * GET /api/admin/user-usage?userId=xxx
  * Retorna dados de uso detalhados de um usuário específico (apenas admins)
  */
 export async function GET(request: NextRequest) {
-  if (!(await verifyAdminToken(request))) {
+  if (!(await requireAdminSession(request))) {
     return NextResponse.json({ success: false, message: 'Acesso restrito' }, { status: 403 });
   }
 

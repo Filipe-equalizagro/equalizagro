@@ -3,42 +3,30 @@
 // então reaproveita a sessão normal do site (Bearer token + checkAccess()),
 // sem token cruzado entre domínios.
 import { NextRequest, NextResponse } from 'next/server';
-import bcrypt from 'bcryptjs';
-import { query } from '@/lib/database';
 import { checkAccess } from '@/lib/subscriptions';
+import { getSessionFromRequest, type Session } from '@/lib/session';
 
-/* Cache em memória do resultado token -> userId. Resolver o token exige
-   comparar (via bcrypt, deliberadamente lento) contra cada auth_token ativo
-   no banco — com o autocompletar do Kow disparando uma chamada a cada tecla
-   digitada, repetir essa varredura em toda requisição deixava a busca visivelmente
-   lenta (segundos por letra, com dezenas de sessões ativas no banco). O token
-   em si já é o segredo da sessão, então cacheá-lo em memória do servidor por
-   alguns minutos não abre brecha nenhuma — só evita refazer o mesmo trabalho
-   caro dezenas de vezes por segundo. */
+/* Cache em memória do resultado token -> sessão. Com JWT a verificação em si
+   já é rápida (assinatura, sem bcrypt), mas ainda faz uma consulta indexada
+   ao banco pra checar token_version/suspensão — e o autocompletar do Kow
+   dispara uma chamada a cada tecla digitada. Cachear evita repetir essa
+   consulta dezenas de vezes por segundo. O token em si já é o segredo da
+   sessão, então cacheá-lo em memória do servidor por alguns minutos não abre
+   brecha nenhuma. */
 const TOKEN_CACHE_TTL_MS = 5 * 60_000;
-const tokenCache = new Map<string, { userId: string | null; expiresAt: number }>();
+const sessionCache = new Map<string, { session: Session | null; expiresAt: number }>();
 
-export async function getUserIdFromToken(token: string): Promise<string | null> {
-  const cached = tokenCache.get(token);
-  if (cached && cached.expiresAt > Date.now()) return cached.userId;
+async function getCachedSession(request: NextRequest): Promise<Session | null> {
+  const token = request.headers.get('authorization')?.replace('Bearer ', '');
+  if (!token) return null;
 
-  let userId: string | null = null;
-  try {
-    const result = await query(
-      `SELECT at.user_id, at.token_hash
-       FROM equalizagro.auth_tokens at
-       JOIN equalizagro.users u ON u.id = at.user_id
-       WHERE at.expires_at > NOW() AND u.deleted_at IS NULL`,
-      []
-    );
-    for (const row of result.rows) {
-      if (await bcrypt.compare(token, row.token_hash)) { userId = row.user_id; break; }
-    }
-  } catch { /* ignorar */ }
+  const cached = sessionCache.get(token);
+  if (cached && cached.expiresAt > Date.now()) return cached.session;
 
-  tokenCache.set(token, { userId, expiresAt: Date.now() + TOKEN_CACHE_TTL_MS });
-  if (tokenCache.size > 2000) tokenCache.clear();
-  return userId;
+  const session = await getSessionFromRequest(request);
+  sessionCache.set(token, { session, expiresAt: Date.now() + TOKEN_CACHE_TTL_MS });
+  if (sessionCache.size > 2000) sessionCache.clear();
+  return session;
 }
 
 /**
@@ -46,14 +34,11 @@ export async function getUserIdFromToken(token: string): Promise<string | null> 
  * NextResponse de erro pronta pra devolver (401/402) — falha fechada.
  */
 export async function exigirAcesso(request: NextRequest): Promise<{ userId: string } | { error: NextResponse }> {
-  const authToken = request.headers.get('authorization')?.replace('Bearer ', '');
-  if (!authToken) {
+  const session = await getCachedSession(request);
+  if (!session) {
     return { error: NextResponse.json({ erro: 'Sessão expirada. Faça login novamente.' }, { status: 401 }) };
   }
-  const userId = await getUserIdFromToken(authToken);
-  if (!userId) {
-    return { error: NextResponse.json({ erro: 'Sessão expirada. Faça login novamente.' }, { status: 401 }) };
-  }
+  const userId = session.userId;
   const access = await checkAccess(userId);
   if (!access.allowed) {
     return { error: NextResponse.json({ erro: 'Assine um plano para continuar usando o Consultor Kow.', requiresSubscription: true }, { status: 402 }) };

@@ -289,6 +289,18 @@ export async function verifyTwoFactorCode(
  * Fazer logout e remover token
  */
 export function logout(): void {
+  // Revoga a sessão no servidor (invalida o token mesmo que alguém tenha
+  // capturado ele antes) — best-effort: dispara e não espera, pra não travar
+  // a navegação se a rede estiver lenta. Precisa ir ANTES de limpar o token
+  // local, senão a chamada sai sem Authorization.
+  const token = getAuthToken();
+  if (token) {
+    fetch('/api/auth/logout', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+    }).catch(() => { /* melhor esforço — cliente já limpa o token local de qualquer forma */ });
+  }
+
   localStorage.removeItem('authToken');
   localStorage.removeItem('userId');
   localStorage.removeItem('deviceFingerprint');

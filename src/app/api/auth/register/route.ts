@@ -5,6 +5,7 @@ import { query } from '@/lib/database';
 import { ensureBillingExemptColumn, ensureTermsAcceptanceColumns, ensureUserRoleEnumValues, ensureCpfColumn } from '@/lib/db-init';
 import { sendVerificationEmail } from '@/lib/email';
 import { isExemptEmail } from '@/lib/billing-exempt';
+import { requireAdminSession } from '@/lib/session';
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
 
@@ -129,37 +130,8 @@ export async function POST(request: NextRequest) {
     // Definir role: 'team' exige token de admin válido no header Authorization
     let userRole = 'client';
     if (role === 'team') {
-      const authHeader = request.headers.get('authorization');
-      const callerToken = authHeader?.startsWith('Bearer ') ? authHeader.substring(7) : null;
-
-      if (!callerToken) {
-        throw new ApiError(403, 'Somente administradores podem criar contas de equipe');
-      }
-
-      // Buscar apenas tokens de usuários com role = 'admin' (conjunto pequeno)
-      let callerIsAdmin = false;
-      try {
-        const adminTokens = await query(
-          `SELECT at.token_hash
-           FROM equalizagro.auth_tokens at
-           JOIN equalizagro.users u ON u.id = at.user_id
-           WHERE at.expires_at > NOW()
-             AND COALESCE(u.role, 'client') = 'admin'
-           ORDER BY at.created_at DESC
-           LIMIT 20`,
-          []
-        );
-        for (const row of adminTokens.rows) {
-          try {
-            const isMatch = await bcrypt.compare(callerToken, row.token_hash);
-            if (isMatch) { callerIsAdmin = true; break; }
-          } catch { /* hash inválido, ignorar */ }
-        }
-      } catch (err) {
-        console.error('[Register] Erro ao verificar admin:', err);
-      }
-
-      if (!callerIsAdmin) {
+      const callerSession = await requireAdminSession(request);
+      if (!callerSession) {
         throw new ApiError(403, 'Somente administradores podem criar contas de equipe');
       }
       await ensureUserRoleEnumValues();

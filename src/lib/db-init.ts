@@ -191,6 +191,18 @@ export async function ensureTermsAcceptanceColumns(): Promise<void> {
  * parcial (ignora NULL e contas soft-deleted) para não travar cadastros
  * antigos sem CPF nem impedir reaproveitar o CPF de uma conta já excluída.
  */
+/**
+ * Contador de revogação de sessão — incrementado no logout (ou quando um
+ * admin precisar forçar o usuário a logar de novo). O JWT carrega o valor
+ * de token_version no momento em que foi emitido (claim `tv`); a cada
+ * requisição comparamos com o valor atual no banco — se não bater, a sessão
+ * foi revogada mesmo que o JWT ainda não tenha expirado. Substitui o antigo
+ * DELETE FROM auth_tokens (que nunca existiu de fato — logout era só local).
+ */
+export async function ensureTokenVersionColumn(): Promise<void> {
+  await query(`ALTER TABLE equalizagro.users ADD COLUMN IF NOT EXISTS token_version INTEGER NOT NULL DEFAULT 1`, []);
+}
+
 export async function ensureCpfColumn(): Promise<void> {
   await query(`ALTER TABLE equalizagro.users ADD COLUMN IF NOT EXISTS cpf TEXT`, []);
   await safeDDL(`

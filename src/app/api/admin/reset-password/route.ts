@@ -1,34 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { query } from '@/lib/database';
+import { requireAdminSession } from '@/lib/session';
 import bcrypt from 'bcryptjs';
 
-async function verifyAdminToken(request: NextRequest): Promise<boolean> {
-  const authHeader = request.headers.get('authorization');
-  const token = authHeader?.startsWith('Bearer ') ? authHeader.substring(7) : null;
-  if (!token) return false;
-
-  try {
-    const result = await query(
-      `SELECT at.token_hash
-       FROM equalizagro.auth_tokens at
-       JOIN equalizagro.users u ON u.id = at.user_id
-       WHERE at.expires_at > NOW()
-         AND u.role = 'admin'
-         AND u.deleted_at IS NULL`,
-      []
-    );
-    for (const row of result.rows) {
-      const match = await bcrypt.compare(token, row.token_hash);
-      if (match) return true;
-    }
-  } catch (err) {
-    console.error('[AdminResetPassword] Erro ao verificar token:', err);
-  }
-  return false;
-}
-
 export async function PATCH(request: NextRequest) {
-  if (!(await verifyAdminToken(request))) {
+  if (!(await requireAdminSession(request))) {
     return NextResponse.json({ success: false, message: 'Acesso restrito a administradores' }, { status: 403 });
   }
 

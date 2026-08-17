@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { query } from '@/lib/database';
-import bcrypt from 'bcryptjs';
 import { ensureConversationTables } from '@/lib/db-init';
+import { getSessionFromRequest } from '@/lib/session';
 
 /**
  * Diagnóstico de persistência do histórico do ConsultorIA.
@@ -16,34 +16,18 @@ export async function GET(request: NextRequest) {
   const record = (name: string, ok: boolean, detail?: any) =>
     steps.push({ step: name, ok, detail });
 
-  const url = new URL(request.url);
-  const headerToken = request.headers.get('authorization')?.replace('Bearer ', '');
-  const token = url.searchParams.get('token') || headerToken || '';
-
-  if (!token) {
-    return NextResponse.json({ ok: false, message: 'Forneça ?token=SEU_TOKEN', steps });
-  }
-
-  // 1) Resolver userId a partir do token
+  // 1) Resolver userId a partir do token (header ou ?token=, ver lib/session.ts)
   let userId: string | null = null;
   try {
-    const r = await query(
-      `SELECT at.user_id, at.token_hash, u.email
-       FROM equalizagro.auth_tokens at
-       JOIN equalizagro.users u ON u.id = at.user_id
-       WHERE at.expires_at > NOW() AND u.deleted_at IS NULL`,
-      []
-    );
-    for (const row of r.rows) {
-      if (await bcrypt.compare(token, row.token_hash)) { userId = row.user_id; break; }
-    }
+    const session = await getSessionFromRequest(request);
+    userId = session?.userId ?? null;
     record('resolver_userId', Boolean(userId), userId ? { userId } : 'token não corresponde a nenhuma sessão válida');
   } catch (e) {
     record('resolver_userId', false, (e as Error).message);
   }
 
   if (!userId) {
-    return NextResponse.json({ ok: false, userId: null, steps });
+    return NextResponse.json({ ok: false, message: 'Forneça ?token=SEU_TOKEN ou um Authorization: Bearer válido', userId: null, steps });
   }
 
   // 2) Garantir/curar tabelas

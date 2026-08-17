@@ -1,33 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { query } from '@/lib/database';
-import bcrypt from 'bcryptjs';
-
-async function verifyToken(request: NextRequest): Promise<{ userId: string; email: string } | null> {
-  const authHeader = request.headers.get('authorization');
-  const token = authHeader?.startsWith('Bearer ') ? authHeader.substring(7) : null;
-  if (!token) return null;
-
-  try {
-    const result = await query(
-      `SELECT at.user_id, at.token_hash, u.email
-       FROM equalizagro.auth_tokens at
-       JOIN equalizagro.users u ON u.id = at.user_id
-       WHERE at.expires_at > NOW() AND u.deleted_at IS NULL`,
-      []
-    );
-    for (const row of result.rows) {
-      const match = await bcrypt.compare(token, row.token_hash);
-      if (match) return { userId: row.user_id, email: row.email };
-    }
-  } catch (err) {
-    console.error('[ProfileAPI] Erro ao verificar token:', err);
-  }
-  return null;
-}
+import { getSessionFromRequest } from '@/lib/session';
 
 // ── GET — retorna dados do perfil ──────────────────────────────────────────────
 export async function GET(request: NextRequest) {
-  const session = await verifyToken(request);
+  const session = await getSessionFromRequest(request);
   if (!session) {
     return NextResponse.json({ success: false, message: 'Não autenticado' }, { status: 401 });
   }
@@ -51,7 +28,7 @@ export async function GET(request: NextRequest) {
 
 // ── PATCH — atualiza nome e/ou email ──────────────────────────────────────────
 export async function PATCH(request: NextRequest) {
-  const session = await verifyToken(request);
+  const session = await getSessionFromRequest(request);
   if (!session) {
     return NextResponse.json({ success: false, message: 'Não autenticado' }, { status: 401 });
   }

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { query } from '@/lib/database';
-import bcrypt from 'bcryptjs';
 import { ensureCalculatorUsageTable } from '@/lib/db-init';
+import { getSessionFromRequest } from '@/lib/session';
 
 const TAB_LABELS: Record<string, string> = {
   iso:      'Bicos ISO',
@@ -14,38 +14,20 @@ const TAB_LABELS: Record<string, string> = {
   deltat:   'Delta T',
 };
 
-async function getUserId(token: string): Promise<string | null> {
-  try {
-    const result = await query(
-      `SELECT at.user_id, at.token_hash
-       FROM equalizagro.auth_tokens at
-       JOIN equalizagro.users u ON u.id = at.user_id
-       WHERE at.expires_at > NOW()
-         AND u.deleted_at IS NULL`,
-      []
-    );
-    for (const row of result.rows) {
-      const match = await bcrypt.compare(token, row.token_hash);
-      if (match) return row.user_id;
-    }
-  } catch { /* ignorar */ }
-  return null;
-}
-
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const { tabId } = body;
-    const token = request.headers.get('authorization')?.replace('Bearer ', '') || body.token;
 
-    if (!tabId || !token) {
+    if (!tabId) {
       return NextResponse.json({ success: false }, { status: 400 });
     }
 
-    const userId = await getUserId(token);
-    if (!userId) {
+    const session = await getSessionFromRequest(request, body);
+    if (!session) {
       return NextResponse.json({ success: false }, { status: 401 });
     }
+    const userId = session.userId;
 
     await ensureCalculatorUsageTable();
 

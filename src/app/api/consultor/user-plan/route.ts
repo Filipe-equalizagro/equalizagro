@@ -1,73 +1,28 @@
 // src/app/api/consultor/user-plan/route.ts
 import { query } from '@/lib/database';
 import { NextRequest, NextResponse } from 'next/server';
-import bcrypt from 'bcryptjs';
 import { checkAccess } from '@/lib/subscriptions';
-
-/**
- * Buscar userId do token no banco de dados (auth_tokens)
- * O token é armazenado como bcrypt hash, então precisamos comparar
- */
-async function getUserIdFromToken(request: NextRequest): Promise<string | null> {
-  const authHeader = request.headers.get('authorization');
-  console.log('[UserPlan] Auth header:', authHeader ? 'presente' : 'ausente');
-  
-  if (!authHeader?.startsWith('Bearer ')) return null;
-
-  const token = authHeader.substring(7);
-  
-  try {
-    // Buscar tokens válidos (não expirados) do banco
-    const tokensResult = await query(
-      `SELECT user_id, token_hash 
-       FROM equalizagro.auth_tokens 
-       WHERE expires_at > NOW() AND revoked_at IS NULL
-       ORDER BY created_at DESC
-       LIMIT 100`,
-      []
-    );
-    
-    console.log('[UserPlan] Tokens válidos encontrados:', tokensResult.rows.length);
-    
-    // Comparar o token com cada hash
-    for (const row of tokensResult.rows) {
-      const isMatch = await bcrypt.compare(token, row.token_hash);
-      if (isMatch) {
-        console.log('[UserPlan] Token válido encontrado para userId:', row.user_id);
-        return row.user_id;
-      }
-    }
-    
-    console.log('[UserPlan] Nenhum token válido correspondente');
-    return null;
-  } catch (e) {
-    console.error('[UserPlan] Erro ao verificar token no banco:', e);
-    return null;
-  }
-}
+import { getSessionFromRequest } from '@/lib/session';
 
 /**
  * GET - Buscar dados do plano e créditos do usuário autenticado
- * Usa o token para identificar o usuário, ou aceita userId via query param
+ * Usa o token para identificar o usuário; aceita userId via query param só
+ * como fallback quando não há sessão válida (compat com chamadas antigas).
  */
 export async function GET(request: NextRequest) {
   try {
-    // Tentar buscar userId do token no banco
-    let userId = await getUserIdFromToken(request);
-    
-    // Fallback: tentar pegar userId da query string (do localStorage)
+    const session = await getSessionFromRequest(request);
+    let userId = session?.userId ?? null;
+
     if (!userId) {
       const { searchParams } = new URL(request.url);
       userId = searchParams.get('userId');
-      console.log('[UserPlan] Usando userId da query:', userId);
     }
-    
+
     if (!userId) {
-      console.log('[UserPlan] Nenhum userId encontrado');
       return NextResponse.json({ error: 'Token inválido ou ausente' }, { status: 401 });
     }
 
-    console.log('[UserPlan] Buscando dados para userId:', userId);
     return fetchUserPlanData(userId);
   } catch (error) {
     console.error('[UserPlan GET] Erro:', error);
@@ -79,18 +34,18 @@ export async function GET(request: NextRequest) {
 }
 
 /**
- * POST - Buscar dados do plano e créditos do usuário
- * Body: { userId }
- * Retorna: planName, creditsAvailable, creditsUsed, monthlyLimit, renewalDate
+ * POST - Buscar dados do plano e créditos do usuário autenticado.
+ * Exige sessão válida — usa sempre o userId da sessão, nunca o do corpo da
+ * requisição (antes aceitava qualquer userId no body sem autenticar nada).
  */
 export async function POST(request: NextRequest) {
   try {
-    const { userId } = await request.json();
-    if (!userId) {
-      return NextResponse.json({ error: 'userId é obrigatório' }, { status: 400 });
+    const session = await getSessionFromRequest(request);
+    if (!session) {
+      return NextResponse.json({ error: 'Token inválido ou ausente' }, { status: 401 });
     }
 
-    return fetchUserPlanData(userId);
+    return fetchUserPlanData(session.userId);
   } catch (error) {
     console.error('[UserPlan POST] Erro:', error);
     return NextResponse.json(
@@ -106,7 +61,7 @@ export async function POST(request: NextRequest) {
 async function fetchUserPlanData(userId: string) {
   // Buscar dados do usuário
   const userResult = await query(
-    `SELECT 
+    `SELECT
       id,
       full_name,
       email,
@@ -114,7 +69,7 @@ async function fetchUserPlanData(userId: string) {
       plan_id,
       created_at,
       updated_at
-    FROM equalizagro.users 
+    FROM equalizagro.users
     WHERE id = $1`,
     [userId]
   );

@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { query } from '@/lib/database';
-import bcrypt from 'bcryptjs';
 import { ensureConversationTables, ensureBillingExemptColumn } from '@/lib/db-init';
 import { checkAccess } from '@/lib/subscriptions';
+import { getSessionFromRequest } from '@/lib/session';
 
 const N8N_WEBHOOK = 'https://equalizagro.app.n8n.cloud/webhook/consultor-caldas';
 
@@ -10,22 +10,6 @@ const N8N_WEBHOOK = 'https://equalizagro.app.n8n.cloud/webhook/consultor-caldas'
 let tablesReady = false;
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-
-async function getUserIdFromToken(token: string): Promise<string | null> {
-  try {
-    const result = await query(
-      `SELECT at.user_id, at.token_hash
-       FROM equalizagro.auth_tokens at
-       JOIN equalizagro.users u ON u.id = at.user_id
-       WHERE at.expires_at > NOW() AND u.deleted_at IS NULL`,
-      []
-    );
-    for (const row of result.rows) {
-      if (await bcrypt.compare(token, row.token_hash)) return row.user_id;
-    }
-  } catch { /* ignorar */ }
-  return null;
-}
 
 async function upsertConversation(userId: string, conversationId: string | null, firstMessage?: string): Promise<string> {
   // Título derivado da primeira mensagem do usuário
@@ -96,16 +80,12 @@ export async function POST(request: NextRequest) {
     // Só existem duas portas: isento (equipe/admin) ou assinatura ativa/
     // trial (mensal ou anual). Sem nenhuma das duas, bloqueia antes de
     // gastar com o n8n.
-    const authToken = request.headers.get('authorization')?.replace('Bearer ', '') || token;
-    if (!authToken) {
-      return NextResponse.json({ success: false, message: 'Sessão expirada. Faça login novamente.' }, { status: 401 });
-    }
-
     if (!tablesReady) { await ensureConversationTables(); await ensureBillingExemptColumn(); tablesReady = true; }
-    const userId = await getUserIdFromToken(authToken);
-    if (!userId) {
+    const session = await getSessionFromRequest(request, { token });
+    if (!session) {
       return NextResponse.json({ success: false, message: 'Sessão expirada. Faça login novamente.' }, { status: 401 });
     }
+    const userId = session.userId;
 
     const access = await checkAccess(userId);
     if (!access.allowed) {

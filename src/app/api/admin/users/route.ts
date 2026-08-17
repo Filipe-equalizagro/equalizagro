@@ -2,37 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { query } from '@/lib/database';
 import { ensureUserRoleEnumValues, ensureCpfColumn } from '@/lib/db-init';
 import { validateCPF } from '@/lib/validators';
+import { requireAdminSession } from '@/lib/session';
 import bcrypt from 'bcryptjs';
-
-
-// ── Verificação inline de admin (sem fetch interno) ───────────────────────────
-async function verifyAdminToken(request: NextRequest): Promise<boolean> {
-  const authHeader = request.headers.get('authorization');
-  const token = authHeader?.startsWith('Bearer ') ? authHeader.substring(7) : null;
-  if (!token) return false;
-
-  try {
-    const result = await query(
-      `SELECT at.token_hash
-       FROM equalizagro.auth_tokens at
-       JOIN equalizagro.users u ON u.id = at.user_id
-       WHERE at.expires_at > NOW()
-         AND u.role = 'admin'
-         AND u.deleted_at IS NULL`,
-      []
-    );
-
-    for (const row of result.rows) {
-      try {
-        const match = await bcrypt.compare(token, row.token_hash);
-        if (match) return true;
-      } catch { /* ignorar */ }
-    }
-  } catch (err) {
-    console.error('[AdminAPI] Erro ao verificar token:', err);
-  }
-  return false;
-}
 
 function forbidden() {
   return NextResponse.json({ success: false, message: 'Acesso restrito a administradores' }, { status: 403 });
@@ -51,7 +22,7 @@ const VALID_STATUS  = ['pending', 'verified', 'suspended', 'inactive'];
 
 // ── GET — lista todos os usuários ─────────────────────────────────────────────
 export async function GET(request: NextRequest) {
-  if (!(await verifyAdminToken(request))) return forbidden();
+  if (!(await requireAdminSession(request))) return forbidden();
 
   try {
     await ensureCpfColumn();
@@ -83,7 +54,7 @@ export async function GET(request: NextRequest) {
 
 // ── POST — cria usuário já ativado (admin bypass verificação de email) ─────────
 export async function POST(request: NextRequest) {
-  if (!(await verifyAdminToken(request))) return forbidden();
+  if (!(await requireAdminSession(request))) return forbidden();
 
   let body: any;
   try { body = await request.json(); }
@@ -159,7 +130,7 @@ export async function POST(request: NextRequest) {
 
 // ── DELETE — soft delete (preenche deleted_at) ────────────────────────────────
 export async function DELETE(request: NextRequest) {
-  if (!(await verifyAdminToken(request))) return forbidden();
+  if (!(await requireAdminSession(request))) return forbidden();
 
   let body: any;
   try { body = await request.json(); }
@@ -187,7 +158,7 @@ export async function DELETE(request: NextRequest) {
 
 // ── PATCH — atualiza role ou auth_status ──────────────────────────────────────
 export async function PATCH(request: NextRequest) {
-  if (!(await verifyAdminToken(request))) return forbidden();
+  if (!(await requireAdminSession(request))) return forbidden();
 
   let body: any;
   try { body = await request.json(); }

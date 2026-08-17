@@ -1,35 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { query } from '@/lib/database';
-import bcrypt from 'bcryptjs';
 import { ensureCalculatorHistoryTable } from '@/lib/db-init';
+import { getSessionFromRequest } from '@/lib/session';
 
 const MAX_HISTORY = 60;
-
-// Resolve o userId a partir do token (mesmo padrão das outras rotas)
-async function getUserId(token: string): Promise<string | null> {
-  try {
-    const result = await query(
-      `SELECT at.user_id, at.token_hash
-       FROM equalizagro.auth_tokens at
-       JOIN equalizagro.users u ON u.id = at.user_id
-       WHERE at.expires_at > NOW()
-         AND u.deleted_at IS NULL`,
-      []
-    );
-    for (const row of result.rows) {
-      if (await bcrypt.compare(token, row.token_hash)) return row.user_id;
-    }
-  } catch { /* ignorar */ }
-  return null;
-}
-
-function getToken(request: NextRequest, bodyToken?: string): string | null {
-  if (bodyToken) return bodyToken;
-  const auth = request.headers.get('authorization');
-  if (auth?.startsWith('Bearer ')) return auth.substring(7);
-  const url = new URL(request.url);
-  return url.searchParams.get('token');
-}
 
 /**
  * GET - Histórico de cálculos do usuário (mais recentes primeiro)
@@ -37,11 +11,9 @@ function getToken(request: NextRequest, bodyToken?: string): string | null {
  */
 export async function GET(request: NextRequest) {
   try {
-    const token = getToken(request);
-    if (!token) return NextResponse.json({ success: false, entries: [] }, { status: 401 });
-
-    const userId = await getUserId(token);
-    if (!userId) return NextResponse.json({ success: false, entries: [] }, { status: 401 });
+    const session = await getSessionFromRequest(request);
+    if (!session) return NextResponse.json({ success: false, entries: [] }, { status: 401 });
+    const userId = session.userId;
 
     await ensureCalculatorHistoryTable();
 
@@ -69,16 +41,15 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const token = getToken(request, body.token);
     const entry = body.entry;
 
-    if (!token) return NextResponse.json({ success: false }, { status: 401 });
     if (!entry || typeof entry !== 'object') {
       return NextResponse.json({ success: false, message: 'entry obrigatório' }, { status: 400 });
     }
 
-    const userId = await getUserId(token);
-    if (!userId) return NextResponse.json({ success: false }, { status: 401 });
+    const session = await getSessionFromRequest(request, body);
+    if (!session) return NextResponse.json({ success: false }, { status: 401 });
+    const userId = session.userId;
 
     await ensureCalculatorHistoryTable();
 
@@ -116,11 +87,9 @@ export async function POST(request: NextRequest) {
  */
 export async function DELETE(request: NextRequest) {
   try {
-    const token = getToken(request);
-    if (!token) return NextResponse.json({ success: false }, { status: 401 });
-
-    const userId = await getUserId(token);
-    if (!userId) return NextResponse.json({ success: false }, { status: 401 });
+    const session = await getSessionFromRequest(request);
+    if (!session) return NextResponse.json({ success: false }, { status: 401 });
+    const userId = session.userId;
 
     await ensureCalculatorHistoryTable();
 

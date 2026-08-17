@@ -2,8 +2,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ApiError, apiResponse, apiError, validateEmail, getClientIp, getUserAgent } from '@/lib/api-utils';
 import { query } from '@/lib/database';
+import { ensureTokenVersionColumn } from '@/lib/db-init';
+import { signSessionToken } from '@/lib/jwt';
 import bcrypt from 'bcryptjs';
-import crypto from 'crypto';
 
 export async function POST(request: NextRequest) {
   try {
@@ -24,6 +25,8 @@ export async function POST(request: NextRequest) {
       throw new ApiError(400, 'Senha deve ter no mínimo 6 caracteres');
     }
 
+    await ensureTokenVersionColumn();
+
     // Buscar usuário no banco de dados
     let userResult;
     try {
@@ -36,7 +39,8 @@ export async function POST(request: NextRequest) {
           credits_balance,
           email_verified,
           auth_status,
-          device_fingerprint
+          device_fingerprint,
+          token_version
          FROM equalizagro.users
          WHERE LOWER(email) = LOWER($1)
            AND deleted_at IS NULL`,
@@ -100,20 +104,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Gerar token de sessão
-    const sessionToken = crypto.randomBytes(32).toString('hex');
-    const tokenHash = await bcrypt.hash(sessionToken, 10);
-
-    await query(
-      `INSERT INTO equalizagro.auth_tokens (
-        user_id,
-        token_hash,
-        ip_address,
-        user_agent,
-        expires_at
-      ) VALUES ($1, $2, $3, $4, NOW() + INTERVAL '7 days')`,
-      [user.id, tokenHash, ip, userAgent]
-    );
+    // Gerar token de sessão (JWT — verificação por assinatura, sem consulta
+    // ao banco a cada requisição; revogação via token_version, ver lib/session.ts)
+    const sessionToken = await signSessionToken({ sub: user.id, tv: Number(user.token_version ?? 1) });
 
     console.log(`[Login] Login bem-sucedido: ${email}`);
 
