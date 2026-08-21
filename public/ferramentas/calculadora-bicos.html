@@ -2523,6 +2523,7 @@
             ? div.innerHTML.replace(/src="\/images\/go2apply-logo-colorido\.png"/g, 'src="' + logo + '"')
             : div.innerHTML;
         _downloadPDF(htmlFinal, 'relatorio-fluxometro.pdf');
+        addHistoryEntry('report', 'fluxo', TAB_LABELS['fluxo'], 'Fluxômetro — Relatório PDF', collectTabData('fluxo'));
     }
 
     function convGrid(items, activeIdx) {
@@ -3061,6 +3062,7 @@
             ? div.innerHTML.replace(/src="\/images\/go2apply-logo-colorido\.png"/g, 'src="' + logo + '"')
             : div.innerHTML;
         _downloadPDF(htmlFinal, 'relatorio-distribuicao-vazao.pdf');
+        addHistoryEntry('report', 'desgaste', TAB_LABELS['desgaste'], 'Desgaste de Pontas — Relatório PDF', collectTabData('desgaste'));
     }
 
     // ══════════════════════════════════════════════════════════════
@@ -3229,7 +3231,13 @@
         updateHistoryBadge();
     }
 
-    // Carrega o histórico do servidor e substitui o cache local.
+    // Carrega o histórico do servidor e MESCLA com o cache local — nunca
+    // substitui de forma cega. Em campo, com sinal instável, o POST de um
+    // cálculo pode falhar silenciosamente (rede caiu, 401 momentâneo etc.);
+    // se o sync seguinte simplesmente sobrescrevesse o cache local com a
+    // lista (mais antiga) do servidor, esse cálculo desaparecia pro usuário
+    // mesmo tendo sido salvo localmente — era exatamente isso que fazia o
+    // histórico "sumir" ao recarregar a página.
     function syncHistoryFromServer() {
         var token = getAuthTokenCalc();
         if (!token) return;
@@ -3240,8 +3248,21 @@
         .then(function(r) { return r.ok ? r.json() : null; })
         .then(function(res) {
             if (!res || !res.success || !Array.isArray(res.entries)) return;
-            // Servidor é a fonte da verdade: substitui o cache local
-            localStorage.setItem(HISTORY_KEY, JSON.stringify(res.entries));
+            var serverEntries = res.entries;
+            var serverIds = {};
+            serverEntries.forEach(function(e) { serverIds[e.id] = true; });
+
+            // Entradas locais que o servidor ainda não confirma ter recebido
+            // (POST anterior pode ter falhado) — reenvia agora e preserva no cache.
+            var local = getHistory();
+            var pendingLocal = local.filter(function(e) { return !serverIds[e.id]; });
+            pendingLocal.forEach(function(e) { pushHistoryToServer(e); });
+
+            var merged = pendingLocal.concat(serverEntries);
+            merged.sort(function(a, b) { return new Date(b.time) - new Date(a.time); });
+            if (merged.length > MAX_HISTORY) merged = merged.slice(0, MAX_HISTORY);
+
+            localStorage.setItem(HISTORY_KEY, JSON.stringify(merged));
             updateHistoryBadge();
             var panel = document.getElementById('history-panel');
             if (panel && !panel.classList.contains('hidden')) renderHistory();
@@ -3384,12 +3405,17 @@
     }
 
     function scheduleAutoSave() {
+        // Captura a aba ATUAL no momento em que o usuário digitou — se ele
+        // trocar de aba antes dos 3s, o autosave ainda salva os dados da
+        // aba onde ele estava (e não da nova aba, que é o que currentTab
+        // passaria a apontar).
+        var tabId = currentTab;
         clearTimeout(autoSaveTimer);
-        autoSaveTimer = setTimeout(doAutoSave, 3000);
+        autoSaveTimer = setTimeout(function() { doAutoSave(tabId); }, 3000);
     }
 
-    function doAutoSave() {
-        var tabId = currentTab;
+    function doAutoSave(tabId) {
+        tabId = tabId || currentTab;
         var data  = collectTabData(tabId);
         if (Object.keys(data).length === 0) return;
         addHistoryEntry('calc', tabId, TAB_LABELS[tabId] || tabId, tabSummary(tabId), data);
